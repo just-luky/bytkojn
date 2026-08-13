@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="cs">
+  <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Základy Bitcoinu – úvod do sítě, protokolu, transakcí a fungování systému." name="description">
+    <meta content="#0a0b0d" name="theme-color">
+    <link href="../assets/media/favicon.svg" rel="icon" type="image/svg+xml">
+    <link href="../assets/css/styles.css?v=20260813-1" rel="stylesheet">
+    <title>Úvod do Bitcoinu // &lt;bytkojn/&gt;</title>
+  </head>
+  <body class="page-bitcoin page-bitcoin-article article-text-page article-terminal-page">
+    <div aria-hidden="true" class="background-grid"></div>
+    <header class="topbar" id="siteHeader"></header>
+    <div class="app-shell">
+      <aside class="sidebar" id="sidebar" aria-label="Obsah sekce Bitcoin"></aside>
+      <main class="content-area" id="mainContent">
+        <article class="article-panel article-page-panel">
+          <div class="terminal-bar article-terminal-bar">
+            <div class="terminal-path">
+            ~/bytkojn/bitcoin/uvod
+          </div>
+          </div>
+          <header class="article-header">
+            <p class="article-header-kicker">// BITCOIN</p>
+            <h1 id="contentTitle" class="bitcoin-title-enhanced" aria-label="Úvod do Bitcoinu">
+              <span class="bitcoin-title-word" data-title="ÚVOD DO BITCOINU" aria-hidden="true">ÚVOD DO BITCOINU</span>
+              <span class="bitcoin-title-chain" aria-hidden="true">
+                <span class="bitcoin-title-chain-line"></span>
+                <span class="bitcoin-title-chain-node"></span>
+                <span class="bitcoin-title-chain-node"></span>
+                <span class="bitcoin-title-chain-node"></span>
+                <span class="bitcoin-title-chain-node"></span>
+                <span class="bitcoin-title-chain-node"></span>
+              </span>
+            </h1>
+            <svg class="article-header-circuit article-header-circuit-intro" viewBox="0 0 240 180" preserveAspectRatio="xMaxYMin meet" aria-hidden="true" focusable="false">
+              <defs>
+                <filter id="articleCircuitGlowIntro" x="-100%" y="-100%" width="300%" height="300%">
+                  <fegaussianblur stdDeviation="4.5" result="blur"></fegaussianblur>
+                  <femerge>
+                    <femergenode in="blur"></femergenode>
+                    <femergenode in="SourceGraphic"></femergenode>
+                  </femerge>
+                </filter>
+              </defs>
+              <path class="circuit-trace" d="M28 0 V32 H72 V66 H48 V112 H92 V180"></path>
+              <path class="circuit-trace circuit-trace-faint" d="M98 0 V26 H132 V58 H108 V104 H154 V144 H136 V180"></path>
+              <path class="circuit-trace" d="M172 0 V38 H214 V74 H184 V116 H228 V180"></path>
+              <path class="circuit-trace circuit-trace-faint" d="M240 18 H210 V54 H232 V98 H198 V138 H218 V180"></path>
+              <path class="circuit-trace circuit-trace-active" d="M60 0 V38 H106 V78 H144 V120 H190 V180"></path>
+              <circle class="circuit-node" cx="72" cy="32" r="5"></circle>
+              <circle class="circuit-node" cx="48" cy="112" r="5"></circle>
+              <circle class="circuit-node" cx="132" cy="58" r="5"></circle>
+              <circle class="circuit-node" cx="184" cy="116" r="5"></circle>
+              <circle class="circuit-node" cx="228" cy="74" r="5"></circle>
+              <circle class="circuit-node circuit-node-active" cx="106" cy="38" r="6" filter="url(#articleCircuitGlowIntro)"></circle>
+              <circle class="circuit-node circuit-node-active circuit-node-delay" cx="190" cy="120" r="6" filter="url(#articleCircuitGlowIntro)"></circle>
+              <g class="circuit-marks">
+                <rect x="214" y="18" width="6" height="6"></rect>
+                <rect x="224" y="18" width="6" height="6"></rect>
+                <rect x="214" y="28" width="6" height="6"></rect>
+                <rect x="32" y="148" width="6" height="6"></rect>
+                <rect x="42" y="148" width="6" height="6"></rect>
+                <rect x="32" y="158" width="6" height="6"></rect>
+              </g>
+            </svg>
+          </header>
+          <div class="article-meta" aria-label="Informace o článku">
+            <img class="article-meta-avatar" src="../assets/media/author_justluky.png" alt="" decoding="async">
+            <div class="article-meta-copy">
+              <span class="article-meta-author">justluky</span>
+              <time class="article-meta-date" datetime="2026-08-10">10. 8. 2026</time>
+            </div>
+          </div>
+          <div class="article-intro-note" role="note">
+            <span class="article-intro-note-label">// POZNÁMKA K TEXTU</span>
+            <p>
+            Tato kapitola slouží jako stručný úvod do Bitcoinu a jeho základních principů.
+            Některé procesy, pojmy a technické souvislosti jsou proto záměrně zjednodušeny
+            nebo nejsou popsány do všech podrobností. Bitcoin je komplexní systém a cílem
+            této části není podat jeho úplný technický popis, ale vytvořit základní rámec
+            pro pochopení témat, která jsou podrobněji rozvedena v dalších kapitolách.
+          </p>
+          </div>
+          <div class="article-content">
+            <section aria-labelledby="co-je-bitcoin" class="article-text-section">
+              <h2 id="co-je-bitcoin">Co je Bitcoin?</h2>
+              <p>Bitcoin je otevřený digitální peněžní systém, který umožňuje převádět hodnotu prostřednictvím internetu
+              přímo mezi jeho účastníky. K provedení platby není nutná banka, karetní společnost ani jiná centrální
+              instituce, která by transakci zprostředkovala a vedla jedinou závaznou evidenci. Namísto toho Bitcoin
+              využívá veřejně známá pravidla, kryptografii a síť nezávislých počítačů, které společně udržují a
+              kontrolují historii uskutečněných převodů <span aria-label="Zdroje 1, 4" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1" id="cite-1">1</a>, <a aria-label="Přejít na zdroj 4" href="#ref-4" id="cite-4">4</a>]</span>.
+            </p>
+              <figure class="article-figure-compact">
+                <img src="../assets/media/bitcoin_logo.webp" alt="Logo Bitcoinu" decoding="async" loading="lazy">
+                <figcaption>
+                  <span class="figure-caption">Logo Bitcoinu</span>
+                  <span class="figure-source">Zdroj: Wikimedia Commons</span>
+                </figcaption>
+              </figure>
+              <p>Součástí systému je jeho vlastní měnová jednotka označovaná jako bitcoin, běžně zapisovaná zkratkou BTC
+              nebo symbolem <button class="term" type="button" data-term="bitcoin-symbol">₿</button>. 
+              Bitcoin však není pouze digitální mince. Stejným názvem se označuje také protokol
+              určující pravidla systému a síť počítačů, které podle těchto pravidel komunikují.</p>
+              <p>Bitcoin není společnost, bankovní služba ani aplikace provozovaná jedním vlastníkem. Jde o otevřený
+              protokol, jehož software může kdokoliv používat, kontrolovat nebo dále rozvíjet. Jednotliví účastníci se
+              mohou k síti připojit nebo ji opustit, aniž by potřebovali povolení centrálního provozovatele.</p>
+            </section>
+            <section aria-labelledby="vznik-bitcoinu" class="article-text-section">
+              <h2 id="vznik-bitcoinu">Vznik Bitcoinu</h2>
+              <p>Základní návrh Bitcoinu zveřejnil v roce 2008 autor vystupující pod pseudonymem Satoshi Nakamoto v
+              dokumentu <a class="article-inline-link" href="https://bitcoin.org/bitcoin.pdf" target="_blank" rel="noopener noreferrer">Bitcoin: A Peer-to-Peer Electronic Cash System</a>. Popsal v něm systém elektronických peněz, který
+              měl umožnit provádění plateb přímo mezi dvěma stranami bez nutnosti využívat důvěryhodnou finanční
+              instituci <a aria-label="Přejít na zdroj 1" class="citation" href="#ref-1">[1]</a>.</p>
+              <p>Bitcoinová síť byla spuštěna 3. ledna 2009 vytvořením jejího prvního bloku, označovaného jako genesis block. Na vývoji softwaru se postupně začali podílet další programátoři a Satoshi Nakamoto se v roce 2011
+              z veřejného působení stáhl. Jeho skutečná totožnost dodnes není známa a není jisté ani to, zda šlo o
+              jednoho člověka, nebo skupinu osob <a aria-label="Přejít na zdroj 4" class="citation" href="#ref-4">[4]</a>.</p>
+              <p>Odchod původního autora provoz sítě nezastavil. Bitcoin nebyl navržen jako služba závislá na jejím autorovi ani
+              na jiné konkrétní osobě. Jeho další fungování zajišťovali účastníci, kteří nadále provozovali software,
+              kontrolovali transakce a podíleli se na rozvoji systému.</p>
+              <p>Základní otázka, kterou Bitcoin řeší, zní: Lze v digitálním prostředí převádět peněžní hodnotu, aniž by
+              správnost každé platby musela potvrzovat jedna centrální instituce?</p>
+              <figure class="article-figure-compact">
+                <img src="../assets/media/satoshi_nakamoto.png" alt="Satoshi Nakamoto" decoding="async" loading="lazy">
+                <figcaption>
+                  <span class="figure-caption">Satoshi Nakamoto</span>
+                  <span class="figure-source">Zdroj: generated by AI</span>
+                </figcaption>
+              </figure>
+            </section>
+            <section aria-labelledby="proc-pouzivame-penize" class="article-text-section">
+              <h2 id="proc-pouzivame-penize">Proč vůbec používáme peníze?</h2>
+              <p>Aby bylo možné pochopit smysl Bitcoinu, je užitečné nejprve připomenout, proč lidé používají peníze. Bez
+              nich by obchod probíhal přímou směnou zboží a služeb. Člověk nabízející určitý výrobek by musel najít
+              někoho, kdo o něj má zájem a současně nabízí právě to, co potřebuje on.</p>
+              <p>
+                <button class="term" type="button" data-term="saifedean-ammous">Saifedean Ammous</button> v knize <em>The Bitcoin Standard</em> vysvětluje, že s rozvojem trhu a specializace se přímá
+              směna stává stále méně praktickou. Pro uskutečnění obchodu se musí shodovat potřeby obou stran, množství
+              směňovaného zboží, okamžik i místo směny. Peníze tento problém řeší tím, že slouží jako obecně přijímaný
+              prostředek směny. Člověk může svou práci nebo výrobek prodat za peníze a ty později použít k nákupu něčeho
+              jiného <a aria-label="Přejít na zdroj 2" class="citation" href="#ref-2" id="cite-2">[2]</a>.</p>
+              <p>Stejnou myšlenku přibližuje <button class="term" type="button" data-term="michael-caras">Michael Caras</button> v ilustrované knize <em>Bitcoin Money: A Tale of Bitville
+              Discovering Good Money.</em> Obyvatelé smyšleného městečka Bitville nabízejí limonádu, sekání trávy nebo
+              kreslení obrázků. Brzy však zjistí, že přímá směna nefunguje vždy. Člověk ochotný posekat trávník nemusí
+              právě potřebovat obrázek a prodavačka limonády nemusí mít otevřeno v okamžiku, kdy chce někdo limonádou
+              zaplatit <a aria-label="Přejít na zdroj 3" class="citation" href="#ref-3" id="cite-3">[3]</a>.</p>
+              <p>Peníze umožňují rozdělit směnu na dvě části. Nejprve člověk prodá svou práci nebo zboží za peníze a
+              později je použije k získání toho, co sám potřebuje.</p>
+              <p>Ne každá věc se však k používání jako peníze hodí stejně dobře. Praktické peníze by měly být zejména:</p>
+              <ul class="article-list">
+                <li>trvanlivé,</li>
+                <li>přenositelné,</li>
+                <li>dělitelné,</li>
+                <li>vzájemně zaměnitelné,</li>
+                <li>snadno rozpoznatelné,</li>
+                <li>obtížně padělatelné,</li>
+                <li>omezené ve své nabídce.</li>
+              </ul>
+              <p>Carasův příběh tyto vlastnosti vysvětluje prostřednictvím různých předmětů. Tráva je snadno dostupná,
+              limonáda se kazí, jízdní kolo je obtížné přenášet a dělit a barevné kameny nemají jednotnou kvalitu.
+              Kovové mince naproti tomu fungují lépe, protože jsou trvanlivé, přenositelné, podobné jedna druhé a jejich
+              nabídka může být omezená <a aria-label="Přejít na zdroj 3" class="citation" href="#ref-3">[3]</a>.</p>
+              <p>To samo o sobě ještě neznamená, že Bitcoin musí být dobrými penězi nebo že si musí zachovat určitou tržní
+              hodnotu. Poskytuje to však rámec, podle kterého lze jeho vlastnosti porovnávat s hotovostí, bankovními
+              penězi, drahými kovy a dalšími historickými formami peněz.</p>
+            </section>
+            <section aria-labelledby="problem-digitalnich-penez" class="article-text-section">
+              <h2 id="problem-digitalnich-penez">Problém digitálních peněz</h2>
+              <p>Digitální informace lze snadno kopírovat. Když někomu odešleme fotografii nebo dokument, původní soubor
+              nám zpravidla zůstane a příjemce získá jeho kopii. U většiny digitálních dat je tato možnost výhodou. U
+              peněz by však představovala zásadní problém.</p>
+              <p>Pokud by bylo možné digitální peněžní jednotku jednoduše kopírovat, mohl by ji její vlastník odeslat
+              několika různým příjemcům. Tento problém se označuje jako dvojí utracení neboli double spend.</p>
+              <p>Běžné elektronické platební systémy jej řeší pomocí centrální evidence. Banka kontroluje zůstatky,
+              zaznamenává uskutečněné platby a rozhoduje, která transakce byla provedena jako první. Když uživatel
+              odešle peníze, banka příslušnou částku odečte z jeho účtu, aby ji nemohl použít znovu.</p>
+              <p>Bitcoin řeší stejný problém bez jediné centrální evidence. Transakce jsou oznamovány síti a její
+              účastníci podle společných pravidel ověřují, zda jsou platné a zda převáděné prostředky nebyly již dříve
+              utraceny. Výsledkem je společná historie převodů, kterou může nezávisle kontrolovat více účastníků <span aria-label="Zdroje 1, 4" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>,
+                <a aria-label="Přejít na zdroj 4" href="#ref-4">4</a>]</span>.</p>
+              <p>Bitcoin nebyl prvním pokusem o digitální peníze. Starší systémy však obvykle používaly centrálního
+              vydavatele nebo provozovatele, který spravoval účty a vypořádával transakce. Přínos Bitcoinu spočívá
+              především ve spojení několika dříve známých technologií do systému, který dokáže udržovat převoditelnou
+              digitální hodnotu bez jednoho centrálního správce.</p>
+              <figure class="article-figure-compact">
+                <img src="../assets/media/double_spending.png" alt="Double spending" decoding="async" loading="lazy">
+                <figcaption>
+                  <span class="figure-caption">Double spending</span>
+                  <span class="figure-source">Zdroj: generated by AI</span>
+                </figcaption>
+              </figure>
+            </section>
+            <section aria-labelledby="sdilena-historie-transakci" class="article-text-section">
+              <h2 id="sdilena-historie-transakci">Sdílená historie transakcí</h2>
+              <p>Bitcoinová síť je tvořena vzájemně propojenými počítači označovanými jako uzly. Ty mezi sebou přijímají a
+              předávají informace o nových transakcích a blocích. Síť je uspořádána jako peer-to-peer systém, v němž spolu jednotlivé uzly komunikují bez prostředníka a žádný z nich nemá pevně nadřazené postavení <a aria-label="Přejít na zdroj 4" class="citation" href="#ref-4">[4]</a>.</p>
+              <p>Když uživatel vytvoří transakci, informace o ní je rozeslána do sítě. Uzly mohou samostatně kontrolovat,
+              zda transakce odpovídá pravidlům Bitcoinu. Neplatná transakce se nestane platnou pouze tím, že ji někdo
+              rozešle ostatním.</p>
+              <p>Platné transakce jsou postupně seskupovány do bloků. Každý nový blok obsahuje kryptografický odkaz na
+              blok předchozí, čímž vzniká chronologicky navazující řetězec označovaný jako blockchain.</p>
+              <p>Blockchain je historií potvrzených bitcoinových transakcí. Jednotlivé bloky na sebe navazují
+              prostřednictvím kryptografických otisků. Změna staršího bloku by proto narušila návaznost všech bloků,
+              které po něm vznikly, a vyžadovala by nové provedení výpočetní práce spojené s touto částí historie <span aria-label="Zdroje 1, 4" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>,
+                <a aria-label="Přejít na zdroj 4" href="#ref-4">4</a>]</span>.</p>
+              <p>Čím více dalších bloků na určitou transakci naváže, tím pevněji je začleněna do historie systému.
+              Nejnovější část blockchainu se může při současném nalezení různých bloků dočasně větvit, hlubší historie
+              je však postupně stále obtížněji změnitelná.</p>
+              <p>Caras tuto myšlenku v příběhu o Bitville přirovnává k veřejné tabulce, jejíž aktuální kopii uchovávají
+              všichni obyvatelé. Pokud by se někdo pokusil svou kopii tajně změnit a připsat si více peněz, jeho záznam
+              by neodpovídal kopiím ostatních. Později je veřejná tabulka nahrazena aplikací, kterou si může každý sám
+              provozovat a kontrolovat <a aria-label="Přejít na zdroj 3" class="citation" href="#ref-3">[3]</a>.</p>
+              <p>Jde o výrazné zjednodušení, ale dobře vystihuje základní princip: správnost evidence nemusí být založena
+              pouze na důvěře v jejího jediného správce.</p>
+            </section>
+            <section aria-labelledby="jak-se-bitcoiny-prevadeji" class="article-text-section">
+              <h2 id="jak-se-bitcoiny-prevadeji">Jak se bitcoiny převádějí?</h2>
+              <p>Bitcoiny nejsou fyzické mince ani samostatné digitální soubory uložené v počítači. Existují jako součást
+              sdílené transakční historie, která určuje, za jakých podmínek lze jednotlivé částky dále převést.</p>
+              <p>Uživatelé k ovládání bitcoinů využívají tzv. kryptografické klíče, které jim umožňují prokázat oprávnění k převodu určitých prostředků. Ostatní uzly mohou toto oprávnění ověřit. <span aria-label="Zdroje 1, 4" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 4" href="#ref-4">4</a>]</span>.</p>
+              <p>Pro základní pochopení není nutné znát matematické podrobnosti. Důležitý je princip: uživatel musí mít
+              prostředek, kterým prokáže oprávnění s bitcoiny nakládat, zatímco ostatní mohou toto oprávnění ověřit.</p>
+              <p>Ke správě kryptografických klíčů a vytváření transakcí slouží bitcoinová peněženka. Může mít podobu například aplikace v počítači či telefonu nebo samostatného hardwarového zařízení. Samotné bitcoiny však peněženka neuchovává. Kdo ovládá příslušný klíč, může autorizovat převod odpovídajících prostředků, a proto musí být klíče chráněny a bezpečně zálohovány. Pokud uživatel ztratí možnost jejich obnovy, neexistuje centrální správce, který by mu mohl automaticky obnovit přístup k jeho prostředkům <a aria-label="Přejít na zdroj 4" class="citation" href="#ref-4">[4]</a>.</p>
+              <p>Tato skutečnost přináší větší míru kontroly nad vlastními prostředky, ale zároveň také větší osobní
+              odpovědnost.</p>
+            </section>
+            <section aria-labelledby="tezba-a-proof-of-work" class="article-text-section">
+              <h2 id="tezba-a-proof-of-work">Těžba a proof-of-work</h2>
+              <p>Nové bloky vznikají prostřednictvím procesu označovaného jako těžba. Tento název může vyvolávat dojem, že
+              hlavním účelem těžby je vytváření nových bitcoinů. <button class="term" type="button" data-term="andreas-antonopoulos">Andreas M. Antonopoulos</button> v knize <em>Mastering Bitcoin</em> upozorňuje, že takové vysvětlení je zavádějící. Nové bitcoiny představují odměnu a motivaci, zatímco hlavní úlohou těžby je pomáhat
+              zaznamenávat transakce, zabezpečovat historii blockchainu a umožnit síti dosahovat shody bez centrální
+              autority <a aria-label="Přejít na zdroj 4" class="citation" href="#ref-4">[4]</a>.</p>
+              <p>Těžaři vybírají čekající transakce a sestavují je do návrhu nového bloku. Aby mohl být blok přijat sítí, musí jeho hash splnit aktuálně stanovenou podmínku obtížnosti. Těžař proto opakovaně mění některé údaje bloku a počítá jeho hash, dokud nenalezne výsledek odpovídající této podmínce. Právě tento proces se označuje jako proof-of-work.</p>
+              <p>Nalezení platného výsledku vyžaduje velké množství opakovaných výpočtů. Jeho správnost však mohou ostatní
+              uzly rychle ověřit. Úspěšný těžař rozešle nový blok do sítě a uzly samostatně zkontrolují nejen
+              proof-of-work, ale také strukturu bloku a všechny obsažené transakce.</p>
+              <p>Blok porušující pravidla mohou uzly odmítnout bez ohledu na množství práce, které těžař vynaložil. Těžba
+              tedy nedává těžařům možnost libovolně měnit pravidla nebo vytvářet neplatné transakce.</p>
+              <p>Proof-of-work činí vytváření bloků nákladným a pomáhá určit pořadí, v němž jsou transakce zaznamenány.
+              Současně ztěžuje přepisování starší historie. Útočník, který by chtěl změnit již zaznamenanou transakci,
+              by musel vytvořit alternativní historii a překonat výpočetní práci pokračující sítě <span aria-label="Zdroje 1, 4" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>,
+                <a aria-label="Přejít na zdroj 4" href="#ref-4">4</a>]</span>.</p>
+              <p>Toto zabezpečení není bez nákladů. Proof-of-work vyžaduje výpočetní techniku a elektrickou energii.
+              Bitcoin tím nahrazuje část důvěry v centrálního správce systémem veřejné kontroly, ekonomických pobídek a
+              reálně vynaložené práce.</p>
+              <figure class="article-figure-compact article-figure-wide">
+                <img src="../assets/media/proof_of_work.png" alt="Proof-of-work" decoding="async" loading="lazy">
+                <figcaption>
+                  <span class="figure-caption">Proof-of-work</span>
+                  <span class="figure-source">Zdroj: generated by AI</span>
+                </figcaption>
+              </figure>
+            </section>
+            <section aria-labelledby="odmeny-a-vznik-novych-bitcoinu" class="article-text-section">
+              <h2 id="odmeny-a-vznik-novych-bitcoinu">Odměny a vznik nových bitcoinů</h2>
+              <p>Těžař, jehož platný blok síť přijme, může získat dvě části odměny:</p>
+              <ul class="article-list">
+                <li>nově vytvořené bitcoiny, označované jako bloková dotace,</li>
+                <li>poplatky z transakcí zahrnutých do daného bloku.</li>
+              </ul>
+              <p>Odměna motivuje těžaře, aby poskytovali výpočetní výkon potřebný k zabezpečování systému. Současně
+              představuje způsob, kterým jsou nové bitcoiny postupně uváděny do oběhu <span aria-label="Zdroje 1, 4" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 4" href="#ref-4">4</a>]</span>.</p>
+              <p>Množství nově vznikajících bitcoinů není určováno centrální bankou ani rozhodnutím vedení společnosti.
+              Vychází z pravidel protokolu. Původní odměna činila 50 bitcoinů za blok a po každých 210 000 blocích se
+              snižuje na polovinu. Tento proces se běžně označuje jako halving <a aria-label="Přejít na zdroj 4" class="citation" href="#ref-4">[4]</a>.</p>
+              <p>V důsledku tohoto postupného snižování bude celkové množství jednotek směřovat k hranici necelých 21
+              milionů bitcoinů. Přibližně kolem roku 2140 přestanou podle současných pravidel vznikat nové jednotky a
+              odměnu těžařů budou tvořit pouze transakční poplatky <a aria-label="Přejít na zdroj 4" class="citation" href="#ref-4">[4]</a>.</p>
+              <p>Jeden bitcoin je dělitelný na sto milionů menších jednotek. Nejmenší jednotka se označuje jako satoshi,
+              zkráceně sat, a odpovídá hodnotě 0,00000001 BTC.</p>
+            </section>
+            <section aria-labelledby="proc-je-omezena-nabidka-dulezita" class="article-text-section">
+              <h2 id="proc-je-omezena-nabidka-dulezita">Proč je omezená nabídka důležitá?</h2>
+              <p>Omezená a předvídatelná nabídka patří mezi nejvýraznější vlastnosti Bitcoinu. Saifedean Ammous ji v knize
+              <em>The Bitcoin Standard</em> zasazuje do širšího výkladu takzvaných tvrdých peněz. Tímto označením rozumí peníze,
+              jejichž množství nelze snadno a rychle zvýšit. Podle jeho pojetí je obtížnost vytváření nových jednotek
+              důležitá pro schopnost peněz přenášet hodnotu v čase <a aria-label="Přejít na zdroj 2" class="citation" href="#ref-2">[2]</a>.</p>
+              <p>Caras stejnou myšlenku vysvětluje pomocí příběhu obyvatel Bitville. Ti nejprve používají kovové mince a
+              později papírové poukázky, které mince zastupují. Jakmile správci začnou tisknout nové poukázky bez
+              odpovídajícího omezení, jejich množství roste, aniž by se současně zvýšilo množství dostupného zboží a
+              služeb. Obyvatelé následně zjišťují, že si za své peníze mohou koupit stále méně <a aria-label="Přejít na zdroj 3" class="citation" href="#ref-3">[3]</a>.</p>
+              <p>Příběh představuje záměrně zjednodušený a hodnotově zabarvený ekonomický pohled. Je však užitečný pro
+              vysvětlení, proč zastánci Bitcoinu považují předem známou nabídku za důležitou vlastnost.</p>
+              <p>Samotná omezená nabídka nezaručuje stabilní cenu, budoucí přijetí ani uchování kupní síly. Množství
+              nových jednotek může být předvídatelné, zatímco poptávka po nich a jejich tržní hodnota se mohou výrazně
+              měnit.</p>
+            </section>
+            <section aria-labelledby="system-bez-jednoho-provozovatele" class="article-text-section">
+              <h2 id="system-bez-jednoho-provozovatele">Systém bez jednoho provozovatele</h2>
+              <p>Bitcoin nemá jednoho vlastníka, ředitele ani hlavní server. Na jeho fungování se podílejí různé skupiny
+              účastníků:</p>
+              <ul class="article-list">
+                <li>uživatelé vytvářejí a přijímají transakce,</li>
+                <li>uzly kontrolují dodržování pravidel,</li>
+                <li>těžaři navrhují nové bloky,</li>
+                <li>vývojáři vytvářejí a upravují bitcoinový software.</li>
+              </ul>
+              <p>Žádná z těchto skupin sama neovládá celý systém. Těžař může navrhnout nový blok, ale uzly jej nemusí
+              přijmout, pokud porušuje pravidla. Vývojář může připravit změnu softwaru, ale nemůže uživatele přinutit,
+              aby ji nainstalovali. Provozovatel jednoho uzlu může upravit svou vlastní kopii programu, nemůže však tím
+              automaticky změnit pravidla, která kontrolují ostatní <span aria-label="Zdroje 1, 4" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 4" href="#ref-4">4</a>]</span>.</p>
+              <p>Decentralizace proto neznamená, že Bitcoin nemá pravidla nebo že se každý účastník může chovat libovolně.
+              Znamená, že jejich dodržování nekontroluje pouze jedna nadřazená organizace. Účastníci mohou sami
+              ověřovat, zda jsou příchozí transakce a bloky v souladu s pravidly, která používají.</p>
+              <p>Často se říká, že Bitcoin odstraňuje potřebu důvěry. Přesnější je tvrzení, že omezuje nutnost důvěřovat
+              jednomu konkrétnímu správci. Část této důvěry nahrazuje možností kontrolovat otevřený software, transakční
+              historii, digitální podpisy a výpočetní důkazy.</p>
+            </section>
+            <section aria-labelledby="co-tedy-bitcoin-je" class="article-text-section">
+              <h2 id="co-tedy-bitcoin-je">Co tedy Bitcoin je?</h2>
+              <p>Bitcoin lze v základním smyslu chápat jako otevřený digitální peněžní systém, který umožňuje převádět a
+              evidovat hodnotu bez jedné centrální účetní autority.</p>
+              <p>Jeho fungování je založeno na spojení:</p>
+              <ul class="article-list">
+                <li>peer-to-peer sítě,</li>
+                <li>společných pravidel pro kontrolu transakcí,</li>
+                <li>digitálních podpisů,</li>
+                <li>sdílené historie transakcí,</li>
+                <li>kryptograficky propojených bloků,</li>
+                <li>mechanismu proof-of-work,</li>
+                <li>ekonomických odměn,</li>
+                <li>předvídatelného vydávání nových jednotek.</li>
+              </ul>
+              <p>Jednotlivé technologie použité v Bitcoinu existovaly již před jeho vznikem. Hlavní inovací bylo jejich
+              spojení do systému, který prakticky řeší problém dvojího utracení a umožňuje nezávislým účastníkům
+              shodnout se na platné historii digitálních převodů bez jedné banky, společnosti nebo jiné centrální
+              instituce <span aria-label="Zdroje 1, 4" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 4" href="#ref-4">4</a>]</span>.</p>
+              <p>Bitcoin lze využívat k převodu hodnoty, k dlouhodobému držení i ke spekulaci. Samotná technologie však
+              nezaručuje jeho budoucí cenu, všeobecné přijetí ani investiční výnos. Posouzení jeho ekonomického významu,
+              výhod, omezení a rizik proto vyžaduje další samostatné kapitoly.</p>
+              <p>Pro první seznámení je nejdůležitější pochopit problém, který Bitcoin řeší: umožňuje účastníkům vytvořit
+              a kontrolovat společnou historii digitálních převodů, aniž by tuto historii musel spravovat jediný
+              důvěryhodný prostředník.</p>
+            </section>
+            <section aria-labelledby="pouzite-zdroje" class="article-text-section references-section">
+              <h2 id="pouzite-zdroje">Použité zdroje</h2>
+              <p class="references-intro">Záznamy jsou upraveny podle číselného systému normy ISO 690 a seřazeny podle
+              prvního výskytu v textu.</p>
+              <ol class="reference-list">
+                <li class="reference-item" id="ref-1">
+                  <span class="reference-number">[1]</span>NAKAMOTO, Satoshi. <span class="reference-title">Bitcoin: A Peer-to-Peer Electronic Cash System</span> [online]. 2008 [cit.
+                2026-08-06]. Dostupné z: <a class="reference-link" href="https://bitcoin.org/bitcoin.pdf" rel="noopener noreferrer" target="_blank">https://bitcoin.org/bitcoin.pdf</a>
+                  <br>
+                  <a class="reference-back" href="#cite-1">↑ zpět k první citaci</a>
+                </li>
+                <li class="reference-item" id="ref-2">
+                  <span class="reference-number">[2]</span>AMMOUS, Saifedean. <span class="reference-title">The Bitcoin Standard: The Decentralized Alternative to Central Banking</span>.
+                Hoboken: John Wiley &amp; Sons, 2018. ISBN 978-1-119-47386-2.<br>
+                  <a class="reference-back" href="#cite-2">↑ zpět k první citaci</a>
+                </li>
+                <li class="reference-item" id="ref-3">
+                  <span class="reference-number">[3]</span>CARAS, Michael. <span class="reference-title">Bitcoin Money: A Tale of Bitville Discovering Good Money</span>. Ilustrovala
+                Marina Yakubivska. Ilustrované vydání. Michael Caras, 2019. 28 s. ISBN 978-0-578-49067-0.<br>
+                  <a class="reference-back" href="#cite-3">↑ zpět k první citaci</a>
+                </li>
+                <li class="reference-item" id="ref-4">
+                  <span class="reference-number">[4]</span>ANTONOPOULOS, Andreas M. a
+                David A. HARDING. <span class="reference-title">Mastering Bitcoin: Programming the Open
+                  Blockchain</span>. 3. vyd. Sebastopol, CA: O’Reilly Media, 2023. 402 s. ISBN
+                978-1-098-15009-9.<br>
+                  <a class="reference-back" href="#cite-4">↑ zpět k první citaci</a>
+                </li>
+              </ol>
+            </section>
+          </div>
+        </article>
+      </main>
+    </div>
+    <footer class="site-footer" id="siteFooter"></footer>
+    <noscript>
+      <div class="noscript-message">
+      Bez JavaScriptu zůstanou všechny články dostupné; vypnuté budou pouze drobné animace.
+    </div>
+    </noscript>
+    <script src="../assets/js/app.js?v=20260813-1"></script>
+    <script src="../assets/data/terms-data.js?v=20260810-1"></script>
+    <script src="../assets/js/terms.js?v=20260810-2"></script>
+  </body>
+</html>

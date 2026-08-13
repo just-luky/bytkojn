@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="cs">
+  <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Jak Bitcoin funguje – protokol, bitcoinová jednotka, UTXO, klíče, peněženky, síť, uzly, těžba, proof-of-work a blockchain." name="description">
+    <meta content="#0a0b0d" name="theme-color">
+    <link href="../assets/media/favicon.svg" rel="icon" type="image/svg+xml">
+    <link href="../assets/css/styles.css?v=20260813-3" rel="stylesheet">
+    <title>Jak funguje Bitcoin // &lt;bytkojn/&gt;</title>
+  </head>
+  <body class="page-bitcoin page-bitcoin-article article-text-page article-terminal-page">
+    <div aria-hidden="true" class="background-grid"></div>
+    <header class="topbar" id="siteHeader"></header>
+    <div class="app-shell">
+      <aside class="sidebar" id="sidebar" aria-label="Obsah sekce Bitcoin"></aside>
+      <main class="content-area" id="mainContent">
+        <article class="article-panel article-page-panel">
+          <div class="terminal-bar article-terminal-bar">
+            <div class="terminal-path">
+          ~/bytkojn/bitcoin/jak-funguje-bitcoin
+        </div>
+          </div>
+          <header class="article-header">
+            <p class="article-header-kicker">// BITCOIN</p>
+            <h1 aria-label="Jak funguje Bitcoin" class="bitcoin-title-enhanced" id="contentTitle">
+              <span aria-hidden="true" class="bitcoin-title-word" data-title="JAK FUNGUJE BITCOIN">JAK FUNGUJE BITCOIN</span>
+              <span aria-hidden="true" class="bitcoin-title-chain">
+                <span class="bitcoin-title-chain-line"></span>
+                <span class="bitcoin-title-chain-node"></span>
+                <span class="bitcoin-title-chain-node"></span>
+                <span class="bitcoin-title-chain-node"></span>
+                <span class="bitcoin-title-chain-node"></span>
+                <span class="bitcoin-title-chain-node"></span>
+              </span>
+            </h1>
+            <svg class="article-header-circuit article-header-circuit-how-bitcoin-works" viewBox="0 0 240 180" preserveAspectRatio="xMaxYMin meet" aria-hidden="true" focusable="false">
+              <defs>
+                <filter id="articleCircuitGlowHowBitcoinWorks" x="-100%" y="-100%" width="300%" height="300%">
+                  <fegaussianblur stdDeviation="4.5" result="blur"></fegaussianblur>
+                  <femerge>
+                    <femergenode in="blur"></femergenode>
+                    <femergenode in="SourceGraphic"></femergenode>
+                  </femerge>
+                </filter>
+              </defs>
+              <path class="circuit-trace" d="M34 0 V34 H72 V70 H48 V112 H92 V180"></path>
+              <path class="circuit-trace circuit-trace-faint" d="M112 0 V26 H86 V64 H126 V102 H98 V146 H124 V180"></path>
+              <path class="circuit-trace" d="M168 0 V38 H142 V76 H184 V116 H154 V154 H180 V180"></path>
+              <path class="circuit-trace circuit-trace-faint" d="M240 8 H214 V48 H236 V88 H202 V132 H226 V180"></path>
+              <path class="circuit-trace circuit-trace-active" d="M78 0 V28 H134 V62 H108 V98 H170 V136 H142 V180"></path>
+              <circle class="circuit-node" cx="72" cy="34" r="5"></circle>
+              <circle class="circuit-node" cx="48" cy="112" r="5"></circle>
+              <circle class="circuit-node" cx="126" cy="64" r="5"></circle>
+              <circle class="circuit-node" cx="184" cy="116" r="5"></circle>
+              <circle class="circuit-node" cx="202" cy="132" r="5"></circle>
+              <circle class="circuit-node circuit-node-active" cx="134" cy="28" r="6" filter="url(#articleCircuitGlowHowBitcoinWorks)"></circle>
+              <circle class="circuit-node circuit-node-active circuit-node-delay" cx="170" cy="136" r="6" filter="url(#articleCircuitGlowHowBitcoinWorks)"></circle>
+              <g class="circuit-marks">
+                <rect x="26" y="148" width="6" height="6"></rect>
+                <rect x="36" y="148" width="6" height="6"></rect>
+                <rect x="26" y="158" width="6" height="6"></rect>
+                <rect x="212" y="20" width="6" height="6"></rect>
+                <rect x="222" y="20" width="6" height="6"></rect>
+                <rect x="222" y="30" width="6" height="6"></rect>
+              </g>
+            </svg>
+          </header>
+          <div class="article-meta" aria-label="Informace o článku">
+            <img class="article-meta-avatar" src="../assets/media/author_justluky.png" alt="" decoding="async">
+            <div class="article-meta-copy">
+              <span class="article-meta-author">justluky</span>
+              <time class="article-meta-date" datetime="2026-08-10">10. 8. 2026</time>
+            </div>
+          </div>
+          <div class="article-content">
+            <section aria-labelledby="bitcoin-jako-system-pravidel" class="article-text-section">
+              <h2 id="bitcoin-jako-system-pravidel">Bitcoin jako systém pravidel</h2>
+              <p>Bitcoin nemá jeden hlavní server, centrální databázi ani instituci, která by rozhodovala o tom, které transakce jsou platné. Jeho fungování je založeno na veřejně známém souboru pravidel, podle kterých spolu komunikují počítače zapojené do bitcoinové sítě. Tato pravidla určují například podobu transakcí a <button class="term" type="button" data-term="blok">bloků</button>, podmínky jejich platnosti, způsob vzniku nových bitcoinů nebo postup, podle kterého se určuje platná historie sítě <span aria-label="Zdroje 1, 2, 3" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1" id="cite-1">1</a>, <a aria-label="Přejít na zdroj 2" href="#ref-2" id="cite-2">2</a>, <a aria-label="Přejít na zdroj 3" href="#ref-3" id="cite-3">3</a>]</span>.</p>
+              <p>Tento soubor pravidel označujeme jako <button class="term" type="button" data-term="bitcoin-protocol">bitcoinový protokol</button>. Protokol není konkrétní program, ale soubor pravidel, podle kterých programy zapojené do bitcoinové sítě pracují. Díky tomu si mohou navzájem rozumět, předávat si data ve stejné podobě a stejným způsobem posuzovat například transakce a bloky.</p>
+              <p>Jedním z programů, který pravidla bitcoinového protokolu používá, je <button class="term" type="button" data-term="bitcoin-core">Bitcoin Core</button>. Pokud jej uživatel spustí na svém počítači a připojí k bitcoinové síti, jeho počítač se stane jedním z jejích uzlů (anglicky <em>nodes</em>). <button class="term" type="button" data-term="node">Uzel</button> se spojí s několika dalšími uzly a vyměňuje si s nimi informace o transakcích a blocích. Neexistuje přitom jeden centrální server, přes který by veškerá komunikace procházela. Uzly komunikují přímo mezi sebou, a vytvářejí tak <button class="term" type="button" data-term="peer-to-peer">peer-to-peer</button> síť <span aria-label="Zdroje 1, 7" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 7" href="#ref-7" id="cite-7">7</a>]</span>.</p>
+              <p>Přijatým informacím však uzel automaticky nedůvěřuje. Pokud mu jiný uzel předá například novou transakci nebo blok, Bitcoin Core provede kontroly zabudované v programu a ověří, zda přijatá data odpovídají pravidlům bitcoinového protokolu. U transakce například kontroluje, zda má odesílatel k dispozici dostatek bitcoinů k utracení a zda je oprávněn s nimi nakládat. Pokud přijatá data pravidlům vyhovují, uzel je přijme a může o nich informovat další uzly, se kterými je přímo propojen. Ty provedou vlastní kontrolu a platnou informaci mohou předat zase dál. Transakce a bloky se tak postupně šíří bitcoinovou sítí. Pokud přijatá data pravidla porušují, uzel je odmítne <span aria-label="Zdroje 1, 7" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 7" href="#ref-7">7</a>]</span>.</p>
+              <p>Tím se zároveň vysvětluje rozdíl mezi bitcoinovým protokolem a konkrétním programem, který jej používá. Zdrojový kód Bitcoin Core je veřejný a kdokoli jej může upravit nebo vytvořit vlastní software. Samotnou změnou svého programu však nezmění pravidla, podle kterých pracují ostatní uzly. Pokud by například někdo upravil svůj software tak, aby připouštěl vznik většího celkového množství bitcoinů, jeho vlastní program by taková data mohl považovat za platná. Ostatní uzly používající dosavadní pravidla by je však při vlastní kontrole odmítly. Změna jednoho programu tedy automaticky neznamená změnu pravidel celé bitcoinové sítě <span aria-label="Zdroje 1, 7, 8" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 7" href="#ref-7">7</a>, <a aria-label="Přejít na zdroj 8" href="#ref-8" id="cite-8">8</a>]</span>.</p>
+              <figure class="article-figure-compact article-figure-diagram">
+                <img alt="Vztah mezi protokolem, softwarem  a uzly" src="../assets/media/bitcoin_protocol_core_nodes.png" decoding="async" loading="lazy">
+                <figcaption>
+                  <span class="figure-caption">Vztah mezi protokolem, softwarem  a uzly</span>
+                  <span class="figure-source">Zdroj: generated by AI</span>
+                </figcaption>
+              </figure>
+            </section>
+            <section aria-labelledby="co-znamena-bitcoin" class="article-text-section">
+              <h2 id="co-znamena-bitcoin">Co vlastně znamená „bitcoin“?</h2>
+              <p>Slovo Bitcoin se používá v několika úzce souvisejících významech. Bitcoin s velkým počátečním písmenem označuje celý systém, jeho protokol nebo síť. Bitcoin s malým písmenem označuje měnovou jednotku používanou uvnitř tohoto systému, pro kterou se běžně používá zkratka BTC. </p>
+              <p>Jeden bitcoin lze rozdělit na 100 000 000 nejmenších jednotek označovaných jako <button class="term" type="button" data-term="satoshi">satoshi</button>, přičemž jeden satoshi odpovídá 0,00000001 BTC.</p>
+              <span aria-label="Zdroje 1, 4" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 4" href="#ref-4" id="cite-4">4</a>]</span>.
+<div class="btc-sats-table-wrap">
+                <table class="btc-sats-table" aria-label="Příklady převodu mezi BTC a satoshi">
+                  <thead>
+                    <tr>
+                      <th scope="col">BTC</th>
+                      <th scope="col">sats</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>1 BTC</td>
+                      <td>100 000 000 sats</td>
+                    </tr>
+                    <tr>
+                      <td>0,1 BTC</td>
+                      <td>10 000 000 sats</td>
+                    </tr>
+                    <tr>
+                      <td>0,01 BTC</td>
+                      <td>1 000 000 sats</td>
+                    </tr>
+                    <tr>
+                      <td>0,001 BTC</td>
+                      <td>100 000 sats</td>
+                    </tr>
+                    <tr>
+                      <td>0,00000001 BTC</td>
+                      <td>1 sat</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+            <section aria-labelledby="kde-jsou-bitcoiny" class="article-text-section">
+              <h2 id="kde-jsou-bitcoiny">Kde jsou bitcoiny?</h2>
+              <p>Co v bitcoinovém systému vlastně znamená „mít bitcoin“ a kde je tato hodnota zaznamenána? Bitcoin nemá jednotlivé digitální mince uložené v <button class="term" type="button" data-term="penezenka">peněžence</button> nebo v počítači a nepoužívá ani bankovní model účtů, ve kterém by existoval centrální záznam o tom, že určitý uživatel vlastní například 1,25 BTC. Hodnota je v systému reprezentována prostřednictvím transakcí a jejich výstupů <span aria-label="Zdroje 1, 4, 5" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 4" href="#ref-4">4</a>, <a aria-label="Přejít na zdroj 5" href="#ref-5" id="cite-5">5</a>]</span>.</p>
+              <p>Pokud například někdo pošle uživateli určité množství bitcoinů, neznamená to, že se digitální mince přesunou do jeho peněženky nebo se připíšou na jeho účet. Odeslaná transakce vytvoří nový výstup představující určité množství BTC a podmínky určující, za jakých okolností může být tato hodnota později utracena. Dokud tento výstup ještě nebyl použit v další platné transakci, označuje se jako Unspent Transaction Output (<button class="term" type="button" data-term="utxo">UTXO</button>) tedy neutracený výstup transakce <span aria-label="Zdroje 1, 4, 5" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 4" href="#ref-4">4</a>, <a aria-label="Přejít na zdroj 5" href="#ref-5">5</a>]</span>.</p>
+              <p>Pro základní představu lze transakční výstup přirovnat k uzamčené schránce s určitou bitcoinovou hodnotou. Nejde o skutečný objekt ani o samostatné místo v <button class="term" type="button" data-term="blockchain">blockchainu</button>, ale o užitečnou pomůcku pro pochopení principu: při utrácení transakce použije jeden nebo více existujících výstupů, splní jejich podmínky a z jejich hodnoty vytvoří výstupy nové. Ty jsou znovu spojeny s podmínkami určujícími, jak mohou být v budoucnu utraceny <a aria-label="Přejít na zdroj 9" class="citation" href="#ref-9" id="cite-9">[9]</a>.</p>
+              <p>UTXO není zbytek po transakci, ale samostatný dosud neutracený výstup. Při jeho použití se původní UTXO nesnižuje pouze o odesílanou část, ale spotřebuje se celé a transakce vytvoří výstupy nové. Ve zjednodušeném příkladu bez uvažování transakčního poplatku může uživatel použít UTXO o hodnotě 100 000 sat a poslat 30 000 sat příjemci. Transakce přitom vytvoří výstup 30 000 sat pro příjemce a nový výstup 70 000 sat zpět pro odesílatele. Původní UTXO o hodnotě 100 000 sat tím přestává být neutraceným výstupem a je nahrazeno novými výstupy <span aria-label="Zdroje 1, 2, 4" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 2" href="#ref-2">2</a>, <a aria-label="Přejít na zdroj 4" href="#ref-4">4</a>]</span>.</p>
+              <figure class="article-figure-compact article-figure-diagram">
+                <img alt="Příklad spotřebování UTXO v transakci" src="../assets/media/utxo.png" decoding="async" loading="lazy">
+                <figcaption>
+                  <span class="figure-caption">Příklad spotřebování UTXO v transakci</span>
+                  <span class="figure-source">Zdroj: generated by AI</span>
+                </figcaption>
+              </figure>
+              <p>
+                <button class="term" type="button" data-term="bitcoin-address">bitcoinová adresa</button> proto není účet se zůstatkem a bitcoinová peněženka neobsahuje samotné bitcoiny. Peněženka spravuje údaje potřebné k nakládání s příslušnými výstupy a dokáže určit, které UTXO může uživatel utratit. Jejich hodnoty následně sečte a zobrazí jako výsledný zůstatek</p>
+              <p>Jednotlivé transakce na sebe tímto způsobem navazují. Vstupy nové transakce odkazují na dřívější výstupy a nově vytvořené výstupy se mohou později stát vstupy dalších transakcí. Z pohledu historie tak vzniká graf vazeb mezi transakcemi a jejich výstupy. Soubor všech právě existujících neutracených výstupů se označuje jako UTXO set. Plně ověřující uzel si tento stav vytváří z historie blockchainu a průběžně jej aktualizuje: utracené výstupy odstraňuje a nově vzniklé přidává <span aria-label="Zdroje 1, 5, 9" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 5" href="#ref-5">5</a>, <a aria-label="Přejít na zdroj 9" href="#ref-9">9</a>]</span>.</p>
+              <p>Vlastnictví bitcoinů neznamená držení konkrétních digitálních mincí ani existenci zůstatku vedeného na účtu. Zjednodušeně jde o možnost utratit jeden nebo více UTXO představujících určitou bitcoinovou hodnotu. Přesná konstrukce transakcí, způsob určování podmínek pro utracení a role adres, klíčů a peněženek budou podrobněji vysvětleny v dalších částech.</p>
+            </section>
+            <section aria-labelledby="jak-se-bitcoin-ovlada" class="article-text-section">
+              <h2 id="jak-se-bitcoin-ovlada">Jak se bitcoin ovládá?</h2>
+              <p>Pokud Bitcoin nevede účty na konkrétní jména, musí existovat jiný způsob, jak určit, kdo může určitý transakční výstup utratit. K tomu Bitcoin využívá <button class="term" type="button" data-term="cryptographic-keys">kryptografické klíče</button>. Uživatel se tedy síti neprokazuje jménem ani heslem k účtu, ale prostřednictvím kryptografických postupů může prokázat oprávnění s příslušným výstupem nakládat <span aria-label="Zdroje 1, 2, 4" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 2" href="#ref-2">2</a>, <a aria-label="Přejít na zdroj 4" href="#ref-4">4</a>]</span>.</p>
+              <p>Základem je <button class="term" type="button" data-term="private-key">soukromý klíč</button>. Jde o tajnou číselnou hodnotu, kterou bitcoinová peněženka obvykle vytvoří automaticky. Uživatel ji tedy při běžném používání nemusí sám vymýšlet ani zapisovat jako dlouhé číslo. Soukromý klíč musí zůstat tajný, protože umožňuje autorizovat utracení bitcoinů, které jsou s ním spojeny. Kdo k němu získá přístup, může za příslušných podmínek vytvářet platné podpisy potřebné k jejich utracení. <button class="term" type="button" data-term="penezenka">Peněženka</button> proto soukromé klíče chrání a v praxi se jejich zabezpečení řeší například ochranou samotné peněženky a bezpečným uložením její zálohy <span aria-label="Zdroje 1, 4" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 4" href="#ref-4">4</a>]</span>.</p>
+              <p>Ze soukromého klíče peněženka matematicky odvodí odpovídající <button class="term" type="button" data-term="public-key">veřejný klíč</button>. Oba klíče tak tvoří vzájemně související dvojici. Na rozdíl od soukromého klíče nemusí být veřejný klíč tajný. Výpočet je navržen tak, že ze soukromého klíče lze veřejný klíč snadno získat, opačným směrem však není prakticky možné soukromý klíč dopočítat <span aria-label="Zdroje 1, 4" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 4" href="#ref-4">4</a>]</span>.</p>
+              <p>Když chce uživatel své bitcoiny utratit, jeho peněženka vezme data nové transakce a pomocí soukromého klíče vytvoří <button class="term" type="button" data-term="digital-signatures">digitální podpis</button>. Digitální podpis není obrázek podpisu ani jméno uživatele, ale kryptograficky vytvořená data vztahující se ke konkrétní transakci. Podpis je svázán právě s podepisovanými daty, takže nejde o univerzální „odemykací kód“, který by bylo možné jednoduše zkopírovat a použít pro jinou transakci. Do sítě je následně možné předat transakci spolu s podpisem a potřebnými veřejnými údaji, zatímco samotný soukromý klíč zůstává v peněžence <span aria-label="Zdroje 1, 2, 4, 9" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 2" href="#ref-2">2</a>, <a aria-label="Přejít na zdroj 4" href="#ref-4">4</a>, <a aria-label="Přejít na zdroj 9" href="#ref-9">9</a>]</span>.</p>
+              <p>Veřejný klíč slouží k ověření tohoto podpisu. Podpis a veřejný klíč se sobě nerovnají; jde o různé údaje, které jsou matematicky propojeny prostřednictvím soukromého klíče. Bitcoinový uzel může pomocí veřejného klíče, podpisu a podepsaných dat ověřit, zda byl podpis vytvořen odpovídajícím soukromým klíčem a zda se vztahuje právě k dané transakci. Pokud by se podepsaná data změnila nebo byl použit nesprávný podpis či veřejný klíč, ověření by neprošlo.</p>
+              <p>Zjednodušeně lze tedy vztah mezi těmito údaji vyjádřit takto: ze soukromého klíče vzniká veřejný klíč a pomocí soukromého klíče se podepisuje transakce. Veřejný klíč pak umožňuje ostatním ověřit vytvořený podpis. Bitcoin tak může ověřit oprávnění k utracení, aniž by se tajný soukromý klíč dostal do sítě.</p>
+              <figure class="article-figure-compact article-figure-diagram">
+                <img alt="Schéma ověření bitcoinové transakce" src="../assets/media/bitcoin_transakce.png" decoding="async" loading="lazy">
+                <figcaption>
+                  <span class="figure-caption">Schéma ověření bitcoinové transakce</span>
+                  <span class="figure-source">Zdroj: generated by AI</span>
+                </figcaption>
+              </figure>
+              <p>Současně musí být možné určit, který veřejný klíč je pro konkrétní výstup relevantní. Podmínka vytvořená při předchozí transakci je proto spojena s kryptografickými údaji příjemce. Při pozdějším utracení <button class="term" type="button" data-term="node">uzel</button> ověřuje nejen samotný podpis, ale také to, zda předložené veřejné údaje odpovídají podmínce původního výstupu <span aria-label="Zdroje 1, 8" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 8" href="#ref-8">8</a>]</span>.</p>
+              <p>S kryptografickými klíči souvisí také <button class="term" type="button" data-term="bitcoin-address">bitcoinová adresa</button>. Pro základní pochopení ji lze chápat jako údaj, který příjemce předá plátci, aby mu mohl poslat bitcoiny. Adresa není účet se zůstatkem ani samotný veřejný klíč. Slouží jako praktický způsob, jak vytvořit nový transakční výstup spojený s podmínkami, které bude později schopen splnit zamýšlený příjemce <span aria-label="Zdroje 1, 8" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 8" href="#ref-8">8</a>]</span>.</p>
+              <p>Je proto přesnější mluvit o kontrole nad bitcoinem než automaticky o vlastnictví. <button class="term" type="button" data-term="bitcoin-protocol">Bitcoinový protokol</button> nezná identitu člověka ani neposuzuje, komu určitá hodnota patří. Ověřuje pouze to, zda jsou při vytváření nové transakce splněny podmínky potřebné k utracení použitých výstupů.</p>
+            </section>
+            <section aria-labelledby="penezenka-a-transakce" class="article-text-section">
+              <h2 id="penezenka-a-transakce">Peněženka a cesta transakce do sítě</h2>
+              <p>V praxi uživatel s <button class="term" type="button" data-term="cryptographic-keys" aria-controls="termPopup" aria-expanded="false">kryptografickými klíči</button> obvykle nepracuje přímo. Spravuje je bitcoinová <button class="term" type="button" data-term="penezenka">peněženka</button>, která zároveň dokáže zjistit, která <button class="term" type="button" data-term="utxo">UTXO</button> může uživatel utratit, vytvořit novou transakci a pomocí příslušných soukromých klíčů ji podepsat. Samotné bitcoiny však peněženka neuchovává. Hodnota je reprezentována dosud neutracenými výstupy předchozích transakcí – UTXO – evidovanými v bitcoinovém systému <span aria-label="Zdroje 1, 8" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 8" href="#ref-8">8</a>]</span>.</p>
+              <p>Při odeslání platby nedochází k přenosu digitální mince z jednoho zařízení do druhého. Peněženka vytvoří transakci, která spotřebuje vybrané dosavadní UTXO a vytvoří nové výstupy. Část hodnoty může například připadnout příjemci, část se může vrátit odesílateli jako nový výstup a rozdíl mezi celkovou hodnotou vstupů a výstupů tvoří <button class="term" type="button" data-term="transaction-fee">transakční poplatek</button>. Původní UTXO jsou přitom spotřebována celá a po potvrzení transakce jsou nahrazena nově vytvořenými výstupy <span aria-label="Zdroje 1, 4" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 4" href="#ref-4">4</a>]</span>.</p>
+              <p>Podepsaná transakce je následně předána jednomu nebo více bitcoinovým <button class="term" type="button" data-term="node">uzlům</button>. Uzel ji ověří například z hlediska její struktury, použitých vstupů, splnění podmínek pro jejich utracení a skutečnosti, zda odkazované výstupy již nebyly utraceny. Pokud transakci přijme, může ji uložit mezi své dosud nepotvrzené transakce a oznámit ji dalším uzlům, které provedou vlastní kontrolu a mohou ji šířit dál. Transakce se tak <button class="term" type="button" data-term="peer-to-peer">peer-to-peer</button> sítí postupně dostává k dalším účastníkům, včetně uzlů používaných <button class="term" type="button" data-term="miner">těžaři</button>
+                <span aria-label="Zdroje 1, 2, 8, 9" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 2" href="#ref-2">2</a>, <a aria-label="Přejít na zdroj 8" href="#ref-8">8</a>, <a aria-label="Přejít na zdroj 9" href="#ref-9">9</a>]</span>.</p>
+              <p>Transakce je v této fázi platná, ale dosud nepotvrzená – ještě nebyla zahrnuta do žádného <button class="term" type="button" data-term="blok">bloku</button>. Lokální sadě takových transakcí se běžně říká <button class="term" type="button" data-term="mempool">mempool</button>. Neexistuje jeden společný mempool pro celý Bitcoin. Jednotlivé uzly si spravují vlastní mempooly, a proto se mohou v konkrétním okamžiku lišit v tom, které nepotvrzené transakce znají nebo uchovávají <a aria-label="Přejít na zdroj 1" class="citation" href="#ref-1">[1]</a>.</p>
+              <p>Těžaři vybírají transakce, které znají jejich vlastní uzly, a mohou je zahrnout do <button class="term" type="button" data-term="candidate-block">kandidátního bloku</button>. Jakmile je nalezen platný blok, začne se sítí šířit samotný blok. Ostatní uzly jej nezávisle ověří a pokud jej přijmou jako součást <button class="term" type="button" data-term="blockchain">blockchainu</button>, získají transakce obsažené v tomto bloku první potvrzení. Do té doby zůstávají pouze nepotvrzenými transakcemi šířenými mezi uzly <span aria-label="Zdroje 1, 2, 9" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 2" href="#ref-2">2</a>, <a aria-label="Přejít na zdroj 9" href="#ref-9">9</a>]</span>.</p>
+              <figure class="article-figure-compact article-figure-diagram">
+                <img alt="Tok bitcoinové transakce mezi uzly" src="../assets/media/bitcoin_transakce_uzly.png" decoding="async" loading="lazy">
+                <figcaption>
+                  <span class="figure-caption">Tok bitcoinové transakce mezi uzly</span>
+                  <span class="figure-source">Zdroj: generated by AI</span>
+                </figcaption>
+              </figure>
+            </section>
+            <section aria-labelledby="spolecna-historie" class="article-text-section">
+              <h2 id="spolecna-historie">Jak z transakcí vzniká společná historie</h2>
+              <p>
+                <button class="term" type="button" data-term="digital-signatures">Digitální podpis</button> může prokázat, že jsou splněny podmínky pro utracení určitého výstupu, sám o sobě ale neřeší problém <button class="term" type="button" data-term="double-spending">dvojí útraty</button>. Dokud transakce není potvrzena v <button class="term" type="button" data-term="blockchain">blockchainu</button>, může totiž vzniknout jiná transakce, která se pokouší utratit stejné <button class="term" type="button" data-term="utxo">UTXO</button> jiným způsobem. Takové transakce jsou navzájem konfliktní a obě nemohou být součástí stejné platné historie. Jednotlivé uzly navíc mohou v určitém okamžiku znát různé konfliktní verze, protože se transakce sítí šíří postupně. Bitcoin proto potřebuje mechanismus, podle kterého se síť dlouhodobě shodne na jediné historii, v níž může být konkrétní výstup utracen pouze jednou <span aria-label="Zdroje 1, 2, 3" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 2" href="#ref-2">2</a>, <a aria-label="Přejít na zdroj 3" href="#ref-3">3</a>]</span>.</p>
+              <p>Do procesu zde vstupují <button class="term" type="button" data-term="miner">těžaři</button>. Těžař vybírá platné nepotvrzené transakce, které zná jeho <button class="term" type="button" data-term="node">uzel</button>, a sestavuje z nich <button class="term" type="button" data-term="candidate-block">kandidátní blok</button>. Součástí <button class="term" type="button" data-term="blok">bloku</button> je jeho <button class="term" type="button" data-term="block-header">hlavička</button>, která obsahuje mimo jiné kryptografický odkaz na předchozí blok, souhrnný <button class="term" type="button" data-term="hash">hash</button> transakcí v bloku a hodnotu označovanou jako <button class="term" type="button" data-term="nonce">nonce</button>. Těžař opakovaně mění nonce a případně i další údaje, čímž vytváří nové varianty hlavičky, a pro každou z nich počítá kryptografický hash. Cílem je nalézt takovou variantu, jejíž hash je jako číselná hodnota menší nebo roven aktuálně stanové <button class="term" type="button" data-term="target">cílové hodnotě</button>. Protože výsledek hashování nelze předem předvídat, nalezení vyhovující hodnoty obvykle vyžaduje obrovské množství pokusů. Splnění této podmínky představuje <button class="term" type="button" data-term="proof-of-work">proof-of-work</button>, zatímco jeho následné ověření je velmi snadné <span aria-label="Zdroje 1, 2, 4, 9" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 2" href="#ref-2">2</a>, <a aria-label="Přejít na zdroj 4" href="#ref-4">4</a>, <a aria-label="Přejít na zdroj 9" href="#ref-9">9</a>]</span>.</p>
+              <p>Pokud těžař nalezne blok s vyhovujícím proof-of-work, rozešle jej do bitcoinové sítě. Ostatní uzly nemusí opakovat obrovské množství pokusů, které těžař předtím provedl. Z předložené hlavičky jednoduše vypočítají hash a ověří, zda splňuje požadovaný cíl. Současně zkontrolují celý blok podle vlastních pravidel – jeho strukturu, návaznost na předchozí blok, všechny obsažené transakce i povolenou blokovou odměnu. Pokud některá z podmínek neplatí, blok odmítnou bez ohledu na množství práce vynaložené těžařem. Pokud blok všemi kontrolami projde a uzel jej přijme jako součást své aktivní historie, získají transakce obsažené v tomto bloku první potvrzení <span aria-label="Zdroje 1, 5, 7" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 5" href="#ref-5">5</a>, <a aria-label="Přejít na zdroj 7" href="#ref-7">7</a>]</span>.</p>
+              <p>Každý blok obsahuje kryptografický odkaz na předchozí blok, takže platné bloky vytvářejí navazující řetězec – blockchain. Může se však stát, že dva těžaři téměř současně naleznou dva různé platné bloky navazující na stejný předchozí blok. Část sítě může nejprve obdržet jeden z nich a jiná část druhý, takže dočasně vzniknou dvě platné větve. Situace se zpravidla vyřeší ve chvíli, kdy na některou z větví naváže další blok a jedna větev tak získá větší <button class="term" type="button" data-term="cumulative-work">kumulativní prací</button> proof-of-work. Uzly jako svou aktivní historii sledují platný řetězec s největší kumulativní prací; druhá větev přestane být součástí této historie <span aria-label="Zdroje 1, 2, 8" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 2" href="#ref-2">2</a>, <a aria-label="Přejít na zdroj 8" href="#ref-8">8</a>]</span>.</p>
+              <p>Proof-of-work současně zvyšuje náklady na zpětnou změnu historie. Útočník, který by chtěl nahradit starší potvrzený blok jinou verzí, by musel vytvořit alternativní platnou větev a vynaložit dostatek výpočetní práce, aby překonala kumulativní práci řetězce, který mezitím přijala síť. S každým dalším blokem navazujícím na danou transakci se proto její přepsání stává obtížnější. Potvrzení v Bitcoinu není absolutní matematickou finalitou, ale pravděpodobnost úspěšné reorganizace historie s rostoucí hloubkou klesá <span aria-label="Zdroje 1, 2, 5" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 2" href="#ref-2">2</a>, <a aria-label="Přejít na zdroj 5" href="#ref-5">5</a>]</span>.</p>
+              <figure class="article-figure-compact article-figure-diagram">
+                <img alt="Tok bitcoinové transakce mezi uzly včetně těžby" src="../assets/media/bitcoin_transakce_uzly_tezba.png" decoding="async" loading="lazy">
+                <figcaption>
+                  <span class="figure-caption">Tok bitcoinové transakce mezi uzly včetně těžby</span>
+                  <span class="figure-source">Zdroj: generated by AI</span>
+                </figcaption>
+              </figure>
+            </section>
+            <section aria-labelledby="bitcoin-neni-blockchain" class="article-text-section">
+              <h2 id="bitcoin-neni-blockchain">Blockchain není celý Bitcoin</h2>
+              <p>Bitcoin bývá často zjednodušeně ztotožňován s <button class="term" type="button" data-term="blockchain">blockchainem</button>. Blockchain je však pouze jednou částí celého systému. Jde o navazující řetězec bloků, který zachycuje historii transakcí přijatou bitcoinovou sítí. Samotný blockchain ale neurčuje, které transakce a <button class="term" type="button" data-term="blok">bloky</button> jsou platné ani která případná větev řetězce má být považována za aktuální. To vyplývá z pravidel bitcoinového protokolu, která jednotlivé uzly nezávisle ověřují, a z mechanismu <button class="term" type="button" data-term="proof-of-work" aria-controls="termPopup" aria-expanded="false">proof-of-work</button>, podle něhož uzly sledují platný řetězec s největší <button class="term" type="button" data-term="cumulative-work">kumulativní prací</button>
+                <span aria-label="Zdroje 1, 3, 6" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 3" href="#ref-3">3</a>, <a aria-label="Přejít na zdroj 6" href="#ref-6" id="cite-6">6</a>]</span>.</p>
+              <p>Stejně tak nelze Bitcoin ztotožnit pouze s <button class="term" type="button" data-term="mining">těžbou</button> nebo s <button class="term" type="button" data-term="kryptografie">kryptografií</button>. <button class="term" type="button" data-term="digital-signatures">Digitální podpisy</button> byly známé dávno před Bitcoinem, proof-of-work vycházel z dřívějších systémů a <button class="term" type="button" data-term="peer-to-peer">peer-to-peer</button> sítě rovněž nebyly novou myšlenkou. Podstatou Bitcoinu je způsob, jakým jsou tyto prvky propojeny tak, aby žádná centrální instituce nemusela vést jedinou autoritativní účetní knihu <span aria-label="Zdroje 2, 3, 6" class="citation-group">[<a aria-label="Přejít na zdroj 2" href="#ref-2">2</a>, <a aria-label="Přejít na zdroj 3" href="#ref-3">3</a>, <a aria-label="Přejít na zdroj 6" href="#ref-6">6</a>]</span>.</p>
+            </section>
+            <section aria-labelledby="vznik-novych-bitcoinu" class="article-text-section">
+              <h2 id="vznik-novych-bitcoinu">Jak vznikají nové bitcoiny?</h2>
+              <p>Nové bitcoiny vznikají při vytváření nového <button class="term" type="button" data-term="blok">bloku</button> prostřednictvím zvláštní transakce označované jako <button class="term" type="button" data-term="coinbase-transaction">coinbase transakce</button>. <button class="term" type="button" data-term="miner">Těžař</button> ji vkládá jako první transakci <button class="term" type="button" data-term="candidate-block">kandidátního bloku</button>. Na rozdíl od běžných transakcí coinbase transakce neutrácí žádné předchozí <button class="term" type="button" data-term="utxo">UTXO</button> a může vytvořit nové bitcoiny do výše aktuálně povolené <button class="term" type="button" data-term="block-subsidy">blokové subvence</button>. Současně prostřednictvím ní může těžař získat <button class="term" type="button" data-term="transaction-fee">transakční poplatky</button> ze všech ostatních transakcí zahrnutých v daném bloku <span aria-label="Zdroje 1, 2, 5, 9" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 2" href="#ref-2">2</a>, <a aria-label="Přejít na zdroj 5" href="#ref-5">5</a>, <a aria-label="Přejít na zdroj 9" href="#ref-9">9</a>]</span>.</p>
+              <p>Transakční poplatek není samostatně uložený výstup určený těžaři. U běžné transakce vzniká jako rozdíl mezi celkovou hodnotou jejích vstupů a výstupů. Těžař může součet těchto rozdílů z transakcí zahrnutých v bloku připočítat k blokové subvenci a výslednou hodnotu si přidělit prostřednictvím coinbase transakce. Celková bloková odměna se tak skládá z blokové subvence a transakčních poplatků <span aria-label="Zdroje 1, 2, 5" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 2" href="#ref-2">2</a>, <a aria-label="Přejít na zdroj 5" href="#ref-5">5</a>]</span>.</p>
+              <figure class="article-figure-compact article-figure-diagram">
+                <img alt="Schéma těžby bloku proof-of-work včetně coinbase transakce" src="../assets/media/bitcoin_tezba_schema_coinbase_transakce.png" decoding="async" loading="lazy">
+                <figcaption>
+                  <span class="figure-caption">Schéma těžby bloku proof-of-work včetně coinbase transakce</span>
+                  <span class="figure-source">Zdroj: generated by AI</span>
+                </figcaption>
+              </figure>
+              <p>Bloková subvence začala na 50 BTC a po každých 210 000 blocích se snižuje na polovinu. Toto pravidelné snížení se běžně označuje jako <button class="term" type="button" data-term="halving">halving</button>. Postupným půlením blokové subvence se tempo vzniku nových bitcoinů snižuje a jejich celkové množství směřuje k hodnotě těsně pod 21 milionů BTC. Při ověřování bloku každý plně ověřující <button class="term" type="button" data-term="node">uzel</button> kontroluje také coinbase transakci a odmítne blok, který by vytvářel větší blokovou odměnu, než dovolují pravidla <button class="term" type="button" data-term="bitcoin-protocol">bitcoinového protokolu</button>
+                <span aria-label="Zdroje 1, 5, 7" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 5" href="#ref-5">5</a>, <a aria-label="Přejít na zdroj 7" href="#ref-7">7</a>]</span>.</p>
+              <figure class="article-figure-compact article-figure-wide">
+                <img alt="Grafické znázornění blokové subvence (halving)" src="../assets/media/bitcoin_halving_graph.png" decoding="async" loading="lazy">
+                <figcaption>
+                  <span class="figure-caption">Grafické znázornění blokové subvence (halving)</span>
+                  <span class="figure-source">Zdroj: generated by AI</span>
+                </figcaption>
+              </figure>
+            </section>
+            <section aria-labelledby="co-z-fungovani-bitcoinu-vyplyva" class="article-text-section">
+              <h2 id="co-z-konstrukce-vyplyva">Co z fungování Bitcoinu vyplývá?</h2>
+              <p>Způsob, jakým je Bitcoin navržen, vede k několika jeho základním vlastnostem. Decentralizace zde neznamená, že každý účastník vykonává stejnou činnost, ale především to, že neexistuje jediný povinný provozovatel, který vede autoritativní databázi a schvaluje všechny transakce. Účastníci komunikují prostřednictvím <button class="term" type="button" data-term="peer-to-peer">peer-to-peer</button> sítě a plně ověřující <button class="term" type="button" data-term="node">uzly</button> mohou pravidla <button class="term" type="button" data-term="bitcoin-protocol">bitcoinového protokolu</button> uplatňovat samostatně <span aria-label="Zdroje 1, 2, 3" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 2" href="#ref-2">2</a>, <a aria-label="Přejít na zdroj 3" href="#ref-3">3</a>]</span>.</p>
+              <p>S tím souvisí ověřitelnost systému. Plně ověřující uzel nemusí přijmout tvrzení jiného účastníka o tom, že určitá transakce nebo blok jsou platné. Přijatá data může sám zkontrolovat podle pravidel protokolu a z historie <button class="term" type="button" data-term="blockchain">blockchainu</button> odvodit vlastní aktuální stav <button class="term" type="button" data-term="utxo">UTXO</button>. Stejným způsobem kontroluje také vznik nových bitcoinů a odmítne blok, který by pravidla porušoval <span aria-label="Zdroje 1, 7, 8" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 7" href="#ref-7">7</a>, <a aria-label="Přejít na zdroj 8" href="#ref-8">8</a>]</span>.</p>
+              <p>Bitcoin zároveň nevyžaduje, aby uživatel pro vytvoření a odeslání transakce získal účet u centrálního správce sítě. To však neznamená, že při jeho používání nemohou vystupovat prostředníci. Uživatel může využívat například centralizovanou burzu, <button class="term" type="button" data-term="penezenka">peněženku</button> nebo jinou službu třetí strany. Takové služby jsou ale vrstvou nad samotným bitcoinovým protokolem, nikoli podmínkou jeho fungování.</p>
+              <p>Možnost nakládat s bitcoinem je spojena s kontrolou nad <button class="term" type="button" data-term="cryptographic-keys" aria-controls="termPopup" aria-expanded="false">kryptografickými klíči</button>. Pokud uživatel spravuje své klíče sám, není závislý na třetí straně, která by jeho transakce autorizovala. Současně ale přebírá odpovědnost za jejich zabezpečení. Ztráta potřebných klíčů může znamenat trvalou ztrátu možnosti příslušné UTXO utratit, zatímco jejich získání jinou osobou jí může umožnit vytvořit platnou autorizaci <span aria-label="Zdroje 1, 3" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 3" href="#ref-3">3</a>]</span>.</p>
+              <p>Vlastnosti Bitcoinu tak nevycházejí z jediné technologie, ale ze způsobu, jakým spolu jednotlivé části systému spolupracují. Pravidla protokolu určují, co je platné, kryptografické klíče umožňují autorizovat utracení, peer-to-peer síť zajišťuje šíření dat, uzly je nezávisle ověřují a <button class="term" type="button" data-term="proof-of-work" aria-controls="termPopup" aria-expanded="false">proof-of-work</button> umožňuje vytvářet společnou historii bez centrálního správce <span aria-label="Zdroje 1, 2, 3, 5" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 2" href="#ref-2">2</a>, <a aria-label="Přejít na zdroj 3" href="#ref-3">3</a>, <a aria-label="Přejít na zdroj 5" href="#ref-5">5</a>]</span>.</p>
+            </section>
+            <section aria-labelledby="mapa-bitcoinove-site" class="article-text-section btc-flow-map-section">
+              <h2 id="mapa-bitcoinove-site">Mapa bitcoinové sítě</h2>
+              <div class="btc-flow-map" data-btc-map>
+                <div class="btc-flow-map__toolbar" aria-label="Ovládání interaktivní mapy">
+                  <button class="btc-flow-map__tool" type="button" data-btc-map-zoom-out aria-label="Oddálit mapu">−</button>
+                  <button class="btc-flow-map__tool" type="button" data-btc-map-zoom-in aria-label="Přiblížit mapu">+</button>
+                  <button class="btc-flow-map__tool btc-flow-map__tool--reset" type="button" data-btc-map-reset>Reset</button>
+                </div>
+                <div class="btc-flow-map__viewport" data-btc-map-viewport tabindex="0">
+                  <div class="btc-flow-map__stage" data-btc-map-stage>
+                    <svg class="btc-map-svg" viewBox="0 180 3120 720" role="img" aria-label="Mapa toku bitcoinové transakce od peněženky přes uzly, mempool, těžaře a proof-of-work až po nový blok a první potvrzení.">
+                      <defs>
+                        <marker id="btcArrowOrange" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+                          <path d="M0 0 L10 5 L0 10 Z" fill="#f7931a"></path>
+                        </marker>
+                        <marker id="btcArrowGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+                          <path d="M0 0 L10 5 L0 10 Z" fill="#63e67b"></path>
+                        </marker>
+                      </defs>
+                      <path d="M330 600 C430 600 500 600 575 600
+                 C700 600 760 600 860 600
+                 C1010 600 1080 600 1175 600
+                 C1330 600 1410 600 1510 600
+                 C1655 600 1725 600 1810 600
+                 C1970 600 2040 600 2150 600
+                 C2300 600 2360 600 2470 600
+                 C2600 600 2660 600 2765 600" class="map-route-muted"></path>
+                      <g class="map-group is-active" data-map-step="1">
+                        <rect x="80" y="275" width="300" height="520" rx="20" class="map-card"></rect>
+                        <text x="112" y="326" class="map-step-number">01</text>
+                        <text x="150" y="326" class="map-step-title">Peněženka</text>
+                        <text x="112" y="356" class="map-step-note">uživatel vytvoří a podepíše platbu</text>
+                        <g transform="translate(130 430)">
+                          <rect x="0" y="0" width="176" height="132" rx="18" class="map-wallet"></rect>
+                          <path d="M142 30 h42 a14 14 0 0 1 14 14 v40 a14 14 0 0 1 -14 14 h-42 a14 14 0 0 1 -14 -14 v-40 a14 14 0 0 1 14 -14 z" class="map-wallet"></path>
+                          <circle cx="166" cy="64" r="4" class="map-orange"></circle>
+                          <text x="38" y="84" class="map-orange" style="font-size:62px;font-weight:800;">₿</text>
+                        </g>
+                        <g transform="translate(112 625)">
+                          <rect x="0" y="0" width="260" height="110" rx="14" class="map-doc"></rect>
+                          <path d="M24 22 h34 l16 16 v50 h-50 z" class="map-line-white"></path>
+                          <path d="M58 22 v16 h16" class="map-line-white"></path>
+                          <path d="M36 54 h24 M36 69 h24" class="map-line-white"></path>
+                          <text x="82" y="44" class="map-light" style="font-size:12.5px;font-weight:700;">podepsaná transakce</text>
+                          <text x="82" y="70" class="map-muted" style="font-size:10.5px;">vstupy · výstupy · podpis</text>
+                        </g>
+                        <rect x="80" y="275" width="300" height="520" rx="20" class="map-hit" data-map-step="1"></rect>
+                      </g>
+                      <path d="M380 600 H450" class="map-route-tx" marker-end="url(#btcArrowOrange)"></path>
+                      <g class="map-group" data-map-step="2" transform="translate(-50 0)">
+                        <rect x="520" y="205" width="900" height="650" rx="24" class="map-card"></rect>
+                        <text x="555" y="256" class="map-step-number">02</text>
+                        <text x="593" y="256" class="map-step-title">Peer-to-peer síť</text>
+                        <text x="555" y="286" class="map-step-note">uzly transakci ověřují, ukládají do svých mempoolů a šíří dál</text>
+                        <g transform="translate(610 465)">
+                          <rect x="0" y="0" width="142" height="104" rx="12" class="map-node-body"></rect>
+                          <rect x="17" y="17" width="108" height="56" class="map-node-screen"></rect>
+                          <circle cx="118" cy="85" r="4" class="map-orange"></circle>
+                          <path d="M50 104 h42 l10 24 h-62 z M38 128 h78" class="map-line-white"></path>
+                          <g transform="translate(2 144)">
+                            <rect x="0" y="0" width="20" height="20" class="map-mempool-cell"></rect>
+                            <rect x="28" y="0" width="20" height="20" class="map-mempool-cell"></rect>
+                            <rect x="56" y="0" width="20" height="20" class="map-mempool-cell map-mempool-cell-active"></rect>
+                            <rect x="84" y="0" width="20" height="20" class="map-mempool-cell"></rect>
+                            <rect x="112" y="0" width="20" height="20" class="map-mempool-cell"></rect>
+                          </g>
+                        </g>
+                        <g transform="translate(860 320)">
+                          <rect x="0" y="0" width="142" height="104" rx="12" class="map-node-body"></rect>
+                          <rect x="17" y="17" width="108" height="56" class="map-node-screen"></rect>
+                          <circle cx="118" cy="85" r="4" class="map-orange"></circle>
+                          <path d="M50 104 h42 l10 24 h-62 z M38 128 h78" class="map-line-white"></path>
+                          <g transform="translate(2 144)">
+                            <rect x="0" y="0" width="20" height="20" class="map-mempool-cell"></rect>
+                            <rect x="28" y="0" width="20" height="20" class="map-mempool-cell"></rect>
+                            <rect x="56" y="0" width="20" height="20" class="map-mempool-cell map-mempool-cell-active"></rect>
+                            <rect x="84" y="0" width="20" height="20" class="map-mempool-cell"></rect>
+                            <rect x="112" y="0" width="20" height="20" class="map-mempool-cell"></rect>
+                          </g>
+                        </g>
+                        <g transform="translate(1110 452)">
+                          <rect x="0" y="0" width="142" height="104" rx="12" class="map-node-body"></rect>
+                          <rect x="17" y="17" width="108" height="56" class="map-node-screen"></rect>
+                          <circle cx="118" cy="85" r="4" class="map-orange"></circle>
+                          <path d="M50 104 h42 l10 24 h-62 z M38 128 h78" class="map-line-white"></path>
+                          <g transform="translate(2 144)">
+                            <rect x="0" y="0" width="20" height="20" class="map-mempool-cell"></rect>
+                            <rect x="28" y="0" width="20" height="20" class="map-mempool-cell"></rect>
+                            <rect x="56" y="0" width="20" height="20" class="map-mempool-cell map-mempool-cell-active"></rect>
+                            <rect x="84" y="0" width="20" height="20" class="map-mempool-cell"></rect>
+                            <rect x="112" y="0" width="20" height="20" class="map-mempool-cell"></rect>
+                          </g>
+                        </g>
+                        <g transform="translate(870 650)">
+                          <rect x="0" y="0" width="142" height="104" rx="12" class="map-node-body"></rect>
+                          <rect x="17" y="17" width="108" height="56" class="map-node-screen"></rect>
+                          <circle cx="118" cy="85" r="4" class="map-orange"></circle>
+                          <path d="M50 104 h42 l10 24 h-62 z M38 128 h78" class="map-line-white"></path>
+                          <g transform="translate(2 144)">
+                            <rect x="0" y="0" width="20" height="20" class="map-mempool-cell"></rect>
+                            <rect x="28" y="0" width="20" height="20" class="map-mempool-cell"></rect>
+                            <rect x="56" y="0" width="20" height="20" class="map-mempool-cell map-mempool-cell-active"></rect>
+                            <rect x="84" y="0" width="20" height="20" class="map-mempool-cell"></rect>
+                            <rect x="112" y="0" width="20" height="20" class="map-mempool-cell"></rect>
+                          </g>
+                        </g>
+                        <path d="M752 520 L860 385 M1002 385 L1110 507 M1002 385 L941 650 M752 520 L941 650 M1012 702 L1110 507" class="map-route-muted"></path>
+                        <path d="M752 520 C800 470 825 430 860 403" class="map-route-tx" marker-end="url(#btcArrowOrange)"></path>
+                        <path d="M1002 402 C1045 435 1076 462 1110 492" class="map-route-tx" marker-end="url(#btcArrowOrange)"></path>
+                        <rect x="520" y="205" width="900" height="650" rx="24" class="map-hit" data-map-step="2"></rect>
+                      </g>
+                      <path d="M1370 600 H1440" class="map-route-tx" marker-end="url(#btcArrowOrange)"></path>
+                      <g class="map-group" data-map-step="3" transform="translate(-50 0)">
+                        <rect x="1510" y="320" width="300" height="540" rx="22" class="map-card"></rect>
+                        <text x="1542" y="372" class="map-step-number">03</text>
+                        <text x="1580" y="372" class="map-step-title">Těžař</text>
+                        <text x="1542" y="402" class="map-step-note">má vlastní uzel a vlastní mempool</text>
+                        <g transform="translate(1576 480)">
+                          <rect x="0" y="0" width="164" height="118" rx="14" class="map-miner-body"></rect>
+                          <rect x="18" y="18" width="128" height="62" class="map-node-screen"></rect>
+                          <circle cx="138" cy="96" r="4" class="map-orange"></circle>
+                          <path d="M60 118 h44 l10 25 h-64 z M48 143 h80" class="map-line-white"></path>
+                          <path d="M50 65 L88 32 M70 42 L82 54 M70 42 L58 30 M96 64 L119 37" class="map-line-orange"></path>
+                          <g transform="translate(5 158)">
+                            <rect x="0" y="0" width="20" height="20" class="map-mempool-cell"></rect>
+                            <rect x="28" y="0" width="20" height="20" class="map-mempool-cell"></rect>
+                            <rect x="56" y="0" width="20" height="20" class="map-mempool-cell map-mempool-cell-active"></rect>
+                            <rect x="84" y="0" width="20" height="20" class="map-mempool-cell"></rect>
+                            <rect x="112" y="0" width="20" height="20" class="map-mempool-cell"></rect>
+                          </g>
+                        </g>
+                        <text x="1542" y="718" class="map-light" style="font-size:13px;font-weight:700;">vybere transakce</text>
+                        <text x="1542" y="744" class="map-muted" style="font-size:11px;">které chce zahrnout do bloku</text>
+                        <rect x="1510" y="320" width="300" height="540" rx="22" class="map-hit" data-map-step="3"></rect>
+                      </g>
+                      <path d="M1760 600 H1830" class="map-route-tx" marker-end="url(#btcArrowOrange)"></path>
+                      <g class="map-group" data-map-step="4" transform="translate(-50 0)">
+                        <rect x="1900" y="210" width="560" height="650" rx="24" class="map-card"></rect>
+                        <text x="1932" y="262" class="map-step-number">04</text>
+                        <text x="1970" y="262" class="map-step-title">Kandidátní blok + proof-of-work</text>
+                        <text x="1932" y="292" class="map-step-note">těžař sestaví blok a hledá vyhovující hash jeho hlavičky</text>
+                        <rect x="1910" y="350" width="220" height="300" rx="18" class="map-block"></rect>
+                        <text x="1964" y="386" class="map-light" style="font-size:14px;font-weight:800;">kandidátní blok</text>
+                        <rect x="1934" y="416" width="172" height="38" rx="6" class="map-block"></rect>
+                        <text x="1980" y="441" class="map-orange" style="font-size:11px;">coinbase</text>
+                        <rect x="1934" y="466" width="172" height="38" rx="6" class="map-block"></rect>
+                        <text x="1980" y="491" class="map-muted" style="font-size:11px;">transakce</text>
+                        <rect x="1934" y="516" width="172" height="38" rx="6" class="map-block"></rect>
+                        <text x="1980" y="541" class="map-muted" style="font-size:11px;">transakce</text>
+                        <rect x="1934" y="566" width="172" height="38" rx="6" class="map-block"></rect>
+                        <text x="1980" y="591" class="map-muted" style="font-size:11px;">transakce</text>
+                        <path d="M2160 500 H2208" class="map-route-tx" marker-end="url(#btcArrowOrange)"></path>
+                        <text x="2228" y="366" class="map-light" style="font-size:13px;font-weight:700;">hlavička bloku</text>
+                        <rect x="2228" y="388" width="192" height="82" rx="10" class="map-header"></rect>
+                        <rect x="2241" y="402" width="32" height="30" rx="4" class="map-header"></rect>
+                        <rect x="2279" y="402" width="52" height="30" rx="4" class="map-header"></rect>
+                        <rect x="2337" y="402" width="50" height="30" rx="4" class="map-header"></rect>
+                        <rect x="2393" y="402" width="14" height="30" rx="4" class="map-header"></rect>
+                        <rect x="2241" y="438" width="72" height="20" rx="4" class="map-header" style="stroke:#f7931a;"></rect>
+                        <text x="2250" y="453" class="map-orange" style="font-size:9px;">nonce</text>
+                        <path d="M2325 470 V514" class="map-route-muted"></path>
+                        <rect x="2260" y="522" width="130" height="92" rx="14" class="map-hash-box"></rect>
+                        <text x="2301" y="582" class="map-light" style="font-size:46px;font-weight:800;">#</text>
+                        <text x="2228" y="654" class="map-muted" style="font-size:11px;">opakované hashování</text>
+                        <text x="2228" y="680" class="map-green" style="font-size:12px;font-weight:700;">hash ≤ target</text>
+                        <rect x="1900" y="210" width="560" height="650" rx="24" class="map-hit" data-map-step="4"></rect>
+                      </g>
+                      <path d="M2410 600 H2480" class="map-route-block" marker-end="url(#btcArrowGreen)"></path>
+                      <g class="map-group" data-map-step="5" transform="translate(-70 0)">
+                        <rect x="2570" y="205" width="470" height="650" rx="24" class="map-card"></rect>
+                        <text x="2602" y="256" class="map-step-number">05</text>
+                        <text x="2640" y="256" class="map-step-title">Nový blok a potvrzení</text>
+                        <text x="2602" y="286" class="map-step-note">platný blok se šíří sítí a uzly jej samostatně ověří</text>
+                        <g transform="translate(2620 388)">
+                          <rect x="0" y="0" width="150" height="124" rx="16" class="map-block" style="stroke:#63e67b;"></rect>
+                          <text x="28" y="38" class="map-green" style="font-size:12px;font-weight:800;">NOVÝ BLOK</text>
+                          <rect x="24" y="58" width="102" height="12" rx="4" class="map-block"></rect>
+                          <rect x="24" y="79" width="80" height="12" rx="4" class="map-block"></rect>
+                          <rect x="24" y="100" width="92" height="12" rx="4" class="map-block"></rect>
+                        </g>
+                        <g transform="translate(2820 350)">
+                          <rect x="0" y="0" width="110" height="78" rx="10" class="map-node-body"></rect>
+                          <rect x="14" y="14" width="82" height="40" class="map-node-screen"></rect>
+                          <circle cx="92" cy="64" r="3.5" class="map-green"></circle>
+                          <path d="M38 78 h34 l8 18 h-50 z M28 96 h60" class="map-line-white"></path>
+                          <circle cx="104" cy="-6" r="16" fill="#090b0e" stroke="#63e67b" stroke-width="2"></circle>
+                          <path d="M96 -6 l6 6 10 -14" class="map-check"></path>
+                        </g>
+                        <g transform="translate(2850 555)">
+                          <rect x="0" y="0" width="110" height="78" rx="10" class="map-node-body"></rect>
+                          <rect x="14" y="14" width="82" height="40" class="map-node-screen"></rect>
+                          <circle cx="92" cy="64" r="3.5" class="map-green"></circle>
+                          <path d="M38 78 h34 l8 18 h-50 z M28 96 h60" class="map-line-white"></path>
+                          <circle cx="104" cy="-6" r="16" fill="#090b0e" stroke="#63e67b" stroke-width="2"></circle>
+                          <path d="M96 -6 l6 6 10 -14" class="map-check"></path>
+                        </g>
+                        <g transform="translate(2680 650)">
+                          <rect x="0" y="0" width="110" height="78" rx="10" class="map-node-body"></rect>
+                          <rect x="14" y="14" width="82" height="40" class="map-node-screen"></rect>
+                          <circle cx="92" cy="64" r="3.5" class="map-green"></circle>
+                          <path d="M38 78 h34 l8 18 h-50 z M28 96 h60" class="map-line-white"></path>
+                          <circle cx="104" cy="-6" r="16" fill="#090b0e" stroke="#63e67b" stroke-width="2"></circle>
+                          <path d="M96 -6 l6 6 10 -14" class="map-check"></path>
+                        </g>
+                        <path d="M2770 450 C2790 438 2802 422 2808 406" class="map-route-block" marker-end="url(#btcArrowGreen)"></path>
+                        <path d="M2770 470 C2806 492 2828 520 2838 548" class="map-route-block" marker-end="url(#btcArrowGreen)"></path>
+                        <path d="M2710 512 C2710 566 2716 606 2726 630" class="map-route-block" marker-end="url(#btcArrowGreen)"></path>
+                        <rect x="2570" y="205" width="470" height="650" rx="24" class="map-hit" data-map-step="5"></rect>
+                      </g>
+                      <circle r="7" fill="#f7931a" class="map-flow-dot">
+                        <animatemotion dur="7s" repeatCount="indefinite" path="M380 600 H575 C700 600 760 600 860 600 C1010 600 1080 600 1175 600 C1330 600 1410 600 1510 600 C1655 600 1725 600 1810 600 C1970 600 2040 600 2150 600"></animatemotion>
+                      </circle>
+                      <circle r="7" fill="#63e67b" class="map-block-dot">
+                        <animatemotion dur="4.6s" repeatCount="indefinite" path="M2410 600 H2490 C2550 600 2610 562 2650 510 C2700 444 2748 414 2826 390"></animatemotion>
+                      </circle>
+                    </svg>
+                  </div>
+                </div>
+                <div class="btc-flow-map__detail" data-btc-map-detail>
+                  <div class="btc-flow-map__detail-index" data-btc-map-detail-index>01</div>
+                  <div class="btc-flow-map__detail-copy">
+                    <h3 data-btc-map-detail-title>Peněženka vytvoří a podepíše transakci</h3>
+                    <p data-btc-map-detail-text>Peněženka vybere vhodná UTXO, sestaví nové výstupy a pomocí příslušného soukromého klíče vytvoří digitální podpis. Samotné bitcoiny se mezi zařízeními nepřesouvají.</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+            <section aria-labelledby="pouzite-zdroje" class="article-text-section references-section">
+              <h2 id="pouzite-zdroje">Použité zdroje</h2>
+              <p class="references-intro">
+Záznamy jsou upraveny podle číselného systému normy ISO 690:2022 a seřazeny podle prvního výskytu v textu.
+</p>
+              <ol class="reference-list">
+                <li class="reference-item" id="ref-1">
+                  <span class="reference-number">[1]</span>
+ANTONOPOULOS, Andreas M. a David A. HARDING.
+<span class="reference-title">Mastering Bitcoin: Programming the Open Blockchain</span>.
+3. vyd. Sebastopol, CA: O’Reilly Media, 2023. 402 s. ISBN 978-1-098-15009-9.
+Open-source text 3. vydání je dostupný také z:
+<a class="reference-link" href="https://github.com/bitcoinbook/bitcoinbook" rel="noopener noreferrer" target="_blank">https://github.com/bitcoinbook/bitcoinbook</a>
+                  <br>
+                  <a class="reference-back" href="#cite-1">↑ zpět k první citaci</a>
+                </li>
+                <li class="reference-item" id="ref-2">
+                  <span class="reference-number">[2]</span>
+NAKAMOTO, Satoshi.
+<span class="reference-title">Bitcoin: A Peer-to-Peer Electronic Cash System</span> [online].
+2008 [cit. 2026-08-09]. Dostupné z:
+<a class="reference-link" href="https://bitcoin.org/bitcoin.pdf" rel="noopener noreferrer" target="_blank">https://bitcoin.org/bitcoin.pdf</a>
+                  <br>
+                  <a class="reference-back" href="#cite-2">↑ zpět k první citaci</a>
+                </li>
+                <li class="reference-item" id="ref-3">
+                  <span class="reference-number">[3]</span>
+PRITZKER, Yan.
+<span class="reference-title">Inventing Bitcoin: The Technology Behind the First Truly Scarce and Decentralized Money Explained</span>.
+2019. ISBN 978-1-79432-631-6.
+<br>
+                  <a class="reference-back" href="#cite-3">↑ zpět k první citaci</a>
+                </li>
+                <li class="reference-item" id="ref-4">
+                  <span class="reference-number">[4]</span>
+KARASAVVAS, Konstantinos.
+<span class="reference-title">Bitcoin Programming</span>.
+Verze 0.4. 2022. Licence Creative Commons Attribution-ShareAlike 4.0 International.
+<br>
+                  <a class="reference-back" href="#cite-4">↑ zpět k první citaci</a>
+                </li>
+                <li class="reference-item" id="ref-5">
+                  <span class="reference-number">[5]</span>
+LLANOS, Diego R.; Javier PEROTE a José D. VICENTE-LORENTE.
+<span class="reference-title">Bitcoin Protocol Mechanics for Economists: A Compact Reference</span>.
+University of Valladolid a University of Salamanca, 27. ledna 2026.
+<br>
+                  <a class="reference-back" href="#cite-5">↑ zpět k první citaci</a>
+                </li>
+                <li class="reference-item" id="ref-6">
+                  <span class="reference-number">[6]</span>
+LEE KUO CHUEN, David, ed.
+<span class="reference-title">Handbook of Digital Currency: Bitcoin, Innovation, Financial Instruments, and Big Data</span>.
+Amsterdam: Academic Press, 2015. ISBN 978-0-12-802117-0.
+<br>
+                  <a class="reference-back" href="#cite-6">↑ zpět k první citaci</a>
+                </li>
+                <li class="reference-item" id="ref-7">
+                  <span class="reference-number">[7]</span>
+BITCOIN CORE PROJECT.
+<span class="reference-title">Bitcoin Core integration/staging tree</span> [online].
+GitHub [cit. 2026-08-09]. Dostupné z:
+<a class="reference-link" href="https://github.com/bitcoin/bitcoin" rel="noopener noreferrer" target="_blank">https://github.com/bitcoin/bitcoin</a>
+                  <br>
+                  <a class="reference-back" href="#cite-7">↑ zpět k první citaci</a>
+                </li>
+                <li class="reference-item" id="ref-8">
+                  <span class="reference-number">[8]</span>
+BITCOIN PROJECT.
+<span class="reference-title">Developer Guides</span> [online].
+Bitcoin.org [cit. 2026-08-09]. Dostupné z:
+<a class="reference-link" href="https://developer.bitcoin.org/devguide/" rel="noopener noreferrer" target="_blank">https://developer.bitcoin.org/devguide/</a>
+                  <br>
+                  <a class="reference-back" href="#cite-8">↑ zpět k první citaci</a>
+                </li>
+                <li class="reference-item" id="ref-9">
+                  <span class="reference-number">[9]</span>
+WALKER, Greg.
+<span class="reference-title">How Does Bitcoin Work? A Quick Explanation for Beginners</span> [online].
+Learn Me A Bitcoin, 21. července 2026 [cit. 2026-08-09]. Dostupné z:
+<a class="reference-link" href="https://learnmeabitcoin.com/beginners/how-does-bitcoin-work/" rel="noopener noreferrer" target="_blank">https://learnmeabitcoin.com/beginners/how-does-bitcoin-work/</a>
+                  <br>
+                  <a class="reference-back" href="#cite-9">↑ zpět k první citaci</a>
+                </li>
+              </ol>
+            </section>
+          </div>
+        </article>
+      </main>
+    </div>
+    <footer class="site-footer" id="siteFooter"></footer>
+    <noscript>
+      <div class="noscript-message">
+      Bez JavaScriptu zůstanou všechny články dostupné; vypnuté budou pouze drobné animace.
+    </div>
+    </noscript>
+    <script src="../assets/js/app.js?v=20260813-3"></script>
+    <script src="../assets/data/terms-data.js?v=20260810-1"></script>
+    <script src="../assets/js/terms.js?v=20260810-2"></script>
+  </body>
+</html>

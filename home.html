@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="cs">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+      name="description"
+      content="&lt;bytkojn/&gt; – průvodce Bitcoinem, penězi a světem kolem nich. Od základních principů přes historii a ekonomii až po technologie."
+    >
+    <meta name="theme-color" content="#0a0b0d">
+
+    <meta property="og:locale" content="cs_CZ">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="&lt;bytkojn/&gt;">
+    <meta
+      property="og:title"
+      content="&lt;bytkojn/&gt; // Otevřeně o Bitcoinu a penězích"
+    >
+    <meta
+      property="og:description"
+      content="Průvodce Bitcoinem, penězi a světem kolem nich."
+    >
+    <meta property="og:url" content="https://bytkojn.cz/">
+
+    <meta name="twitter:card" content="summary">
+    <meta
+      name="twitter:title"
+      content="&lt;bytkojn/&gt; // Otevřeně o Bitcoinu a penězích"
+    >
+    <meta
+      name="twitter:description"
+      content="Průvodce Bitcoinem, penězi a světem kolem nich."
+    >
+
+    <link rel="canonical" href="https://bytkojn.cz/">
+    <link rel="icon" href="assets/media/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="assets/css/styles.css?v=20260813-1">
+
+    <title>&lt;bytkojn/&gt; // Otevřeně o Bitcoinu a penězích</title>
+  </head>
+
+  <body class="page-home">
+    <div class="background-grid" aria-hidden="true"></div>
+
+    <header class="topbar" id="siteHeader"></header>
+
+    <div class="app-shell">
+      <aside
+        class="sidebar is-home"
+        id="sidebar"
+        aria-label="Dekorativní motiv úvodní stránky"
+        aria-hidden="true"
+      >
+        <div class="sidebar-home-visual" aria-hidden="true">
+          <svg
+            class="sidebar-circuit"
+            viewBox="0 0 280 760"
+            preserveAspectRatio="xMidYMid slice"
+          >
+            <defs>
+              <filter id="circuitGlow" x="-100%" y="-100%" width="300%" height="300%">
+                <feGaussianBlur stdDeviation="5" result="blur"></feGaussianBlur>
+                <feMerge>
+                  <feMergeNode in="blur"></feMergeNode>
+                  <feMergeNode in="SourceGraphic"></feMergeNode>
+                </feMerge>
+              </filter>
+            </defs>
+
+            <path
+              class="circuit-trace"
+              d="M42 0 V76 H82 V140 H54 V226 H96 V310 H70 V414 H110 V504 H82 V760"
+            ></path>
+            <path
+              class="circuit-trace"
+              d="M92 0 V104 H122 V184 H88 V268 H132 V354 H102 V452 H142 V548 H110 V760"
+            ></path>
+            <path
+              class="circuit-trace"
+              d="M190 0 V92 H158 V178 H204 V270 H168 V366 H216 V458 H180 V560 H226 V760"
+            ></path>
+            <path
+              class="circuit-trace circuit-trace-faint"
+              d="M238 0 V118 H210 V210 H248 V304 H218 V398 H258 V488 H224 V596 H254 V760"
+            ></path>
+            <path
+              class="circuit-trace circuit-trace-active"
+              d="M132 0 V128 H112 V236 H146 V430 H126 V570 H160 V760"
+            ></path>
+
+            <circle class="circuit-node" cx="42" cy="76" r="5"></circle>
+            <circle class="circuit-node" cx="96" cy="310" r="5"></circle>
+            <circle class="circuit-node" cx="70" cy="414" r="5"></circle>
+            <circle class="circuit-node" cx="190" cy="92" r="5"></circle>
+            <circle class="circuit-node" cx="216" cy="458" r="5"></circle>
+            <circle class="circuit-node" cx="180" cy="560" r="5"></circle>
+
+            <circle
+              class="circuit-node circuit-node-active"
+              cx="112"
+              cy="128"
+              r="6"
+              filter="url(#circuitGlow)"
+            ></circle>
+            <circle
+              class="circuit-node circuit-node-active circuit-node-delay"
+              cx="126"
+              cy="430"
+              r="6"
+              filter="url(#circuitGlow)"
+            ></circle>
+
+            <g class="circuit-marks">
+              <rect x="224" y="152" width="7" height="7"></rect>
+              <rect x="224" y="169" width="7" height="7"></rect>
+              <rect x="224" y="186" width="7" height="7"></rect>
+              <rect x="52" y="586" width="6" height="6"></rect>
+              <rect x="52" y="602" width="6" height="6"></rect>
+              <rect x="52" y="618" width="6" height="6"></rect>
+            </g>
+          </svg>
+        </div>
+      </aside>
+
+      <main class="content-area" id="mainContent">
+        <section class="hero-panel">
+          <div class="terminal-bar">
+            <div class="terminal-path">~/bytkojn/home</div>
+
+            <div class="terminal-meta" aria-label="Terminálový motiv">
+              <span class="term-cmd">grep</span>
+              <span class="term-flag">-R</span>
+              <span class="term-query">"truth"</span>
+              <span class="term-search-path">/out/there</span>
+            </div>
+          </div>
+
+          <div class="hero-layout">
+            <div class="hero-copy">
+              <p class="hero-kicker">OTEVŘENĚ O BITCOINU A PENĚZÍCH</p>
+
+              <h1 id="contentTitle" aria-label="Bitcoin bez pozlátka">
+                Bitcoin bez
+                <span class="rotating-line">
+                  <span class="rotating-word" id="rotatingWord" aria-hidden="true">
+                    pozlátka
+                  </span>
+                </span>
+              </h1>
+
+              <p class="hero-lead">
+                Průvodce Bitcoinem, penězi a světem kolem nich. Od prvních
+                principů přes historii a ekonomii až po technologie, projekty a lidi,
+                kteří Bitcoin tvoří.
+              </p>
+            </div>
+
+            <div class="node-card" aria-label="Ukázka příkazu Bitcoin Core">
+              <div class="node-card-header">
+                <span>bitcoin-core / rpc</span>
+                <span class="window-dots" aria-hidden="true">● ● ●</span>
+              </div>
+
+              <div class="node-screen">
+                <p>
+                  <span class="prompt">$</span>
+                  bitcoin-cli getblockhash 0
+                </p>
+
+                <p class="hash-output">000000000019d668…a8ce26f</p>
+
+                <p>
+                  <span class="prompt">$</span>
+                  bitcoin-cli getblockcount
+                </p>
+
+                <p>
+                  <span class="log-ok">[rpc]</span>
+                  awaiting node response
+                </p>
+
+                <p class="cursor-line">
+                  <span class="prompt">$</span>
+                  <span class="cursor" aria-hidden="true"></span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card-grid" aria-label="Vybraná témata">
+          <a class="info-card" href="projekt/o-projektu.html">
+            <span class="card-index">01</span>
+            <p class="card-label">O PROJEKTU</p>
+            <h2>Co je projekt &lt;bytkojn/&gt;</h2>
+            <p>
+              Proč projekt vznikl, jaký má cíl a jakým způsobem vzniká jeho obsah.
+            </p>
+          </a>
+
+          <a class="info-card" href="bitcoin/uvod.html">
+            <span class="card-index">02</span>
+            <p class="card-label">ZAČNĚTE ZDE</p>
+            <h2>Úvod do Bitcoinu</h2>
+            <p>
+              Základní orientace v Bitcoinu, jeho síti, pravidlech, transakcích
+              a fungování celého systému.
+            </p>
+          </a>
+
+          <a class="info-card" href="bitcoin/vznik-a-historie.html">
+            <span class="card-index">03</span>
+            <p class="card-label">HISTORIE</p>
+            <h2>Vznik a historie Bitcoinu</h2>
+            <p>
+              Od předchůdců digitálních peněz přes Satoshiho Nakamota až k prvním
+              rokům bitcoinové sítě.
+            </p>
+          </a>
+        </section>
+      </main>
+    </div>
+
+    <footer class="site-footer" id="siteFooter"></footer>
+
+    <noscript>
+      <div class="noscript-message">
+        Bez JavaScriptu zůstává obsah stránky dostupný; vypnuté budou pouze drobné interakce.
+      </div>
+    </noscript>
+
+    <script src="assets/js/app.js?v=20260813-1"></script>
+  </body>
+</html>

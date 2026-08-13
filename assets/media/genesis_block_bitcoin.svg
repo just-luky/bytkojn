@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.1" width="1342" height="927" viewBox="0 0 1342 927"
+	xmlns="http://www.w3.org/2000/svg"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xml:space="preserve"
+	xml:lang="en">
+<title>Bitcoin Genesis Block</title>
+<style type="text/css">
+	svg{
+		color: #fff;
+	}
+	text{
+		fill: currentColor;
+		font-family: monospace;
+		font-size: 27px;
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+	}
+	#title{
+		font-size: 74px;
+		font-weight: bold;
+		letter-spacing: 4px;
+		text-anchor: middle;
+	}
+	#subtitle{
+		font-size: 46px;
+		font-weight: bold;
+		letter-spacing: 2px;
+		text-anchor: middle;
+	}
+</style>
+<rect fill="#000" width="100%" height="100%"/>
+
+<g id="header">
+	<text x="677" y="130" id="title">Bitcoin Genesis Block</text>
+	<text x="677" y="213" id="subtitle">Raw Hex Version</text>
+</g>
+
+<text id="offsets" x="0">
+	<tspan x="47" y="284">00000000</tspan>
+	<tspan x="47" y="318">00000010</tspan>
+	<tspan x="47" y="352">00000020</tspan>
+	<tspan x="47" y="387">00000030</tspan>
+	<tspan x="47" y="421">00000040</tspan>
+	<tspan x="47" y="456">00000050</tspan>
+	<tspan x="47" y="491">00000060</tspan>
+	<tspan x="47" y="525">00000070</tspan>
+	<tspan x="47" y="560">00000080</tspan>
+	<tspan x="47" y="594">00000090</tspan>
+	<tspan x="47" y="629">000000A0</tspan>
+	<tspan x="47" y="664">000000B0</tspan>
+	<tspan x="47" y="698">000000C0</tspan>
+	<tspan x="47" y="733">000000D0</tspan>
+	<tspan x="47" y="767">000000E0</tspan>
+	<tspan x="47" y="802">000000F0</tspan>
+	<tspan x="47" y="837">00000100</tspan>
+	<tspan x="47" y="871">00000110</tspan>
+</text>
+
+<text id="bytes" x="0">
+	<tspan x="223" y="284">01 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00</tspan>
+	<tspan x="223" y="319">00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00</tspan>
+	<tspan x="223" y="353">00 00 00 00 3B A3 ED FD  7A 7B 12 B2 7A C7 2C 3E</tspan>
+	<tspan x="223" y="388">67 76 8F 61 7F C8 1B C3  88 8A 51 32 3A 9F B8 AA</tspan>
+	<tspan x="223" y="422">4B 1E 5E 4A 29 AB 5F 49  FF FF 00 1D 1D AC 2B 7C</tspan>
+	<tspan x="223" y="457">01 01 00 00 00 01 00 00  00 00 00 00 00 00 00 00</tspan>
+	<tspan x="223" y="492">00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00</tspan>
+	<tspan x="223" y="526">00 00 00 00 00 00 FF FF  FF FF 4D 04 FF FF 00 1D</tspan>
+	<tspan x="223" y="561">01 04 45 54 68 65 20 54  69 6D 65 73 20 30 33 2F</tspan>
+	<tspan x="223" y="595">4A 61 6E 2F 32 30 30 39  20 43 68 61 6E 63 65 6C</tspan>
+	<tspan x="223" y="630">6C 6F 72 20 6F 6E 20 62  72 69 6E 6B 20 6F 66 20</tspan>
+	<tspan x="223" y="665">73 65 63 6F 6E 64 20 62  61 69 6C 6F 75 74 20 66</tspan>
+	<tspan x="223" y="699">6F 72 20 62 61 6E 6B 73  FF FF FF FF 01 00 F2 05</tspan>
+	<tspan x="223" y="734">2A 01 00 00 00 43 41 04  67 8A FD B0 FE 55 48 27</tspan>
+	<tspan x="223" y="768">19 67 F1 A6 71 30 B7 10  5C D6 A8 28 E0 39 09 A6</tspan>
+	<tspan x="223" y="803">79 62 E0 EA 1F 61 DE B6  49 F6 BC 3F 4C EF 38 C4</tspan>
+	<tspan x="223" y="838">F3 55 04 E5 1E C1 12 DE  5C 38 4D F7 BA 0B 8D 57</tspan>
+	<tspan x="223" y="872">8A 4C 70 2B 6B F1 1D 5F  AC 00 00 00 00</tspan>
+</text>
+
+<text id="ascii-rendering" x="0">
+	<tspan x="1038" y="284">................</tspan>
+	<tspan x="1038" y="319">................</tspan>
+	<tspan x="1038" y="353">....;£íýz{.²zÇ,&gt;</tspan>
+	<tspan x="1038" y="388">gv.a.È.ÃˆŠQ2:Ÿ¸ª</tspan>
+	<tspan x="1038" y="422">K.^J)«_Iÿÿ...¬+|</tspan>
+	<tspan x="1038" y="457">................</tspan>
+	<tspan x="1038" y="492">................</tspan>
+	<tspan x="1038" y="526">......ÿÿÿÿM.ÿÿ..</tspan>
+	<tspan x="1038" y="561">..EThe Times 03/</tspan>
+	<tspan x="1038" y="595">Jan/2009 Chancel</tspan>
+	<tspan x="1038" y="630">lor on brink of </tspan>
+	<tspan x="1038" y="665">second bailout f</tspan>
+	<tspan x="1038" y="699">or banksÿÿÿÿ..ò.</tspan>
+	<tspan x="1038" y="734">*....CA.gŠý°þUH'</tspan>
+	<tspan x="1038" y="768">.gñ¦q0·.\Ö¨(à9.¦</tspan>
+	<tspan x="1038" y="803">ybàê.aÞ¶Iö¼?Lï8Ä</tspan>
+	<tspan x="1038" y="838">óU.å.Á.Þ\8M÷º..W</tspan>
+	<tspan x="1038" y="872">ŠLp+kñ._¬....</tspan>
+</text>
+</svg>

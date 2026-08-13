@@ -1,35 +1,58 @@
 /* ========================================================================
-   BYTKOJN – DOČASNÁ ÚVODNÍ STRÁNKA
-   Celý obsah tohoto souboru patří do assets/css/styles.css.
+   BYTKOJN – HLAVNÍ STYLY
+   Tento soubor řídí celý vzhled webu: barvy, rozložení, tlačítka,
+   navigaci, responzivitu i drobné animace.
    ======================================================================== */
 
+/* ------------------------------------------------------------------------
+   BAREVNÉ A ROZMĚROVÉ PROMĚNNÉ
+   Hodnoty zde můžeš později měnit na jednom místě.
+   ------------------------------------------------------------------------ */
 :root {
   --bitcoin-orange: #f7931a;
   --bitcoin-orange-light: #ffb14a;
   --background: #08090b;
+  --background-soft: #0d0f12;
+  --panel: #111418;
+  --panel-light: #171b20;
   --line: #2a2f35;
+  --line-strong: #3a4149;
   --text: #f4f1e9;
+  --text-body: #c8cac7;
   --text-soft: #c4c7ca;
   --muted: #7f878f;
+  --success: #63e67b;
+  --warning: #f4d35e;
+  --topbar-height: 74px;
+  --sidebar-width: 280px;
   --radius: 4px;
+  --shadow: 0 20px 60px rgba(0, 0, 0, 0.38);
 
-  --font-mono:
-    "Cascadia Code",
-    "Cascadia Mono",
-    Consolas,
-    Menlo,
-    Monaco,
-    "Liberation Mono",
-    "Courier New",
-    monospace;
+  /* Společné maximální šířky vycentrovaného obsahu. */
+  --content-wide: 1320px;
+  --content-article: 1180px;
+  --content-prose: 920px;
+
+  /*
+    Programátorský font bez nutnosti stahovat externí soubor.
+    Prohlížeč postupně zkouší fonty zleva. Na Windows obvykle použije
+    Cascadia Code nebo Consolas, na macOS Menlo nebo Monaco.
+  */
+  --font-mono: "Cascadia Code", "Cascadia Mono", Consolas, Menlo, Monaco, "Liberation Mono", "Courier New", monospace;
+
 }
 
+/* ------------------------------------------------------------------------
+   ZÁKLADNÍ RESET
+   Sjednocuje chování prvků v různých prohlížečích.
+   ------------------------------------------------------------------------ */
 * {
   box-sizing: border-box;
 }
 
 html {
   min-height: 100%;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -39,6 +62,25 @@ body {
   color: var(--text);
   background: var(--background);
   font-family: var(--font-mono);
+  line-height: 1.6;
+}
+
+button,
+a {
+  font: inherit;
+}
+
+button {
+  color: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+strong {
+  color: var(--text);
 }
 
 ::selection {
@@ -48,8 +90,8 @@ body {
 
 /* ------------------------------------------------------------------------
    POZADÍ
+   Jemná mřížka dodává technický a "node terminal" vzhled.
    ------------------------------------------------------------------------ */
-
 .background-grid {
   position: fixed;
   inset: 0;
@@ -59,7 +101,7 @@ body {
     linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
   background-size: 32px 32px;
-  mask-image: linear-gradient(to bottom, black, transparent 92%);
+  mask-image: linear-gradient(to bottom, black, transparent 85%);
 }
 
 body::before {
@@ -69,418 +111,380 @@ body::before {
   z-index: -1;
   pointer-events: none;
   background:
-    radial-gradient(circle at 84% 12%, rgba(247, 147, 26, 0.10), transparent 28%),
-    radial-gradient(circle at 8% 92%, rgba(247, 147, 26, 0.05), transparent 30%);
+    radial-gradient(circle at 82% 18%, rgba(247, 147, 26, 0.12), transparent 28%),
+    radial-gradient(circle at 10% 90%, rgba(247, 147, 26, 0.06), transparent 30%);
 }
 
 /* ------------------------------------------------------------------------
-   VNĚJŠÍ PANEL
+   HORNÍ HORIZONTÁLNÍ PANEL
+   position: sticky drží panel nahoře při rolování.
    ------------------------------------------------------------------------ */
-
-.coming-soon-shell {
-  min-height: 100vh;
-  padding: 16px;
-}
-
-.coming-soon-panel {
-  min-height: calc(100vh - 32px);
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  min-height: var(--topbar-height);
   display: grid;
-  grid-template-rows: 43px minmax(0, 1fr);
-  overflow: hidden;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background:
-    linear-gradient(145deg, rgba(20, 23, 27, 0.89), rgba(10, 12, 15, 0.96));
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.42);
+  grid-template-columns: auto 1fr auto;
+  align-items: stretch;
+  border-bottom: 1px solid var(--line);
+  background: rgba(8, 9, 11, 0.94);
+  backdrop-filter: blur(16px);
 }
-
-/* ------------------------------------------------------------------------
-   TERMINÁLOVÁ LIŠTA
-   ------------------------------------------------------------------------ */
-
-.terminal-bar {
-  min-width: 0;
+.brand {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  padding: 0 18px;
-  border-bottom: 1px solid var(--line);
-  color: var(--muted);
-  background: rgba(0, 0, 0, 0.24);
-  font-size: 11px;
+  gap: 10px;
+  min-width: var(--sidebar-width);
+  padding: 14px 24px;
+  border-right: 1px solid var(--line);
 }
 
-.terminal-path {
+
+.top-navigation {
   min-width: 0;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  display: flex;
+  align-items: stretch;
+  overflow-x: auto;
+  scrollbar-width: thin;
 }
 
-.terminal-path::before {
-  content: "> ";
-  color: var(--bitcoin-orange);
-  font-weight: 800;
+.top-tab {
+  position: relative;
+
+  min-width: 128px;
+  padding: 0 22px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 0;
+  border-right: 1px solid var(--line);
+
+  color: var(--muted);
+  background: transparent;
+
+  cursor: pointer;
+  text-transform: uppercase;
+  text-align: center;
+  letter-spacing: 0.08em;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  transition:
+    color 160ms ease,
+    background 160ms ease;
 }
 
-.terminal-meta {
+.top-tab::after {
+  content: "";
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: 0;
+  height: 3px;
+  background: var(--bitcoin-orange);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 160ms ease;
+}
+
+.top-tab:hover,
+.top-tab:focus-visible {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.top-tab.is-active {
+  color: var(--text);
+  background: rgba(247, 147, 26, 0.06);
+}
+
+.top-tab.is-active::after {
+  transform: scaleX(1);
+}
+
+.node-status {
   display: flex;
   align-items: center;
   gap: 9px;
-  flex: 0 0 auto;
-  white-space: nowrap;
+  padding: 0 22px;
+  border-left: 1px solid var(--line);
+  color: var(--muted);
   font-size: 11px;
-  font-weight: 700;
-}
-
-.term-cmd {
-  color: var(--bitcoin-orange);
-}
-
-.term-flag,
-.term-query,
-.term-search-path {
-  color: var(--muted);
-  font-weight: 400;
-}
-
-/* ------------------------------------------------------------------------
-   VYSTŘEDĚNÍ CELÉHO OBSAHU
-   ------------------------------------------------------------------------ */
-
-.coming-soon-content {
-  min-width: 0;
-  min-height: 0;
-  display: grid;
-  place-items: center;
-  padding: clamp(38px, 5vh, 68px) clamp(22px, 4vw, 64px);
-}
-
-.coming-soon-stage {
-  width: min(1500px, 100%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: clamp(44px, 5.5vh, 68px);
-  text-align: center;
-}
-
-/* ------------------------------------------------------------------------
-   NADPIS
-   ------------------------------------------------------------------------ */
-
-.hero-copy {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-.hero-kicker {
-  margin: 0 0 18px;
-  color: var(--bitcoin-orange);
-  text-align: center;
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.16em;
-}
-
-.hero-copy h1 {
-  width: 100%;
-  margin: 0;
-  color: var(--text);
-  text-align: center;
-  text-transform: uppercase;
-  font-size: clamp(46px, 6.25vw, 102px);
-  line-height: 0.92;
-  letter-spacing: -0.075em;
-}
-
-.hero-title-fixed {
-  display: block;
-  width: 100%;
-}
-
-.rotating-line {
-  display: block;
-  width: 100%;
-  min-height: 1.08em;
-  margin-top: 0.12em;
-  color: var(--bitcoin-orange);
-}
-
-.rotating-word {
-  display: inline-block;
-  color: var(--bitcoin-orange);
-  transition: opacity 220ms ease, transform 220ms ease;
-}
-
-.rotating-word.is-changing {
-  opacity: 0;
-  transform: translateY(-0.14em);
-}
-
-.rotating-word::after {
-  content: "_";
-  display: inline-block;
-  color: var(--bitcoin-orange);
-  animation: terminal-cursor-blink 1s step-end infinite;
-}
-
-/* ------------------------------------------------------------------------
-   BLOK „PROGRAMOVÁNÍ“
-   ------------------------------------------------------------------------ */
-
-.construction-status {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-.build-scene {
-  width: 420px;
-  max-width: 84vw;
-  margin-bottom: 22px;
-}
-
-.bitcoin-block {
-  position: relative;
-  width: 100%;
-  min-height: 280px;
-  padding: 18px 18px 20px;
-  overflow: hidden;
-  border: 2px solid rgba(247, 147, 26, 0.72);
-  border-radius: var(--radius);
-  background:
-    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(145deg, rgba(25, 29, 34, 0.99), rgba(8, 10, 13, 0.99));
-  background-size: 22px 22px, 22px 22px, auto;
-  box-shadow:
-    0 22px 55px rgba(0, 0, 0, 0.48),
-    0 0 34px rgba(247, 147, 26, 0.10),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.02);
-  animation: block-glow 2.8s ease-in-out infinite;
-}
-
-.bitcoin-block::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background:
-    linear-gradient(
-      115deg,
-      transparent 26%,
-      rgba(247, 147, 26, 0.08) 49%,
-      transparent 72%
-    );
-  transform: translateX(-125%);
-  animation: block-scan 4.8s linear infinite;
-}
-
-.block-header,
-.block-grid,
-.block-code,
-.block-progress {
-  position: relative;
-  z-index: 1;
-}
-
-.block-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 16px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid rgba(247, 147, 26, 0.22);
-}
-
-.block-header-title {
-  color: var(--bitcoin-orange-light);
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-}
-
-.block-led {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--bitcoin-orange);
-  box-shadow: 0 0 10px rgba(247, 147, 26, 0.65);
-  animation: led-pulse 1.2s ease-in-out infinite;
-}
-
-.block-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px 14px;
-  margin-bottom: 16px;
-}
-
-.block-row {
-  display: grid;
-  gap: 4px;
-  padding: 10px 12px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  background: rgba(255, 255, 255, 0.015);
-}
-
-.block-row-wide {
-  grid-column: 1 / -1;
-}
-
-.row-label {
-  color: var(--muted);
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.09em;
-}
-
-.row-value {
-  color: var(--text);
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-}
-
-.row-value-hash {
-  color: var(--bitcoin-orange-light);
-  font-size: 13px;
-}
-
-.block-code {
-  display: grid;
-  gap: 6px;
-  margin-bottom: 14px;
-  padding: 12px;
-  border: 1px solid rgba(247, 147, 26, 0.16);
-  background: rgba(0, 0, 0, 0.20);
-  text-align: left;
-}
-
-.code-label {
-  color: var(--muted);
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-}
-
-.code-stream {
-  color: var(--bitcoin-orange);
-  font-size: 13px;
-  line-height: 1.45;
-  word-break: break-all;
-}
-
-.code-cursor {
-  width: 10px;
-  height: 15px;
-  background: var(--bitcoin-orange);
-  animation: terminal-cursor-blink 0.9s step-end infinite;
-}
-
-.block-progress {
-  display: grid;
-  gap: 8px;
-  text-align: left;
-}
-
-.progress-label {
-  color: var(--muted);
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-}
-
-.progress-track {
-  height: 9px;
-  overflow: hidden;
-  border: 1px solid rgba(247, 147, 26, 0.18);
-  background: rgba(255, 255, 255, 0.03);
-}
-
-.progress-fill {
-  display: block;
-  width: 36%;
-  height: 100%;
-  background:
-    linear-gradient(
-      90deg,
-      rgba(247, 147, 26, 0.55),
-      rgba(255, 177, 74, 0.95)
-    );
-  box-shadow: 0 0 14px rgba(247, 147, 26, 0.18);
-  transition: width 260ms ease;
-}
-
-/* ------------------------------------------------------------------------
-   POPISEK
-   ------------------------------------------------------------------------ */
-
-.construction-title {
-  margin: 0;
-  color: var(--text);
-  font-size: clamp(18px, 1.7vw, 26px);
-  line-height: 1.2;
   letter-spacing: 0.08em;
 }
 
-.construction-subtitle {
-  margin: 9px 0 0;
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.4;
-  letter-spacing: 0.04em;
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 12px rgba(99, 230, 123, 0.75);
 }
 
 /* ------------------------------------------------------------------------
-   NOSCRIPT
+   DVOUSLOUPCOVÉ ROZLOŽENÍ
+   Levý sloupec má pevnou šířku, pravý využije zbytek obrazovky.
+   ------------------------------------------------------------------------ */
+.app-shell {
+  min-height: calc(100vh - var(--topbar-height) - 34px);
+  display: grid;
+  grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+}
+
+/* ------------------------------------------------------------------------
+   LEVÝ VERTIKÁLNÍ PANEL
+   ------------------------------------------------------------------------ */
+/* Základní obal levého panelu.
+   Používá se jak pro úvodní grafiku, tak pro navigaci dalších sekcí. */
+.sidebar {
+  position: sticky;
+  top: var(--topbar-height);
+  align-self: start;
+
+  min-height: calc(100vh - var(--topbar-height) - 34px);
+
+  padding: 28px 18px;
+
+  border-right: 1px solid var(--line);
+
+  background: rgba(12, 14, 17, 0.92);
+}
+
+
+/* ------------------------------------------------------------------------
+   BĚŽNÁ NAVIGACE LEVÉHO PANELU
+   Zobrazuje se v Sekci 01, Sekci 02 a Sekci 03.
    ------------------------------------------------------------------------ */
 
-.noscript-message {
-  position: fixed;
-  left: 50%;
-  bottom: 18px;
-  z-index: 20;
-  width: min(520px, calc(100% - 32px));
-  padding: 12px 16px;
-  border: 1px solid rgba(247, 147, 26, 0.5);
-  color: var(--text-soft);
-  background: #0c0e11;
-  transform: translateX(-50%);
-  text-align: center;
+.sidebar-heading {
+  padding: 0 10px 18px;
+  border-bottom: 1px solid var(--line);
+}
+
+.eyebrow {
+  color: var(--bitcoin-orange);
+
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+}
+
+.sidebar-heading h2 {
+  margin: 8px 0 0;
+
+  font-size: 17px;
+  line-height: 1.3;
+}
+
+.side-navigation {
+  display: grid;
+  gap: 7px;
+
+  margin-top: 18px;
+}
+
+.side-link {
+  width: 100%;
+
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  align-items: center;
+  gap: 8px;
+
+  padding: 12px 10px;
+
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+
+  color: var(--muted);
+  background: transparent;
+
+  text-align: left;
+  cursor: pointer;
+
+  transition:
+    color 140ms ease,
+    border-color 140ms ease,
+    background 140ms ease,
+    transform 140ms ease;
+}
+
+.side-link:hover,
+.side-link:focus-visible {
+  color: var(--text);
+
+  border-color: var(--line);
+  background: var(--panel);
+
+  transform: translateX(3px);
+}
+
+.side-link.is-active {
+  color: var(--text);
+
+  border-color: rgba(247, 147, 26, 0.45);
+  background: rgba(247, 147, 26, 0.08);
+}
+
+.side-link-number {
+  color: var(--bitcoin-orange);
+  font-size: 10px;
+}
+
+.side-link-text {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.sidebar-note {
+  margin-top: 28px;
+  padding: 16px;
+
+  border: 1px dashed var(--line-strong);
+
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.015);
+
   font-size: 11px;
 }
 
+.sidebar-note-label {
+  color: var(--bitcoin-orange);
+}
+
+.sidebar-note p {
+  margin: 8px 0 0;
+}
+
+
 /* ------------------------------------------------------------------------
-   ANIMACE
+   GRAFICKÝ PANEL ÚVODNÍ STRÁNKY
+   Na úvodu nahrazuje běžnou navigaci.
    ------------------------------------------------------------------------ */
 
-@keyframes block-glow {
-  0%, 100% {
-    box-shadow:
-      0 22px 55px rgba(0, 0, 0, 0.48),
-      0 0 24px rgba(247, 147, 26, 0.08),
-      inset 0 0 0 1px rgba(255, 255, 255, 0.02);
-  }
+/* Ve výchozím stavu je grafika skrytá.
+   Zobrazí se pouze tehdy, když JavaScript přidá třídu is-home. */
+.sidebar-home-visual {
+  display: none;
+}
 
-  50% {
-    box-shadow:
-      0 22px 55px rgba(0, 0, 0, 0.48),
-      0 0 36px rgba(247, 147, 26, 0.14),
-      inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+
+/* Na úvodní stránce odstraníme původní odsazení,
+   aby grafika mohla využít celou plochu levého panelu. */
+.sidebar.is-home {
+  padding: 0;
+  overflow: hidden;
+}
+
+
+/* Zobrazení grafiky na úvodní stránce. */
+.sidebar.is-home .sidebar-home-visual {
+  display: block;
+}
+
+
+/* Skrytí běžné navigace na úvodní stránce. */
+.sidebar.is-home .sidebar-navigation-content {
+  display: none;
+}
+
+
+/* SVG grafika využije celou dostupnou šířku a výšku panelu. */
+.sidebar-circuit {
+  width: 100%;
+  height: calc(100vh - var(--topbar-height) - 34px);
+  min-height: 620px;
+
+  display: block;
+
+  background:
+    radial-gradient(
+      circle at 48% 45%,
+      rgba(247, 147, 26, 0.045),
+      transparent 34%
+    );
+}
+
+
+/* Základní šedé obvodové cesty. */
+.circuit-trace {
+  fill: none;
+
+  stroke: rgba(127, 135, 143, 0.27);
+  stroke-width: 1.3;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+
+  vector-effect: non-scaling-stroke;
+}
+
+
+/* Slabší vedlejší cesta. */
+.circuit-trace-faint {
+  stroke: rgba(127, 135, 143, 0.13);
+}
+
+
+/* Oranžová aktivní cesta. */
+.circuit-trace-active {
+  stroke: rgba(247, 147, 26, 0.62);
+  stroke-width: 1.4;
+
+  stroke-dasharray: 3 7;
+
+  animation: circuitSignal 12s linear infinite;
+}
+
+
+/* Běžné tlumené uzly. */
+.circuit-node {
+  fill: #0d0f12;
+
+  stroke: rgba(127, 135, 143, 0.45);
+  stroke-width: 1.4;
+
+  vector-effect: non-scaling-stroke;
+}
+
+
+/* Zvýrazněné oranžové uzly. */
+.circuit-node-active {
+  fill: var(--bitcoin-orange);
+  stroke: rgba(255, 177, 74, 0.9);
+
+  animation: circuitPulse 3.4s ease-in-out infinite;
+}
+
+
+/* Druhý aktivní uzel bliká s časovým posunem. */
+.circuit-node-delay {
+  animation-delay: 1.7s;
+}
+
+
+/* Drobné technické značky. */
+.circuit-marks {
+  fill: rgba(127, 135, 143, 0.34);
+}
+
+
+/* Pomalý pohyb čárkovaného oranžového signálu. */
+@keyframes circuitSignal {
+  to {
+    stroke-dashoffset: -100;
   }
 }
 
-@keyframes led-pulse {
-  0%, 100% {
+
+/* Jemné rozsvěcení oranžových uzlů. */
+@keyframes circuitPulse {
+  0%,
+  100% {
     opacity: 0.55;
   }
 
@@ -489,155 +493,968 @@ body::before {
   }
 }
 
-@keyframes block-scan {
-  0% {
-    transform: translateX(-125%);
-  }
-
-  38%, 100% {
-    transform: translateX(145%);
-  }
+/* ------------------------------------------------------------------------
+   HLAVNÍ OBSAH
+   ------------------------------------------------------------------------ */
+.content-area {
+  min-width: 0;
+  padding: clamp(20px, 3vw, 44px);
 }
 
-@keyframes terminal-cursor-blink {
-  0%, 49% {
+/*
+  Levá navigace zůstává u levého okraje. Hlavní obsah uvnitř pravé části
+  je na širokých monitorech vycentrovaný a neroztahuje se bez omezení.
+*/
+.content-area > * {
+  width: min(var(--content-wide), 100%);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Dlouhé články používají užší čtecí rámec než grafické rozcestníky. */
+.page-bitcoin-article .content-area > .article-panel,
+.simple-page .simple-page-wrap {
+  width: min(var(--content-article), 100%);
+}
+
+.hero-panel,
+.info-card,
+.manifesto-panel,
+.node-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: linear-gradient(145deg, rgba(23, 27, 32, 0.94), rgba(14, 16, 19, 0.96));
+  box-shadow: var(--shadow);
+}
+
+.hero-panel {
+  position: relative;
+  overflow: hidden;
+}
+
+/* ------------------------------------------------------------------------
+   TERMINÁLOVÁ LIŠTA HLAVNÍHO PANELU
+   Vlevo zobrazuje aktuální cestu.
+   Vpravo je příkaz hledající výraz "truth" ve složce /out/there.
+   ------------------------------------------------------------------------ */
+
+.terminal-bar {
+  min-height: 43px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+
+  padding: 0 18px;
+  border-bottom: 1px solid var(--line);
+
+  color: var(--muted);
+  background: rgba(0, 0, 0, 0.24);
+
+  font-size: 11px;
+}
+
+/* Levá část terminálové lišty. */
+.terminal-path {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Oranžová šipka před cestou. */
+.terminal-path::before {
+  content: "> ";
+  color: var(--bitcoin-orange);
+  font-weight: 800;
+}
+
+/* Pravá část terminálové lišty. */
+.terminal-meta {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  flex: 0 0 auto;
+  white-space: nowrap;
+
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+/* Příkaz grep. */
+.term-cmd {
+  color: var(--bitcoin-orange);
+}
+
+/* Parametr příkazu -R. */
+.term-flag {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+/* Hledaný výraz. */
+.term-query {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+/* Cesta, ve které se hledá. */
+.term-search-path {
+  color: var(--muted);
+}
+
+.hero-layout {
+  position: relative;
+  z-index: 1;
+  display: grid;
+
+  /* Text vlevo, úzký terminál vpravo. */
+  grid-template-columns: minmax(0, 1fr) 290px;
+
+  gap: clamp(24px, 3vw, 48px);
+
+  /* Oba sloupce začínají nahoře. */
+  align-items: start;
+
+  padding: clamp(34px, 6vw, 84px);
+}
+
+.hero-kicker {
+  margin: 0 0 18px;
+  color: var(--bitcoin-orange);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+}
+
+/* ------------------------------------------------------------------------
+   HLAVNÍ DYNAMICKÝ NADPIS
+   Pevná část zní "Bitcoin bez" a poslední slovo mění JavaScript.
+   ------------------------------------------------------------------------ */
+
+.hero-copy {
+  min-width: 0;
+}
+
+.hero-copy h1 {
+  max-width: 820px;
+  margin: 0;
+
+  font-size: clamp(42px, 7vw, 96px);
+  line-height: 0.98;
+  letter-spacing: -0.07em;
+  text-transform: uppercase;
+}
+
+/*
+  Všechna rotující slova mají stále stejnou velikost.
+  Nadpis je jen celkově nastavený tak, aby se vešel vedle kompaktního terminálu.
+*/
+.page-home .hero-copy h1 {
+  max-width: 100%;
+  font-size: clamp(40px, 4.25vw, 68px);
+}
+
+
+/* Slovo, které se bude měnit:
+   pozlátka, mýtů, humbuku, zkratek... */
+.rotating-word {
+  display: inline-block;
+  color: var(--bitcoin-orange);
+
+  transition:
+    opacity 220ms ease,
+    transform 220ms ease;
+}
+
+/* Celý měnící se výraz je vždy na samostatném druhém řádku. */
+.rotating-line {
+  display: block;
+
+  /* Slovo a kurzor se od sebe neoddělí. */
+  white-space: nowrap;
+}
+
+/* JavaScript tuto třídu krátce přidá před výměnou slova. */
+.rotating-word.is-changing {
+  opacity: 0;
+  transform: translateY(-0.15em);
+}
+
+/* Blikající podtržítko je součástí měnícího se slova.
+   Při výměně proto zmizí a pohne se společně s ním. */
+.rotating-word::after {
+  content: "_";
+  display: inline-block;
+  margin-left: 0;
+
+  color: var(--bitcoin-orange);
+  animation: terminal-cursor-blink 1s step-end infinite;
+}
+
+.hero-lead {
+  max-width: 760px;
+  margin: 26px 0 0;
+  color: var(--text-soft);
+  font-size: clamp(14px, 1.5vw, 18px);
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.primary-button,
+.secondary-button {
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 18px;
+  border: 1px solid var(--bitcoin-orange);
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease, color 140ms ease;
+}
+
+.primary-button {
+  color: #111;
+  background: var(--bitcoin-orange);
+}
+
+.secondary-button {
+  color: var(--bitcoin-orange-light);
+  background: transparent;
+}
+
+.primary-button:hover,
+.secondary-button:hover,
+.primary-button:focus-visible,
+.secondary-button:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(247, 147, 26, 0.18);
+}
+
+.secondary-button:hover,
+.secondary-button:focus-visible {
+  color: #111;
+  background: var(--bitcoin-orange);
+}
+
+/* ------------------------------------------------------------------------
+   TERMINÁLOVÁ KARTA
+   ------------------------------------------------------------------------ */
+.node-card {
+  width: 290px;
+  min-width: 0;
+
+  justify-self: end;
+  align-self: start;
+
+  /* Žádný posun směrem dolů. */
+  margin-top: 0;
+
+  overflow: hidden;
+  transform: rotate(0.6deg);
+}
+
+.node-card-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+  background: #0a0b0d;
+  font-size: 10px;
+}
+
+.window-dots {
+  color: var(--bitcoin-orange);
+  letter-spacing: 4px;
+}
+
+.node-screen {
+  height: 335px;
+  padding: 24px 18px;
+  overflow: hidden;
+
+  color: var(--text-soft);
+
+  background:
+    linear-gradient(rgba(247, 147, 26, 0.035) 1px, transparent 1px),
+    #0a0c0f;
+
+  background-size: 100% 26px;
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+.node-screen p {
+  margin: 0 0 20px;
+}
+
+/* Zkrácený hash genesis bloku v terminálu. */
+.hash-output {
+  color: var(--bitcoin-orange-light);
+  font-size: 10px;
+  letter-spacing: 0.03em;
+}
+
+.prompt,
+.log-warn {
+  color: var(--bitcoin-orange);
+}
+
+.log-ok {
+  color: var(--success);
+}
+
+.cursor-line {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.cursor {
+  width: 9px;
+  height: 16px;
+  display: inline-block;
+  background: var(--bitcoin-orange);
+
+  /* Pouze dva stavy: viditelný / neviditelný. */
+  animation: cursor-blink 0.9s step-end infinite;
+}
+
+@keyframes cursor-blink {
+  0%,
+  49% {
     opacity: 1;
   }
 
-  50%, 100% {
+  50%,
+  100% {
     opacity: 0;
   }
 }
 
 /* ------------------------------------------------------------------------
-   TABLETY
+   INFORMAČNÍ KARTY
    ------------------------------------------------------------------------ */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+  margin-left: auto;
+  margin-right: auto;
+}
 
-@media (max-width: 1000px) {
-  .coming-soon-content {
-    padding-inline: 30px;
+.info-card {
+  position: relative;
+  min-height: 230px;
+  display: block;
+  padding: 24px;
+  overflow: hidden;
+
+  /* Odkaz nebude mít vlastní barvu ani podtržení. */
+  color: inherit;
+  text-decoration: none;
+
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    background 160ms ease;
+}
+
+/* Klikací karta. */
+.info-card[href] {
+  cursor: pointer;
+}
+
+/* Reakce při najetí myší. */
+.info-card[href]:hover {
+  transform: translateY(-4px);
+  border-color: rgba(247, 147, 26, 0.7);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(247, 147, 26, 0.08),
+      rgba(14, 16, 19, 0.96)
+    );
+
+  box-shadow:
+    0 26px 64px rgba(0, 0, 0, 0.5),
+    0 0 24px rgba(247, 147, 26, 0.08);
+}
+
+/* Ovládání pomocí klávesnice. */
+.info-card[href]:focus-visible {
+  outline: 2px solid var(--bitcoin-orange);
+  outline-offset: 3px;
+}
+
+/* Karta bez zadané adresy nebude působit klikacím dojmem. */
+.info-card:not([href]) {
+  cursor: default;
+}
+
+
+.card-index {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  color: rgba(255, 255, 255, 0.08);
+  font-size: 54px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.card-label {
+  margin: 0 0 38px;
+  color: var(--bitcoin-orange);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+}
+
+.info-card h2 {
+  position: relative;
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.35;
+}
+
+.info-card p:last-child {
+  position: relative;
+  margin: 16px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* ------------------------------------------------------------------------
+   SPODNÍ STAVOVÝ PANEL
+   ------------------------------------------------------------------------ */
+/* ------------------------------------------------------------------------
+   HLAVNÍ PATIČKA WEBU
+   ------------------------------------------------------------------------ */
+.site-footer {
+  border-top: 1px solid var(--line);
+  background: #090a0c;
+}
+
+.footer-main {
+  width: 100%;
+
+  display: grid;
+
+  /* Dva stejně široké kompaktní sloupce. */
+  grid-template-columns: 220px 220px;
+
+  /* Pevná, relativně malá mezera kolem středu obrazovky. */
+  column-gap: 64px;
+
+  /* Celá dvojice je přesně uprostřed obrazovky. */
+  justify-content: center;
+  align-items: start;
+
+  /* Výšla footeru */
+  padding:
+    clamp(26px, 3vw, 38px)
+    24px;
+}
+
+/* Logo a sociální odkazy. */
+.footer-identity {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 22px;
+}
+
+
+/* Stejný vzhled jako hlavní logo, ale bez rozměrů horního panelu. */
+.footer-brand {
+  display: inline-flex;
+  align-items: center;
+
+  font-family: var(--font-mono);
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.08em;
+
+  white-space: nowrap;
+}
+
+.footer-brand-name {
+  color: var(--text);
+}
+
+.footer-brand:hover .footer-brand-name {
+  color: var(--bitcoin-orange);
+}
+
+.footer-brand:hover .brand-bracket,
+.footer-brand:hover .brand-slash {
+  color: var(--text);
+}
+
+
+/* Ikony X a GitHub. */
+.footer-socials {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.footer-social-link {
+  width: 25px;
+  height: 25px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  color: var(--bitcoin-orange-light);
+
+  transition:
+    color 150ms ease,
+    transform 150ms ease,
+    filter 150ms ease;
+}
+
+.footer-social-link svg {
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+}
+
+.footer-social-link:hover,
+.footer-social-link:focus-visible {
+  color: var(--bitcoin-orange);
+  transform: translateY(-2px);
+  filter: drop-shadow(0 0 7px rgba(247, 147, 26, 0.35));
+}
+
+
+/* Odkazy projektu. */
+.footer-project {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  /*
+    Celý pravý blok posuneme trochu níž, aby byl nadpis // PROJEKT
+    přibližně v ose s logem <bytkojn/>.
+  */
+  gap: 0;
+}
+
+.footer-heading {
+  /*
+    Odkazy držíme blíž k nadpisu // PROJEKT.
+  */
+  margin: 0 0 5px;
+
+  color: var(--bitcoin-orange);
+
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.13em;
+}
+
+.footer-project a {
+  color: var(--text-soft);
+  font-size: 12px;
+
+  transition:
+    color 150ms ease,
+    transform 150ms ease;
+}
+
+/* Mezera až mezi jednotlivými odkazy, ne mezi nadpisem a prvním odkazem. */
+.footer-project a + a {
+  margin-top: 8px;
+}
+
+/* Na mobilu už není potřeba pravý blok vertikálně posouvat. */
+@media (max-width: 760px) {
+  .footer-project {
+    padding-top: 0;
+  }
+}
+
+.footer-project a:hover,
+.footer-project a:focus-visible {
+  color: var(--bitcoin-orange);
+  transform: translateX(3px);
+}
+
+/* ------------------------------------------------------------------------
+   SPODNÍ ORANŽOVÁ STAVOVÁ LIŠTA
+   ------------------------------------------------------------------------ */
+.statusbar {
+  min-height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+
+  padding: 0 18px;
+  border-top: 1px solid rgba(0, 0, 0, 0.35);
+
+  color: #111;
+  background: var(--bitcoin-orange);
+
+  font-size: 10px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 0.08em;
+}
+
+.footer-signature {
+  white-space: nowrap;
+}
+
+.back-to-top {
+  --back-to-top-offset: 22px;
+
+  position: fixed;
+  right: 22px;
+  bottom: var(--back-to-top-offset);
+  z-index: 80;
+
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+
+  padding: 0;
+  border: 1px solid rgba(247, 147, 26, 0.52);
+  border-radius: 3px;
+
+  color: var(--bitcoin-orange-light);
+  background: rgba(8, 10, 13, 0.92);
+  box-shadow:
+    0 10px 28px rgba(0, 0, 0, 0.34),
+    0 0 0 1px rgba(255, 255, 255, 0.015);
+
+  font-family: var(--font-mono);
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1;
+
+  cursor: pointer;
+  user-select: none;
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(8px);
+
+  backdrop-filter: blur(12px);
+
+  transition:
+    opacity 160ms ease,
+    visibility 160ms ease,
+    transform 160ms ease,
+    color 140ms ease,
+    background 140ms ease,
+    border-color 140ms ease,
+    box-shadow 140ms ease,
+    bottom 160ms ease;
+}
+
+.back-to-top.is-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.back-to-top:hover,
+.back-to-top:focus-visible {
+  color: #111;
+  border-color: var(--bitcoin-orange);
+  background: var(--bitcoin-orange);
+  box-shadow:
+    0 12px 30px rgba(0, 0, 0, 0.42),
+    0 0 18px rgba(247, 147, 26, 0.16);
+  outline: none;
+}
+
+.back-to-top:active {
+  transform: translateY(1px);
+}
+
+
+/* ------------------------------------------------------------------------
+   ANIMACE
+   ------------------------------------------------------------------------ */
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Kurzoru nastaví pouze dva stavy:
+   buď je plně viditelný, nebo úplně neviditelný. */
+@keyframes terminal-cursor-blink {
+  0%,
+  49% {
+    opacity: 1;
   }
 
-  .hero-copy h1 {
-    font-size: clamp(44px, 8vw, 82px);
+  50%,
+  100% {
+    opacity: 0;
   }
 }
 
 /* ------------------------------------------------------------------------
-   MOBILY
+   RESPONZIVITA PRO TABLETY
    ------------------------------------------------------------------------ */
-
-@media (max-width: 760px) {
-  .coming-soon-shell {
-    padding: 8px;
+@media (max-width: 1050px) {
+  :root {
+    --sidebar-width: 230px;
   }
 
-  .coming-soon-panel {
-    min-height: calc(100vh - 16px);
-    grid-template-rows: 40px minmax(0, 1fr);
-  }
-
-  .terminal-bar {
-    padding-inline: 13px;
-  }
-
-  .terminal-meta {
+  .node-status {
     display: none;
   }
 
-  .coming-soon-content {
-    place-items: start center;
-    padding: 42px 18px 36px;
+  .topbar {
+    grid-template-columns: auto 1fr;
   }
 
-  .coming-soon-stage {
-    gap: 40px;
+  .node-card {
+    max-width: 620px;
+    transform: none;
   }
 
-  .hero-kicker {
-    margin-bottom: 14px;
-    font-size: 9px;
-    line-height: 1.5;
-  }
-
-  .hero-copy h1 {
-    font-size: clamp(38px, 12vw, 66px);
-    line-height: 0.96;
-    letter-spacing: -0.065em;
-  }
-
-  .rotating-line {
-    min-height: 2.1em;
-  }
-
-  .build-scene {
-    width: 330px;
-    max-width: 88vw;
-    margin-bottom: 17px;
-  }
-
-  .bitcoin-block {
-    min-height: 270px;
-    padding: 16px 14px 18px;
-  }
-
-  .block-grid {
+  .card-grid {
     grid-template-columns: 1fr;
-    gap: 8px;
   }
 
-  .block-row-wide {
-    grid-column: auto;
-  }
-
-  .row-value {
-    font-size: 14px;
-  }
-
-  .row-value-hash,
-  .code-stream {
-    font-size: 12px;
-  }
-
-  .construction-title {
-    font-size: 18px;
-  }
-
-  .construction-subtitle {
-    font-size: 12px;
+  .info-card {
+    min-height: 190px;
   }
 }
 
-@media (max-width: 420px) {
-  .coming-soon-content {
-    padding-inline: 13px;
+/* Na užších obrazovkách se terminál přesune pod hlavní text. */
+@media (max-width: 850px) {
+  .hero-layout {
+    grid-template-columns: 1fr;
   }
 
-  .hero-copy h1 {
-    font-size: clamp(34px, 11.5vw, 50px);
+  .node-card {
+    width: min(420px, 100%);
+    max-width: none;
+    justify-self: end;
+    transform: none;
+  }
+}
+
+
+/* ========================================================================
+   KOMPAKTNÍ TERMINÁL NA ÚVODNÍ STRÁNCE
+   Nadpis má stále jednotnou velikost. Místo jeho průběžného zmenšování
+   zabírá terminál méně místa a je přitažený blíž k pravému okraji panelu.
+   ======================================================================== */
+.page-home .hero-layout {
+  grid-template-columns: minmax(0, 1fr) 232px;
+  gap: clamp(14px, 1.7vw, 26px);
+  padding:
+    clamp(34px, 4vw, 56px)
+    clamp(18px, 1.8vw, 28px)
+    clamp(34px, 4vw, 56px)
+    clamp(34px, 4vw, 56px);
+}
+
+.page-home .node-card {
+  width: 232px;
+  justify-self: end;
+  margin-top: 0;
+  transform: none;
+}
+
+.page-home .node-card-header {
+  padding: 9px 11px;
+  gap: 10px;
+  font-size: 9px;
+}
+
+.page-home .window-dots {
+  letter-spacing: 2px;
+}
+
+.page-home .node-screen {
+  height: 260px;
+  padding: 18px 14px;
+  background-size: 100% 24px;
+  font-size: 10px;
+  line-height: 1.65;
+}
+
+.page-home .node-screen p {
+  margin-bottom: 15px;
+}
+
+.page-home .hash-output {
+  font-size: 9px;
+}
+
+/*
+  Terminál zůstává vpravo, dokud má nadpis rozumný prostor.
+  Pod text se přesune až na užších noteboocích a při větším přiblížení.
+*/
+@media (max-width: 1480px) {
+  .page-home .hero-layout {
+    grid-template-columns: 1fr;
   }
 
-  .build-scene {
-    width: 300px;
+  .page-home .node-card {
+    width: min(360px, 100%);
+    justify-self: end;
+    margin-top: 8px;
   }
 
-  .block-header-title {
-    font-size: 11px;
-  }
-
-  .block-top-line,
-  .block-bottom-line,
-  .row-label,
-  .progress-label,
-  .code-label {
-    font-size: 9px;
+  .page-home .node-screen {
+    height: 230px;
   }
 }
 
 /* ------------------------------------------------------------------------
-   OMEZENÍ POHYBU
+   RESPONZIVITA PRO MOBILY
+   Na malém displeji se levý panel přesune nad hlavní obsah.
    ------------------------------------------------------------------------ */
+@media (max-width: 760px) {
+  :root {
+    --topbar-height: auto;
+  }
 
+  .topbar {
+    position: relative;
+    display: block;
+  }
+.brand {
+    min-width: 0;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .top-navigation {
+    min-height: 58px;
+  }
+
+  .top-tab {
+    min-width: 118px;
+  }
+
+  .app-shell {
+    display: block;
+  }
+
+  .sidebar {
+    position: relative;
+    top: auto;
+    min-height: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .side-navigation {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hero-layout {
+    padding: 28px 22px 34px;
+  }
+
+  .page-bitcoin .hero-kicker {
+  margin-bottom: 12px;
+}
+
+  .hero-copy h1 {
+    font-size: clamp(38px, 15vw, 62px);
+  }
+
+  .manifesto-panel {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .footer-main {
+    width: min(100% - 40px, 480px);
+    max-width: none;
+    margin-inline: auto;
+
+    grid-template-columns: 1fr;
+    row-gap: 36px;
+
+    padding-block: 26px;
+  }
+
+  .statusbar {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+
+    gap: 6px 18px;
+    padding: 8px 14px;
+
+    font-size: 9px;
+  }
+
+  .back-to-top {
+    --back-to-top-offset: 14px;
+
+    right: 14px;
+    width: 40px;
+    height: 40px;
+    font-size: 19px;
+  }
+
+  /* Dekorativní levý panel na telefonu vůbec nezobrazujeme. */
+  .sidebar.is-home {
+    display: none;
+  }
+}
+
+@media (max-width: 460px) {
+  .content-area {
+    padding: 14px;
+  }
+
+  .side-navigation {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-actions {
+    display: grid;
+  }
+
+  .primary-button,
+  .secondary-button {
+    width: 100%;
+  }
+}
+
+/* ------------------------------------------------------------------------
+   OMEZENÍ ANIMACÍ PRO UŽIVATELE, KTEŘÍ JE NECHTĚJÍ
+   ------------------------------------------------------------------------ */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -646,5 +1463,3906 @@ body::before {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
+  }
+}
+
+/* ------------------------------------------------------------------------
+   LOGO <bytkojn/>
+   ------------------------------------------------------------------------ */
+.brand {
+  /* Logo zůstává součástí levé části horního panelu. */
+  display: flex;
+  align-items: center;
+
+  /* U textového loga nechceme mezery mezi jednotlivými span prvky. */
+  gap: 0;
+
+  /* Menší boční odsazení nechá logu více prostoru. */
+  padding: 14px 18px;
+
+  /* Programátorské písmo používané na celém webu. */
+  font-family: var(--font-mono);
+
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1;
+
+  /* Lehce přitáhne jednotlivé znaky k sobě. */
+  letter-spacing: -0.08em;
+
+  /* Zabrání zalomení loga na dva řádky. */
+  white-space: nowrap;
+
+  /* Logo je odkaz, ale nebude podtržené. */
+  text-decoration: none;
+  
+}
+
+/* Samotný název bytkojn. */
+.brand-name {
+  color: #ffffff;
+}
+
+/* Znaky < a >. */
+.brand-bracket {
+  color: var(--bitcoin-orange);
+}
+
+/* Oranžové lomítko. */
+.brand-slash {
+  color: var(--bitcoin-orange);
+}
+
+/* Plynulá změna barev při najetí myší. */
+.brand-name,
+.brand-bracket,
+.brand-slash {
+  transition:
+    color 160ms ease,
+    text-shadow 160ms ease;
+}
+
+/* Po najetí se barvy prohodí. */
+.brand:hover .brand-name {
+  color: var(--bitcoin-orange);
+  text-shadow: 0 0 12px rgba(247, 147, 26, 0.35);
+}
+
+.brand:hover .brand-bracket,
+.brand:hover .brand-slash {
+  color: #ffffff;
+}
+
+/* Menší logo na telefonu. */
+@media (max-width: 700px) {
+.brand {
+    font-size: 1.35rem;
+  }
+}
+
+/* ========================================================================
+   STRÁNKA BITCOIN — JEDNODUCHÁ NAVIGACE A ODBORNÉ ČLÁNKY
+   Položky navigace odkazují na samostatné HTML stránky.
+   ======================================================================== */
+
+.page-bitcoin .sidebar {
+  max-height: calc(100vh - var(--topbar-height));
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+
+/* ------------------------------------------------------------------------
+   KOMPAKTNÍ HERO PANEL ÚVODU SEKCE BITCOIN
+   Zachovává původní nízkou výšku: menší svislé odsazení, kompaktní nadpis
+   a grafika zarovnaná doprostřed panelu.
+   ------------------------------------------------------------------------ */
+.page-bitcoin-overview .hero-layout {
+  align-items: center;
+  gap: clamp(24px, 3vw, 40px);
+  padding: 26px clamp(30px, 4vw, 52px);
+}
+
+.page-bitcoin-overview .hero-kicker {
+  margin-bottom: 12px;
+}
+
+.page-bitcoin-overview .hero-copy h1 {
+  font-size: clamp(36px, 5vw, 66px);
+  line-height: 1;
+}
+
+.page-bitcoin-overview .hero-lead {
+  margin-top: 14px;
+}
+
+/* ------------------------------------------------------------------------
+   JEDNOÚROVŇOVÁ NAVIGACE SEKCE BITCOIN
+   ------------------------------------------------------------------------ */
+.bitcoin-section-nav {
+  display: grid;
+  gap: 5px;
+  margin-top: 18px;
+}
+
+.bitcoin-nav-link {
+  width: 100%;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  padding: 11px 9px;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  color: var(--muted);
+  background: transparent;
+  text-align: left;
+  transition:
+    color 140ms ease,
+    border-color 140ms ease,
+    background 140ms ease,
+    transform 140ms ease;
+}
+
+.bitcoin-nav-link[href] {
+  cursor: pointer;
+}
+
+.bitcoin-nav-link[href]:hover,
+.bitcoin-nav-link[href]:focus-visible {
+  color: var(--text);
+  border-color: var(--line);
+  background: var(--panel);
+  transform: translateX(3px);
+}
+
+.bitcoin-nav-link.is-active {
+  color: var(--text);
+  border-color: rgba(247, 147, 26, 0.45);
+  background: rgba(247, 147, 26, 0.08);
+  box-shadow: inset 3px 0 0 var(--bitcoin-orange);
+}
+
+.bitcoin-nav-link.is-disabled {
+  opacity: 0.48;
+  cursor: default;
+  user-select: none;
+}
+
+.bitcoin-nav-number {
+  color: var(--bitcoin-orange);
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.bitcoin-nav-title {
+  min-width: 0;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+/* ------------------------------------------------------------------------
+   JEDEN VELKÝ OBSAHOVÝ BLOK
+   ------------------------------------------------------------------------ */
+.article-panel {
+  margin-top: 16px;
+  padding: clamp(28px, 4vw, 58px);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(145deg, rgba(23, 27, 32, 0.94), rgba(14, 16, 19, 0.97));
+  box-shadow: var(--shadow);
+}
+
+.article-page-panel {
+  width: min(var(--content-article), 100%);
+  margin-top: 0;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.article-panel > * {
+  margin-top: 0;
+}
+
+.article-panel > * + * {
+  margin-top: clamp(30px, 5vw, 64px);
+}
+
+.article-header {
+  max-width: 980px;
+  margin: 0 0 clamp(32px, 5vw, 56px);
+  padding: 0 0 clamp(24px, 3vw, 36px);
+  border-bottom: 1px solid var(--line);
+}
+
+.article-header-kicker {
+  margin: 0 0 12px;
+  color: var(--bitcoin-orange);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.article-header h1 {
+  margin: 0;
+  color: var(--text);
+  font-size: clamp(34px, 4.8vw, 64px);
+  line-height: 1.05;
+  letter-spacing: -0.055em;
+  text-transform: uppercase;
+}
+
+.article-header-lead {
+  max-width: 850px;
+  margin: 18px 0 0;
+  color: var(--text-soft);
+  font-size: clamp(14px, 1.35vw, 18px);
+  line-height: 1.7;
+}
+
+.article-section {
+  max-width: 900px;
+}
+
+.article-section h2,
+.article-media-copy h2 {
+  margin: 0 0 18px;
+  color: var(--text);
+  font-size: clamp(22px, 2.4vw, 34px);
+  line-height: 1.25;
+}
+
+.article-section h3,
+.article-media-copy h3 {
+  margin: 28px 0 12px;
+  color: var(--bitcoin-orange-light);
+  font-size: 16px;
+}
+
+.article-section p,
+.article-media-copy p,
+.article-callout p,
+.article-note p {
+  margin: 0;
+  color: var(--text-soft);
+  font-size: clamp(14px, 1.25vw, 17px);
+  line-height: 1.85;
+}
+
+.article-section p + p,
+.article-media-copy p + p {
+  margin-top: 18px;
+}
+
+.article-intro {
+  color: var(--text) !important;
+  font-size: clamp(17px, 1.7vw, 22px) !important;
+  line-height: 1.7 !important;
+}
+
+.article-callout {
+  max-width: 940px;
+  padding: 24px 26px;
+  border: 1px solid rgba(247, 147, 26, 0.42);
+  border-left: 4px solid var(--bitcoin-orange);
+  background: rgba(247, 147, 26, 0.055);
+}
+
+.article-callout-label,
+.article-visual-label,
+.article-note-label {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--bitcoin-orange);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+}
+
+.article-callout h2 {
+  margin: 0 0 12px;
+  font-size: 21px;
+}
+
+.article-media-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(260px, 0.8fr);
+  align-items: center;
+  gap: clamp(28px, 5vw, 72px);
+  padding-block: clamp(18px, 2vw, 30px);
+}
+
+.article-media-row.is-media-left {
+  grid-template-columns: minmax(260px, 0.8fr) minmax(0, 1.2fr);
+}
+
+.article-media-row.is-media-left .article-media-copy {
+  order: 2;
+}
+
+.article-media-row.is-media-left .article-visual {
+  order: 1;
+}
+
+.article-visual {
+  min-height: 260px;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding: 24px;
+  border: 1px dashed var(--line-strong);
+  background:
+    linear-gradient(rgba(247, 147, 26, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(247, 147, 26, 0.035) 1px, transparent 1px),
+    #0a0c0f;
+  background-size: 24px 24px;
+}
+
+.article-visual-placeholder {
+  color: var(--muted);
+  text-align: center;
+  font-size: 11px;
+}
+
+.article-visual-placeholder strong {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--bitcoin-orange-light);
+  font-size: 14px;
+}
+
+.article-note {
+  max-width: 900px;
+  padding: 20px 22px;
+  border: 1px dashed var(--line-strong);
+  background: rgba(255, 255, 255, 0.018);
+}
+
+.article-list {
+  margin: 18px 0 0;
+  padding-left: 20px;
+  color: var(--text-soft);
+}
+
+.article-list li + li {
+  margin-top: 10px;
+}
+
+@media (max-width: 900px) {
+  .article-media-row,
+  .article-media-row.is-media-left {
+    grid-template-columns: 1fr;
+  }
+
+  .article-media-row.is-media-left .article-media-copy,
+  .article-media-row.is-media-left .article-visual {
+    order: initial;
+  }
+}
+
+@media (max-width: 760px) {
+  .page-bitcoin .sidebar {
+    max-height: none;
+    overflow-y: visible;
+  }
+
+  .article-panel {
+    padding: 26px 22px;
+  }
+
+  .article-header {
+    margin-bottom: 30px;
+    padding-bottom: 22px;
+  }
+
+  .article-header h1 {
+    font-size: clamp(30px, 11vw, 48px);
+  }
+}
+
+/* ========================================================================
+   ÚVOD CELÉ SEKCE BITCOIN
+   ======================================================================== */
+.sidebar-overview-link {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0 0;
+  padding: 8px 10px;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  color: var(--text);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1.3;
+  transition:
+    color 150ms ease,
+    border-color 150ms ease,
+    background 150ms ease,
+    transform 150ms ease;
+}
+
+.sidebar-overview-prefix {
+  color: var(--bitcoin-orange);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.sidebar-overview-link:hover,
+.sidebar-overview-link:focus-visible {
+  color: var(--bitcoin-orange-light);
+  border-color: var(--line);
+  background: var(--panel);
+  transform: translateX(3px);
+}
+
+.sidebar-overview-link.is-active {
+  color: var(--text);
+  border-color: rgba(247, 147, 26, 0.45);
+  background: rgba(247, 147, 26, 0.08);
+}
+
+/* ========================================================================
+   MALÁ GRAFIKA BITCOINOVÉ SÍTĚ V HERO PANELU
+   ======================================================================== */
+.bitcoin-hero-visual {
+  position: relative;
+  width: 255px;
+  min-height: 185px;
+  display: grid;
+  place-items: center;
+  justify-self: end;
+  align-self: center;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    radial-gradient(circle at 50% 44%, rgba(247, 147, 26, 0.11), transparent 50%),
+    #0a0c0f;
+  background-size: 24px 24px, 24px 24px, auto, auto;
+  box-shadow:
+    0 18px 45px rgba(0, 0, 0, 0.34),
+    inset 0 0 50px rgba(0, 0, 0, 0.22);
+}
+
+.bitcoin-network-graphic {
+  width: 100%;
+  height: 185px;
+  display: block;
+}
+
+.network-glow {
+  fill: url("#bitcoinCoreGlow");
+}
+
+.network-links path {
+  fill: none;
+  stroke: rgba(196, 199, 202, 0.42);
+  stroke-width: 1.2;
+  vector-effect: non-scaling-stroke;
+}
+
+.network-nodes circle {
+  fill: #0a0c0f;
+  stroke: rgba(196, 199, 202, 0.65);
+  stroke-width: 1.4;
+  vector-effect: non-scaling-stroke;
+}
+
+.network-nodes .network-node-active {
+  fill: var(--bitcoin-orange);
+  stroke: var(--bitcoin-orange-light);
+  filter: drop-shadow(0 0 5px rgba(247, 147, 26, 0.9));
+  animation: bitcoinNetworkNodePulse 3s ease-in-out infinite;
+}
+
+.network-nodes .network-node-delay {
+  animation-delay: 1.5s;
+}
+
+.network-core > circle:first-child {
+  fill: #0a0c0f;
+  stroke: var(--bitcoin-orange);
+  stroke-width: 2.2;
+  filter: drop-shadow(0 0 7px rgba(247, 147, 26, 0.5));
+}
+
+.network-core-ring {
+  fill: none !important;
+  stroke: rgba(247, 147, 26, 0.42);
+  stroke-width: 1;
+  stroke-dasharray: 3 7;
+  transform-origin: 160px 125px;
+  animation: bitcoinNetworkRing 18s linear infinite;
+}
+
+.network-core text {
+  fill: var(--bitcoin-orange);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 54px;
+  font-weight: 900;
+}
+
+.network-marks path {
+  fill: none;
+  stroke: rgba(247, 147, 26, 0.42);
+  stroke-width: 1.2;
+  vector-effect: non-scaling-stroke;
+}
+
+.bitcoin-hero-visual-label {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 10px;
+  color: rgba(196, 199, 202, 0.62);
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
+@keyframes bitcoinNetworkNodePulse {
+  0%, 100% { opacity: 0.58; }
+  50% { opacity: 1; }
+}
+
+@keyframes bitcoinNetworkRing {
+  to { transform: rotate(360deg); }
+}
+
+/* ========================================================================
+   ŠIROKÉ SCHÉMA FUNGOVÁNÍ BITCOINU NA ÚVODU SEKCE
+   ======================================================================== */
+.article-panel.is-overview {
+  padding: 0;
+  overflow: hidden;
+}
+
+.bitcoin-system-map {
+  position: relative;
+  min-height: 390px;
+  overflow: hidden;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px),
+    radial-gradient(circle at 84% 18%, rgba(247, 147, 26, 0.09), transparent 32%),
+    #0b0d10;
+  background-size: 28px 28px, 28px 28px, auto, auto;
+}
+
+.bitcoin-system-map::before {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.bitcoin-system-map-graphic {
+  width: 100%;
+  height: auto;
+  min-height: 390px;
+  display: block;
+}
+
+.system-flow-line {
+  fill: none;
+  stroke: rgba(127, 135, 143, 0.35);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}
+
+.system-flow-line-active {
+  stroke: rgba(247, 147, 26, 0.72);
+  stroke-dasharray: 4 9;
+  animation: bitcoinFlow 15s linear infinite;
+}
+
+.system-stage-panel {
+  fill: rgba(17, 20, 24, 0.92);
+  stroke: rgba(58, 65, 73, 0.95);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.system-stage-accent .system-stage-panel {
+  fill: url("#mapActiveBlock");
+  stroke: rgba(247, 147, 26, 0.72);
+}
+
+.system-stage-index {
+  fill: var(--bitcoin-orange);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+}
+
+.system-stage-title {
+  fill: var(--text);
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+}
+
+.system-stage-caption {
+  fill: var(--muted);
+  font-size: 9px;
+}
+
+.system-code {
+  fill: rgba(196, 199, 202, 0.62);
+  font-size: 8px;
+  letter-spacing: 0.03em;
+}
+
+.wallet-key circle,
+.pow-symbol circle {
+  fill: rgba(247, 147, 26, 0.08);
+  stroke: var(--bitcoin-orange);
+  stroke-width: 1.4;
+}
+
+.wallet-key path,
+.pow-symbol path,
+.transaction-lines path,
+.mini-network path {
+  fill: none;
+  stroke: rgba(247, 147, 26, 0.82);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.transaction-lines circle,
+.mini-network circle {
+  fill: var(--bitcoin-orange);
+  stroke: var(--bitcoin-orange-light);
+  stroke-width: 0.8;
+}
+
+.mini-network path {
+  stroke: rgba(196, 199, 202, 0.55);
+}
+
+.mini-network circle {
+  fill: #0b0d10;
+  stroke: rgba(247, 147, 26, 0.9);
+}
+
+.mempool-stack rect {
+  fill: rgba(247, 147, 26, 0.09);
+  stroke: rgba(247, 147, 26, 0.72);
+  stroke-width: 1;
+}
+
+.pow-symbol {
+  filter: url("#mapOrangeGlow");
+}
+
+.blockchain-row-label {
+  fill: var(--bitcoin-orange);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+.chain-block rect {
+  fill: rgba(17, 20, 24, 0.92);
+  stroke: rgba(58, 65, 73, 0.95);
+  stroke-width: 1;
+}
+
+.chain-block > path {
+  stroke: rgba(58, 65, 73, 0.75);
+  stroke-width: 1;
+}
+
+.chain-block-height {
+  fill: var(--text);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.chain-block-hash,
+.chain-block-meta {
+  fill: var(--muted);
+  font-size: 8px;
+}
+
+.chain-connector,
+.pow-to-block-line {
+  fill: none;
+  stroke: rgba(127, 135, 143, 0.42);
+  stroke-width: 1.2;
+  vector-effect: non-scaling-stroke;
+}
+
+.chain-connector-active,
+.pow-to-block-line {
+  stroke: rgba(247, 147, 26, 0.75);
+  stroke-dasharray: 4 7;
+  animation: bitcoinFlow 10s linear infinite;
+}
+
+.chain-block-active rect {
+  fill: url("#mapActiveBlock");
+  stroke: var(--bitcoin-orange);
+  stroke-width: 1.5;
+  filter: url("#mapOrangeGlow");
+}
+
+.chain-block-active .chain-block-height {
+  fill: var(--bitcoin-orange-light);
+}
+
+.new-block-status {
+  fill: var(--success);
+  filter: drop-shadow(0 0 6px rgba(99, 230, 123, 0.8));
+  animation: newBlockPulse 2.4s ease-in-out infinite;
+}
+
+
+@keyframes bitcoinFlow {
+  to { stroke-dashoffset: -130; }
+}
+
+@keyframes newBlockPulse {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+
+@media (max-width: 1050px) {
+  .bitcoin-system-map-graphic {
+    min-width: 980px;
+  }
+
+  .bitcoin-system-map {
+    overflow-x: auto;
+  }
+}
+
+@media (max-width: 850px) {
+  .bitcoin-hero-visual {
+    width: min(420px, 100%);
+    justify-self: end;
+  }
+}
+
+
+/* ========================================================================
+   VIZUÁLNÍ ÚVOD BEZ POPISNÝCH NADPISŮ
+   Jednotlivé fáze reprezentují pouze symboly a bitcoinová data.
+   ======================================================================== */
+.system-stage-title,
+.system-stage-caption,
+.blockchain-row-label {
+  display: none;
+}
+
+.system-code-center {
+  text-anchor: middle;
+  fill: rgba(196, 199, 202, 0.66);
+  font-size: 8px;
+  letter-spacing: 0.05em;
+}
+
+.wallet-key circle {
+  r: 23px;
+}
+
+.wallet-key path {
+  transform: scale(1.08);
+  transform-origin: center;
+}
+
+.transaction-lines path {
+  stroke-width: 2;
+}
+
+.transaction-lines circle {
+  r: 4px;
+}
+
+.mini-network path {
+  stroke-width: 1.6;
+}
+
+.mini-network circle {
+  r: 6px;
+}
+
+.mempool-stack rect {
+  height: 14px;
+  stroke-width: 1.3;
+}
+
+.pow-symbol circle {
+  r: 30px;
+}
+
+.pow-symbol path {
+  stroke-width: 2;
+}
+
+/* Symbol ₿ v horní grafice odpovídá běžnému naklonění loga. */
+.network-core text {
+  transform: rotate(12deg);
+  transform-origin: 160px 125px;
+}
+
+/* ========================================================================
+   NADPIS BITCOIN — JEMNÁ BLOCKCHAINOVÁ LINKA
+   Nadpis zůstává souvislý a bílý. Při otevření přehledu se pod ním jednou
+   vykreslí tenká oranžová linka s uzly. Přes text současně proběhne pouze
+   jeden velmi jemný datový impuls; animace se dále neopakuje.
+   ======================================================================== */
+#contentTitle.bitcoin-title-enhanced {
+  position: relative;
+  display: inline-block;
+  overflow: visible;
+  padding-bottom: 18px;
+  color: var(--text);
+  isolation: isolate;
+}
+
+.bitcoin-title-word {
+  position: relative;
+  display: inline-block;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+/* Jednorázový velmi jemný oranžový datový průchod přes samotný text. */
+.bitcoin-title-word::after {
+  content: attr(data-title);
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  color: transparent;
+  background: linear-gradient(
+    100deg,
+    transparent 0%,
+    transparent 43%,
+    rgba(255, 177, 74, 0.92) 49%,
+    var(--bitcoin-orange) 52%,
+    transparent 58%,
+    transparent 100%
+  );
+  background-size: 250% 100%;
+  background-position: 135% 0;
+  background-clip: text;
+  -webkit-background-clip: text;
+
+  opacity: 0;
+  animation: bitcoinTitleDataPass 1100ms ease-out 420ms 1 both;
+}
+
+/* Celá linka pod nadpisem. */
+.bitcoin-title-chain {
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  bottom: 4px;
+  height: 10px;
+  pointer-events: none;
+}
+
+/* Tenké spojení mezi uzly. */
+.bitcoin-title-chain-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+
+  background: linear-gradient(
+    90deg,
+    rgba(247, 147, 26, 0.18),
+    var(--bitcoin-orange) 18%,
+    var(--bitcoin-orange-light) 58%,
+    rgba(247, 147, 26, 0.22)
+  );
+
+  transform: translateY(-50%) scaleX(0);
+  transform-origin: left center;
+  animation: bitcoinTitleChainDraw 1250ms cubic-bezier(0.22, 1, 0.36, 1) 180ms 1 forwards;
+}
+
+/* Jednotlivé uzly blockchainové linky. */
+.bitcoin-title-chain-node {
+  position: absolute;
+  top: 50%;
+  width: 5px;
+  height: 5px;
+  border: 1px solid var(--bitcoin-orange);
+  border-radius: 50%;
+  background: #101216;
+  box-shadow: 0 0 0 2px rgba(247, 147, 26, 0.07);
+
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.35);
+  animation: bitcoinTitleNodeAppear 360ms ease-out 1 forwards;
+}
+
+.bitcoin-title-chain-node:nth-of-type(2) {
+  left: 0%;
+  animation-delay: 250ms;
+}
+
+.bitcoin-title-chain-node:nth-of-type(3) {
+  left: 24%;
+  animation-delay: 500ms;
+}
+
+.bitcoin-title-chain-node:nth-of-type(4) {
+  left: 51%;
+  animation-delay: 760ms;
+}
+
+.bitcoin-title-chain-node:nth-of-type(5) {
+  left: 76%;
+  animation-delay: 1020ms;
+}
+
+.bitcoin-title-chain-node:nth-of-type(6) {
+  left: 100%;
+  animation-delay: 1260ms;
+}
+
+@keyframes bitcoinTitleChainDraw {
+  to {
+    transform: translateY(-50%) scaleX(1);
+  }
+}
+
+@keyframes bitcoinTitleNodeAppear {
+  to {
+    opacity: 0.9;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes bitcoinTitleDataPass {
+  0% {
+    opacity: 0;
+    background-position: 135% 0;
+  }
+
+  20% {
+    opacity: 0.68;
+  }
+
+  75% {
+    opacity: 0.68;
+  }
+
+  100% {
+    opacity: 0;
+    background-position: -35% 0;
+  }
+}
+
+@media (max-width: 520px) {
+  #contentTitle.bitcoin-title-enhanced {
+    padding-bottom: 15px;
+  }
+
+  .bitcoin-title-chain-node {
+    width: 4px;
+    height: 4px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bitcoin-title-word::after {
+    display: none;
+  }
+
+  .bitcoin-title-chain-line {
+    transform: translateY(-50%) scaleX(1);
+    animation: none;
+  }
+
+  .bitcoin-title-chain-node {
+    opacity: 0.9;
+    transform: translate(-50%, -50%) scale(1);
+    animation: none;
+  }
+}
+
+/* ========================================================================
+   SPOLEČNÝ VYCENTROVANÝ RÁMEC WEBU
+   Na menších displejích se hlavní panely automaticky roztáhnou na dostupnou
+   šířku. Vycentrování a boční mezery se uplatní hlavně na velkých monitorech.
+   ======================================================================== */
+@media (max-width: 760px) {
+  .content-area > *,
+  .page-bitcoin-article .content-area > .article-panel,
+  .article-page-panel {
+    width: 100%;
+  }
+}
+
+
+/* ========================================================================
+   TEXTOVÝ ČLÁNEK — GRAFICKÉ ODDĚLENÍ TEMATICKÝCH ČÁSTÍ
+   Běžné odstavce odděluje pouze mezera. Nové tematické části mají jemnou
+   linku, krátký oranžový akcent a mezititulek s prefixem //.
+   Vyšší specificita drží vzhled článků konzistentní napříč stránkami.
+   ======================================================================== */
+
+/* Větší odstup a jemná linka pouze mezi tematickými sekcemi. */
+body.article-text-page .article-content .article-text-section + .article-text-section {
+  position: relative;
+  margin-top: 54px;
+  padding-top: 34px;
+  border-top: 1px solid rgba(58, 65, 73, 0.72);
+}
+
+/* Krátký oranžový začátek oddělovací linky. */
+body.article-text-page .article-content .article-text-section + .article-text-section::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 0;
+
+  width: 64px;
+  height: 2px;
+
+  background: var(--bitcoin-orange);
+}
+
+/* Bílý mezititulek s oranžovým technickým prefixem. */
+body.article-text-page .article-content .article-text-section > h2 {
+  margin: 0 0 22px;
+
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: clamp(23px, 2.2vw, 30px);
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+}
+
+/* Prefix před názvem každé části. */
+body.article-text-page .article-content .article-text-section > h2::before {
+  content: "//";
+  display: inline-block;
+  margin-right: 12px;
+
+  color: var(--bitcoin-orange);
+  font-size: 0.68em;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+/* Běžné odstavce odděluje pouze čitelná mezera, nikoli čára. */
+body.article-text-page .article-content .article-text-section p + p {
+  margin-top: 18px;
+}
+
+/*
+  Seznam zdrojů už má vlastní horní oddělení, proto u něj vypneme druhou
+  dekorativní čáru, aby se grafické prvky nezdvojovaly.
+*/
+body.article-text-page .article-content .references-section {
+  margin-top: 58px;
+  padding-top: 34px;
+  border-top: 1px solid var(--line);
+}
+
+body.article-text-page .article-content .references-section::before {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  body.article-text-page .article-content .article-text-section + .article-text-section {
+    margin-top: 42px;
+    padding-top: 28px;
+  }
+
+  body.article-text-page .article-content .article-text-section > h2 {
+    margin-bottom: 18px;
+    font-size: clamp(21px, 7vw, 27px);
+  }
+
+  body.article-text-page .article-content .article-text-section > h2::before {
+    margin-right: 9px;
+  }
+}
+
+
+/* ========================================================================
+   KOMPAKTNĚJŠÍ SEZNAM POUŽITÝCH ZDROJŮ
+   Jednotlivé bibliografické záznamy jsou oddělené jen malou mezerou.
+   ======================================================================== */
+
+body.article-text-page .reference-list {
+  gap: 2px;
+}
+
+body.article-text-page .reference-item {
+  padding-top: 7px;
+  padding-bottom: 7px;
+}
+
+/* Číslo zdroje srovnáme s prvním řádkem textu. */
+body.article-text-page .reference-number {
+  top: 7px;
+}
+
+/* Odkaz zpět držíme těsně pod bibliografickým záznamem. */
+body.article-text-page .reference-back {
+  margin-top: 2px;
+}
+
+@media (max-width: 760px) {
+  body.article-text-page .reference-list {
+    gap: 0;
+  }
+
+  body.article-text-page .reference-item {
+    padding-top: 6px;
+    padding-bottom: 6px;
+  }
+
+  body.article-text-page .reference-number {
+    top: 6px;
+  }
+}
+
+
+/* ========================================================================
+   ZAROVNÁNÍ TEXTU ČLÁNKU DO BLOKU
+   Zarovnání do bloku se používá pouze pro běžné odstavce článku.
+   Odrážky, poznámky a seznam použitých zdrojů zůstávají zarovnané vlevo.
+   Automatické dělení slov zůstává vypnuté.
+   ======================================================================== */
+
+/* Hlavní čtecí text je záměrně tlumenější než nadpisy.
+   Snižuje kontrast proti tmavému pozadí při delším čtení. */
+body.article-text-page
+.article-content
+.article-text-section:not(.references-section) > p,
+body.article-text-page
+.article-content
+.article-text-section:not(.references-section) > .article-list,
+body.article-text-page
+.article-content
+.article-text-section:not(.references-section) > .article-list li {
+  color: var(--text-body);
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+body.article-text-page
+.article-content
+.article-text-section:not(.references-section) > p {
+  text-align: justify;
+  text-align-last: left;
+  text-justify: inter-word;
+  hyphens: none;
+}
+
+/*
+  Na úzkém displeji může zarovnání do bloku vytvářet příliš velké mezery
+  mezi slovy, proto se text na mobilu vrací k zarovnání vlevo.
+*/
+@media (max-width: 760px) {
+  body.article-text-page
+  .article-content
+  .article-text-section:not(.references-section) > p {
+    text-align: left;
+    text-align-last: auto;
+  }
+}
+
+/* ========================================================================
+   TECHNICKÁ CIRCUIT GRAFIKA V HLAVIČCE ČLÁNKU
+   Samotná kresba je SVG přímo v jednotlivých HTML stránkách. Díky tomu může
+   mít každá kapitola jiný směr a rozmístění cest. Vzhled čar a uzlů přebírá
+   existující systém .circuit-* používaný také na hlavním indexu webu.
+   ======================================================================== */
+
+body.article-text-page .article-header {
+  position: relative;
+
+  /*
+    Vpravo rezervujeme prostor pro větší dekoraci, aby se nadpis
+    ani jeho řetězový motiv nedostal pod SVG.
+  */
+  padding-right: 250px;
+}
+
+body.article-text-page .article-header-circuit {
+  position: absolute;
+  top: -22px;
+  right: -8px;
+
+  /* O něco větší varianta než předchozí motiv. */
+  width: 225px;
+  height: 175px;
+
+  display: block;
+  overflow: visible;
+
+  pointer-events: none;
+  user-select: none;
+
+  opacity: 0.88;
+
+  /* Spodní část dekorace je oříznutá, aby nepřesahovala přes oddělovací čáru hlavičky. */
+  clip-path: inset(0 0 16px 0);
+
+  /* Jemné zeslabení směrem k levému okraji grafiky. */
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 22%, black 100%);
+  mask-image: linear-gradient(to right, transparent 0%, black 22%, black 100%);
+}
+
+/*
+  Na užším notebooku grafiku mírně zmenšíme, ale stále zůstává
+  výraznější než původní kulaté logo.
+*/
+@media (max-width: 980px) {
+  body.article-text-page .article-header {
+    padding-right: 190px;
+  }
+
+  body.article-text-page .article-header-circuit {
+    top: -14px;
+    right: -6px;
+    width: 172px;
+    height: 138px;
+    opacity: 0.82;
+  }
+}
+
+/* Na telefonu má přednost čitelnost nadpisu. */
+@media (max-width: 700px) {
+  body.article-text-page .article-header {
+    padding-right: 0;
+  }
+
+  body.article-text-page .article-header-circuit {
+    display: none;
+  }
+}
+
+/* ========================================================================
+   AUTOR A DATUM POD HLAVIČKOU ČLÁNKU
+   ======================================================================== */
+
+/*
+  Blok je vložen mezi .article-header a .article-content.
+  Přepisujeme zde obecné mezery mezi přímými potomky .article-panel,
+  aby autor navazoval přímo na oddělovací čáru hlavičky.
+*/
+body.article-text-page .article-page-panel > .article-header {
+  margin-bottom: 0;
+}
+
+body.article-text-page .article-page-panel > .article-meta {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+
+  margin-top: 0;
+  padding: 16px 0 26px;
+}
+
+body.article-text-page .article-page-panel > .article-meta + .article-content {
+  margin-top: 0;
+}
+
+body.article-text-page .article-meta-avatar {
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+
+  display: block;
+
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+
+  object-fit: cover;
+  object-position: center;
+
+  background: rgba(255, 255, 255, 0.03);
+}
+
+body.article-text-page .article-meta-copy {
+  min-width: 0;
+
+  display: grid;
+  gap: 2px;
+}
+
+body.article-text-page .article-meta-author {
+  color: var(--text);
+
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: 0.02em;
+
+  text-transform: uppercase;
+}
+
+body.article-text-page .article-meta-date {
+  color: var(--muted);
+
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: 0.035em;
+
+  text-transform: uppercase;
+}
+
+@media (max-width: 760px) {
+  body.article-text-page .article-page-panel > .article-meta {
+    gap: 10px;
+    padding: 14px 0 22px;
+  }
+
+  body.article-text-page .article-meta-avatar {
+    width: 34px;
+    height: 34px;
+    flex-basis: 34px;
+  }
+
+  body.article-text-page .article-meta-author {
+    font-size: 11px;
+  }
+
+  body.article-text-page .article-meta-date {
+    font-size: 10px;
+  }
+}
+
+/* ========================================================================
+   ÚVODNÍ POZNÁMKA K ROZSAHU ČLÁNKU
+   ======================================================================== */
+
+body.article-text-page .article-intro-note {
+  margin: 0 0 34px;
+  padding: 18px 20px;
+
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--bitcoin-orange);
+
+  background: rgba(255, 255, 255, 0.018);
+}
+
+body.article-text-page .article-intro-note-label {
+  display: block;
+  margin-bottom: 8px;
+
+  color: var(--bitcoin-orange);
+
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 900;
+  line-height: 1.3;
+  letter-spacing: 0.14em;
+}
+
+body.article-text-page .article-intro-note p {
+  margin: 0;
+
+  color: var(--text-soft);
+
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.65;
+
+  text-align: left;
+  hyphens: none;
+}
+
+
+/* ========================================================================
+   OBRÁZEK UVNITŘ TEXTOVÉHO ČLÁNKU
+   ======================================================================== */
+
+.article-figure-compact {
+  width: min(360px, 100%);
+
+  margin: 18px auto 20px;
+
+  padding: 5px;
+
+  border: 1px solid var(--line-strong);
+  border-radius: 2px;
+
+  background: rgba(8, 10, 13, 0.42);
+}
+
+
+/* ========================================================================
+   VOLITELNÉ VELIKOSTI CELÉHO OBRÁZKU
+   ======================================================================== */
+
+.article-figure-compact.article-figure-small {
+  width: min(260px, 100%);
+}
+
+.article-figure-compact.article-figure-wide {
+  width: min(560px, 100%);
+}
+
+.article-figure-compact.article-figure-large {
+  width: min(760px, 100%);
+}
+
+.article-figure-compact.article-figure-diagram {
+  width: 100%;
+  max-width: 100%;
+}
+
+
+/* ========================================================================
+   SAMOTNÝ OBRÁZEK
+   ======================================================================== */
+
+.article-figure-compact img {
+  display: block;
+
+  width: 100%;
+  height: auto;
+
+  margin: 0 auto;
+
+  object-fit: contain;
+}
+
+
+/* ========================================================================
+   POPISEK OBRÁZKU
+
+   DŮLEŽITÉ:
+   Velikost obrázku může být 260 / 360 / 560 / 760 px,
+   ale popisek nikdy nebude širší než 360 px.
+   ======================================================================== */
+
+.article-figure-compact figcaption {
+  width: 100%;
+
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+
+  margin: 5px 0 0;
+
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+
+/* Název / popis obrázku. */
+
+.article-figure-compact .figure-caption {
+  min-width: 0;
+
+  color: var(--text-soft);
+
+  text-align: left;
+}
+
+
+/* Zdroj obrázku. */
+
+.article-figure-compact .figure-source {
+  flex: 0 0 auto;
+
+  color: var(--muted);
+
+  text-align: right;
+  white-space: nowrap;
+}
+
+
+/* ========================================================================
+   RESPONZIVITA
+   ======================================================================== */
+
+@media (max-width: 760px) {
+
+  .article-figure-compact,
+  .article-figure-compact.article-figure-small,
+  .article-figure-compact.article-figure-wide,
+  .article-figure-compact.article-figure-large {
+    max-width: 100%;
+  }
+
+}
+
+
+@media (max-width: 460px) {
+
+  .article-figure-compact figcaption {
+    width: 100%;
+
+    flex-wrap: wrap;
+    gap: 2px 10px;
+  }
+
+  .article-figure-compact .figure-source {
+    white-space: normal;
+  }
+
+}
+
+/* ========================================================================
+   INTERAKTIVNÍ ČASOVÁ OSA — VZNIK A HISTORIE BITCOINU
+
+   V10:
+   - jedna společná osa,
+   - Bitcoin nad osou, kontext pod osou,
+   - na běžném desktopu je výchozí zobrazení CELÁ OSA,
+   - zoom je odstraněný,
+   - na menších displejích se zachová minimální čitelné měřítko a horizontální posun,
+   - plynulé tažení myší přes requestAnimationFrame,
+   - nativní swipe a momentum scrolling na dotykových zařízeních.
+   ======================================================================== */
+
+body.article-text-page .history-timeline-section {
+  --timeline-canvas-height: 360px;
+  --timeline-axis-y: 180px;
+  min-width: 0;
+}
+
+.history-timeline-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 28px;
+  margin-bottom: 22px;
+}
+
+.history-timeline-heading-copy {
+  min-width: 0;
+}
+
+body.article-text-page
+.article-content
+.history-timeline-section
+.history-timeline-heading h2 {
+  margin: 0;
+
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: clamp(23px, 2.2vw, 30px);
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+}
+
+/* Stejný oranžový prefix jako u ostatních mezititulků článku. */
+body.article-text-page
+.article-content
+.history-timeline-section
+.history-timeline-heading h2::before {
+  content: "//";
+  display: inline-block;
+  margin-right: 12px;
+
+  color: var(--bitcoin-orange);
+  font-size: 0.68em;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+/* ------------------------------------------------------------------------
+   FILTRY
+   ------------------------------------------------------------------------ */
+
+.history-timeline-filters {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding-bottom: 3px;
+  white-space: nowrap;
+}
+
+.history-timeline-filter {
+  position: relative;
+  padding: 5px 0 8px;
+  border: 0;
+  color: var(--muted);
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  transition: color 150ms ease, opacity 150ms ease;
+}
+
+.history-timeline-filter::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--bitcoin-orange);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 150ms ease;
+}
+
+.history-timeline-filter:hover,
+.history-timeline-filter:focus-visible {
+  color: var(--text);
+}
+
+.history-timeline-filter.is-active {
+  color: var(--bitcoin-orange-light);
+}
+
+.history-timeline-filter.is-active::after {
+  transform: scaleX(1);
+}
+
+.history-timeline-filter-separator {
+  color: rgba(127, 135, 143, 0.48);
+  font-size: 9px;
+}
+
+/* ------------------------------------------------------------------------
+   OBAL A HORIZONTÁLNÍ POSUN
+   ------------------------------------------------------------------------ */
+
+.history-timeline-shell {
+  position: relative;
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr) 36px;
+  align-items: stretch;
+  gap: 8px;
+  min-width: 0;
+}
+
+.history-timeline-frame {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  background: #090b0e;
+}
+
+.history-timeline-edge {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 8;
+  width: 46px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 160ms ease;
+}
+
+.history-timeline-edge-left {
+  left: 0;
+  background: linear-gradient(90deg, rgba(9, 11, 14, 0.99), rgba(9, 11, 14, 0));
+}
+
+.history-timeline-edge-right {
+  right: 0;
+  background: linear-gradient(270deg, rgba(9, 11, 14, 0.99), rgba(9, 11, 14, 0));
+}
+
+.history-timeline-shell.can-scroll-left .history-timeline-edge-left,
+.history-timeline-shell.can-scroll-right .history-timeline-edge-right {
+  opacity: 1;
+}
+
+.history-timeline-viewport {
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  cursor: grab;
+  outline: none;
+  touch-action: pan-x pan-y;
+  -webkit-overflow-scrolling: touch;
+}
+
+.history-timeline-viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.history-timeline-viewport.is-dragging {
+  cursor: grabbing;
+  scroll-behavior: auto;
+  user-select: none;
+}
+
+.history-timeline-viewport:focus-visible {
+  box-shadow: inset 0 0 0 1px rgba(247, 147, 26, 0.5);
+}
+
+.history-timeline-canvas {
+  position: relative;
+  width: var(--timeline-canvas-width, 1400px);
+  min-width: 100%;
+  height: var(--timeline-canvas-height);
+  user-select: none;
+}
+
+/* Kompaktnější popisky při silném oddálení / CELÁ OSA. */
+.history-timeline-section.is-compact .history-timeline-event {
+  width: 88px;
+}
+
+.history-timeline-section.is-compact .history-timeline-event-copy {
+  width: 84px;
+}
+
+.history-timeline-section.is-compact .history-timeline-event-title {
+  font-size: 8.7px;
+}
+
+.history-timeline-section.is-compact .history-timeline-event-date {
+  font-size: 7px;
+}
+
+/* ------------------------------------------------------------------------
+   JEDNA SPOLEČNÁ OSA
+   ------------------------------------------------------------------------ */
+
+.history-timeline-axis-main {
+  position: absolute;
+  top: var(--timeline-axis-y);
+  left: 0;
+  right: 0;
+  z-index: 1;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(247, 147, 26, 0.48),
+    rgba(196, 199, 202, 0.36) 32%,
+    rgba(196, 199, 202, 0.30) 78%,
+    rgba(127, 135, 143, 0.18)
+  );
+  pointer-events: none;
+}
+
+.history-timeline-anchors {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.history-timeline-anchor {
+  position: absolute;
+  top: var(--timeline-axis-y);
+  width: 11px;
+  height: 11px;
+  border: 1.5px solid rgba(196, 199, 202, 0.62);
+  border-radius: 50%;
+  background: #090b0e;
+  transform: translate(-50%, -50%);
+  transition:
+    border-color 150ms ease,
+    background 150ms ease,
+    box-shadow 150ms ease,
+    transform 150ms ease;
+}
+
+.history-timeline-anchor.is-active {
+  border-color: var(--bitcoin-orange);
+  background: rgba(247, 147, 26, 0.14);
+  box-shadow:
+    0 0 0 4px rgba(247, 147, 26, 0.08),
+    0 0 15px rgba(247, 147, 26, 0.24);
+  transform: translate(-50%, -50%) scale(1.08);
+}
+
+.history-timeline-events {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+}
+
+/* ------------------------------------------------------------------------
+   UDÁLOSTI
+   ------------------------------------------------------------------------ */
+
+.history-timeline-event {
+  --timeline-event-level: 0;
+
+  position: absolute;
+  width: 112px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  text-align: center;
+  cursor: pointer;
+  pointer-events: auto;
+  transform: translateX(-50%);
+  transition: opacity 150ms ease, filter 150ms ease;
+}
+
+.history-timeline-event-copy {
+  position: absolute;
+  inset: 0;
+  width: 106px;
+  height: 44px;
+  margin-inline: auto;
+  padding: 3px 4px;
+  background: #090b0e;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.history-timeline-event::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  width: 1px;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.history-timeline-event-date {
+  display: block;
+  margin-bottom: 3px;
+  color: var(--muted);
+  font-size: 8px;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.history-timeline-event-title {
+  display: block;
+  color: var(--text);
+  font-size: 10.5px;
+  font-weight: 800;
+  line-height: 1.22;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+.history-timeline-event-meta,
+.history-timeline-event-marker {
+  display: none;
+}
+
+/* Bitcoin nad osou. */
+.history-timeline-event[data-category="bitcoin"] {
+  top: calc(106px - (var(--timeline-event-level) * 66px));
+}
+
+.history-timeline-event[data-category="bitcoin"]::after {
+  top: 44px;
+  height: calc(30px + (var(--timeline-event-level) * 66px));
+  background: rgba(247, 147, 26, 0.46);
+}
+
+.history-timeline-event[data-category="bitcoin"] .history-timeline-event-date {
+  color: var(--bitcoin-orange-light);
+}
+
+/* Kontext pod osou. */
+.history-timeline-event[data-category="context"] {
+  top: calc(214px + (var(--timeline-event-level) * 66px));
+}
+
+.history-timeline-event[data-category="context"]::after {
+  top: calc(-34px - (var(--timeline-event-level) * 66px));
+  height: calc(34px + (var(--timeline-event-level) * 66px));
+  background: rgba(127, 135, 143, 0.48);
+}
+
+.history-timeline-event:hover .history-timeline-event-title,
+.history-timeline-event:focus-visible .history-timeline-event-title,
+.history-timeline-event.is-active .history-timeline-event-title {
+  color: var(--bitcoin-orange-light);
+}
+
+.history-timeline-event:focus-visible .history-timeline-event-copy {
+  outline: 1px dashed rgba(247, 147, 26, 0.5);
+  outline-offset: 4px;
+}
+
+.history-timeline-event.is-muted {
+  opacity: 0.18;
+  filter: grayscale(0.65);
+}
+
+.history-timeline-event.is-muted:hover,
+.history-timeline-event.is-muted:focus-visible {
+  opacity: 0.48;
+}
+
+/* ------------------------------------------------------------------------
+   ŠIPKY POSUNU
+   ------------------------------------------------------------------------ */
+
+.history-timeline-scroll {
+  width: 36px;
+  min-width: 36px;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  color: var(--muted);
+  background: rgba(10, 12, 15, 0.84);
+  cursor: pointer;
+  font-size: 22px;
+  line-height: 1;
+  transition:
+    color 150ms ease,
+    border-color 150ms ease,
+    background 150ms ease,
+    opacity 150ms ease;
+}
+
+.history-timeline-scroll:hover:not(:disabled),
+.history-timeline-scroll:focus-visible:not(:disabled) {
+  color: var(--bitcoin-orange-light);
+  border-color: rgba(247, 147, 26, 0.5);
+  background: rgba(247, 147, 26, 0.05);
+}
+
+.history-timeline-scroll:disabled {
+  opacity: 0.2;
+  cursor: default;
+}
+
+/* ------------------------------------------------------------------------
+   DETAIL VYBRANÉ UDÁLOSTI
+   ------------------------------------------------------------------------ */
+
+.history-timeline-detail {
+  --timeline-detail-pointer-x: 50%;
+
+  position: relative;
+  width: min(700px, calc(100% - 84px));
+  min-height: 138px;
+  margin: 20px auto 0;
+  padding: 18px 20px 17px;
+  border: 1px solid rgba(247, 147, 26, 0.38);
+  border-radius: 2px;
+  background: #0b0d10;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.22);
+}
+
+.history-timeline-detail-pointer {
+  position: absolute;
+  top: -7px;
+  left: var(--timeline-detail-pointer-x);
+  width: 13px;
+  height: 13px;
+  border-left: 1px solid rgba(247, 147, 26, 0.38);
+  border-top: 1px solid rgba(247, 147, 26, 0.38);
+  background: #0b0d10;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.history-timeline-detail-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 7px;
+}
+
+.history-timeline-detail-date,
+.history-timeline-detail-category {
+  color: var(--bitcoin-orange-light);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+}
+
+.history-timeline-detail-category {
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.history-timeline-detail-title {
+  margin: 0 0 8px;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+body.article-text-page
+.article-content
+.history-timeline-section
+.history-timeline-detail-text {
+  margin: 0;
+  color: var(--text-soft);
+  font-size: 11px;
+  line-height: 1.65;
+  text-align: left;
+}
+
+.history-timeline-detail-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 13px;
+  padding-top: 11px;
+  border-top: 1px solid rgba(58, 65, 73, 0.58);
+  color: var(--bitcoin-orange-light);
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.history-timeline-detail-link:hover,
+.history-timeline-detail-link:focus-visible {
+  color: var(--bitcoin-orange);
+}
+
+body.article-text-page
+.article-content
+.history-timeline-section
+.history-timeline-hint {
+  margin: 10px 42px 0;
+  color: var(--muted);
+  font-size: 9px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+/* ------------------------------------------------------------------------
+   RESPONZIVITA
+   ------------------------------------------------------------------------ */
+
+@media (max-width: 860px) {
+  .history-timeline-heading {
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 760px) {
+  .history-timeline-heading {
+    display: block;
+  }
+
+  body.article-text-page
+  .article-content
+  .history-timeline-section
+  .history-timeline-heading h2 {
+    font-size: clamp(21px, 7vw, 27px);
+  }
+
+  body.article-text-page
+  .article-content
+  .history-timeline-section
+  .history-timeline-heading h2::before {
+    margin-right: 9px;
+  }
+
+  .history-timeline-filters {
+    margin-top: 15px;
+  }
+.history-timeline-shell {
+    grid-template-columns: 30px minmax(0, 1fr) 30px;
+    gap: 5px;
+  }
+
+  .history-timeline-scroll {
+    width: 30px;
+    min-width: 30px;
+    font-size: 19px;
+  }
+
+  .history-timeline-detail {
+    width: calc(100% - 70px);
+    padding: 16px;
+  }
+
+  body.article-text-page
+  .article-content
+  .history-timeline-section
+  .history-timeline-hint {
+    margin-inline: 36px;
+  }
+}
+
+@media (max-width: 520px) {
+  body.article-text-page .history-timeline-section {
+    --timeline-canvas-height: 352px;
+    --timeline-axis-y: 176px;
+  }
+
+  .history-timeline-event {
+    width: 108px;
+  }
+
+  .history-timeline-event-copy {
+    width: 102px;
+  }
+
+  .history-timeline-event-title {
+    font-size: 10px;
+  }
+
+  .history-timeline-event[data-category="bitcoin"] {
+    top: calc(102px - (var(--timeline-event-level) * 62px));
+  }
+
+  .history-timeline-event[data-category="bitcoin"]::after {
+    top: 44px;
+    height: calc(30px + (var(--timeline-event-level) * 62px));
+  }
+
+  .history-timeline-event[data-category="context"] {
+    top: calc(210px + (var(--timeline-event-level) * 62px));
+  }
+
+  .history-timeline-event[data-category="context"]::after {
+    top: calc(-34px - (var(--timeline-event-level) * 62px));
+    height: calc(34px + (var(--timeline-event-level) * 62px));
+  }
+
+  .history-timeline-section.is-compact .history-timeline-event {
+    width: 76px;
+  }
+
+  .history-timeline-section.is-compact .history-timeline-event-copy {
+    width: 72px;
+  }
+
+  .history-timeline-detail {
+    width: 100%;
+    margin-top: 15px;
+  }
+
+  .history-timeline-detail-pointer {
+    display: none;
+  }
+
+  body.article-text-page
+  .article-content
+  .history-timeline-section
+  .history-timeline-hint {
+    margin-inline: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .history-timeline-viewport {
+    scroll-behavior: auto;
+  }
+}
+
+/* ========================================================================
+   MINI TABULKA BTC / SATS
+   Decentní orientační přehled vložený přímo do textu článku.
+   ======================================================================== */
+
+body.article-text-page .btc-sats-table-wrap {
+  display: flex;
+  justify-content: center;
+  margin: 24px 0 26px;
+}
+
+body.article-text-page .btc-sats-table {
+  width: min(320px, 100%);
+  border-collapse: collapse;
+  color: var(--text-soft);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.45;
+}
+
+body.article-text-page .btc-sats-table th,
+body.article-text-page .btc-sats-table td {
+  padding: 6px 12px;
+  white-space: nowrap;
+}
+
+body.article-text-page .btc-sats-table th {
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line-strong);
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+body.article-text-page .btc-sats-table td {
+  border-bottom: 1px solid var(--line);
+}
+
+body.article-text-page .btc-sats-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+body.article-text-page .btc-sats-table th:first-child,
+body.article-text-page .btc-sats-table td:first-child {
+  text-align: left;
+}
+
+body.article-text-page .btc-sats-table th:last-child,
+body.article-text-page .btc-sats-table td:last-child {
+  text-align: right;
+}
+
+body.article-text-page .btc-sats-table tbody tr:first-child td,
+body.article-text-page .btc-sats-table tbody tr:last-child td {
+  color: var(--text);
+}
+
+@media (max-width: 460px) {
+  body.article-text-page .btc-sats-table {
+    width: min(290px, 100%);
+    font-size: 11px;
+  }
+
+  body.article-text-page .btc-sats-table th,
+  body.article-text-page .btc-sats-table td {
+    padding-inline: 9px;
+  }
+}
+
+/* ========================================================================
+   INTERAKTIVNÍ POJMY A VYSVĚTLOVACÍ POPUP
+   Pojem v textu používá class="term" a data-term="...".
+   Obsah popupu se načítá centrálně z assets/data/terms-data.js.
+   ======================================================================== */
+
+/* Klikací pojem uvnitř běžného textu. */
+body.article-text-page .article-content .term {
+  display: inline;
+
+  margin: 0;
+  padding: 0;
+  border: 0;
+
+  color: var(--bitcoin-orange-light);
+  background: transparent;
+
+  font: inherit;
+  line-height: inherit;
+  text-align: inherit;
+
+  text-decoration-line: underline;
+  text-decoration-color: rgba(247, 147, 26, 0.48);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+
+  cursor: pointer;
+
+  appearance: none;
+  -webkit-appearance: none;
+
+  transition:
+    color 150ms ease,
+    text-decoration-color 150ms ease,
+    text-shadow 150ms ease;
+}
+
+body.article-text-page .article-content .term:hover,
+body.article-text-page .article-content .term:focus-visible,
+body.article-text-page .article-content .term[aria-expanded="true"] {
+  color: var(--bitcoin-orange);
+
+  text-decoration-color: var(--bitcoin-orange);
+
+  text-shadow:
+    0 0 10px rgba(247, 147, 26, 0.16);
+}
+
+body.article-text-page .article-content .term:focus-visible {
+  outline: 1px dashed rgba(247, 147, 26, 0.72);
+  outline-offset: 3px;
+}
+
+
+/* ========================================================================
+   POPUP POJMU
+   Vzhled odpovídá původní ukázce:
+   - tenký oranžový rámeček,
+   - silnější oranžová levá hrana,
+   - jednolité tmavé pozadí,
+   - bez dekorativního rohu,
+   - bez oddělovací linky nad odkazem.
+   ======================================================================== */
+
+.term-popup {
+  position: fixed;
+  z-index: 1200;
+
+  width: min(360px, calc(100vw - 32px));
+
+  padding: 20px;
+
+  border: 1px solid rgba(247, 147, 26, 0.55);
+  border-left: 4px solid var(--bitcoin-orange);
+  border-radius: 0;
+
+  color: var(--text);
+
+  background: #101318;
+
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.60);
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  transform: translateY(8px);
+
+  transition:
+    opacity 150ms ease,
+    transform 150ms ease,
+    visibility 150ms ease;
+}
+
+.term-popup.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+
+  transform: translateY(0);
+}
+
+
+/* ------------------------------------------------------------------------
+   MALÝ ORANŽOVÝ ŠTÍTEK // POJEM
+   ------------------------------------------------------------------------ */
+
+.term-popup-kicker {
+  display: block;
+
+  margin: 0 0 8px;
+
+  color: var(--bitcoin-orange);
+
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 900;
+  line-height: 1.3;
+  letter-spacing: 0.14em;
+
+  text-transform: uppercase;
+}
+
+
+/* ------------------------------------------------------------------------
+   NÁZEV POJMU
+   ------------------------------------------------------------------------ */
+
+.term-popup-title {
+  margin: 0 0 10px;
+
+  color: var(--text);
+
+  font-family: var(--font-mono);
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+
+
+/* ------------------------------------------------------------------------
+   VOLITELNÝ PODNÁZEV
+   ------------------------------------------------------------------------ */
+
+.term-popup-subtitle {
+  display: block;
+
+  margin: -4px 0 10px;
+
+  color: var(--muted);
+
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.term-popup-subtitle:empty {
+  display: none;
+}
+
+
+/* ------------------------------------------------------------------------
+   VYSVĚTLENÍ
+   ------------------------------------------------------------------------ */
+
+.term-popup-text {
+  margin: 0;
+
+  color: var(--text-soft);
+
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.65;
+
+  text-align: left;
+  hyphens: none;
+}
+
+
+/* ------------------------------------------------------------------------
+   ODKAZ NA DETAIL
+   ------------------------------------------------------------------------ */
+
+.term-popup-link {
+  display: inline-flex;
+
+  margin-top: 16px;
+  padding: 0;
+
+  border: 0;
+
+  color: var(--bitcoin-orange-light);
+
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
+
+  text-decoration: none;
+
+  transition:
+    color 150ms ease;
+}
+
+.term-popup-link:hover,
+.term-popup-link:focus-visible {
+  color: var(--bitcoin-orange);
+
+  text-decoration: none;
+}
+
+.term-popup-link[hidden] {
+  display: none;
+}
+
+/* ========================================================================
+   ODKAZY UVNITŘ TEXTU ČLÁNKU
+   ======================================================================== */
+
+body.article-text-page .article-content .article-inline-link {
+  color: var(--bitcoin-orange-light);
+
+  text-decoration-line: underline;
+  text-decoration-color: rgba(247, 147, 26, 0.48);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+
+  transition:
+    color 150ms ease,
+    text-decoration-color 150ms ease,
+    text-shadow 150ms ease;
+}
+
+body.article-text-page .article-content .article-inline-link:hover,
+body.article-text-page .article-content .article-inline-link:focus-visible {
+  color: var(--bitcoin-orange);
+  text-decoration-color: var(--bitcoin-orange);
+
+  text-shadow:
+    0 0 10px rgba(247, 147, 26, 0.16);
+}
+
+
+/* ------------------------------------------------------------------------
+   MOBIL
+   ------------------------------------------------------------------------ */
+
+@media (max-width: 620px) {
+
+  .term-popup {
+    left: 16px !important;
+    right: 16px;
+
+    top: auto !important;
+    bottom: 16px;
+
+    width: auto;
+  }
+
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+
+  .term-popup {
+    transition: none;
+  }
+
+}
+
+/* ========================================================================
+   PŘÍMÉ ODKAZY NA NADPISY ČLÁNKU
+   Tlačítko s ikonou řetězu se zobrazuje pouze u H2 nadpisů jednotlivých
+   tematických sekcí. Na desktopu je skryté, dokud uživatel nenajede myší
+   na nadpis. Kliknutí zkopíruje přímý odkaz na danou sekci.
+   ======================================================================== */
+
+body.article-text-page
+.article-content
+.article-text-section > h2 {
+  position: relative;
+  scroll-margin-top: calc(var(--topbar-height) + 28px);
+}
+
+/* Tlačítko je umístěné vlevo mimo sazbu nadpisu, takže nijak neposouvá text. */
+.article-heading-link {
+  position: absolute;
+  top: 50%;
+  left: -34px;
+
+  width: 25px;
+  height: 25px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 4px;
+
+  color: var(--muted);
+  background: transparent;
+
+  cursor: pointer;
+
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(4px, -50%);
+
+  transition:
+    opacity 140ms ease,
+    visibility 140ms ease,
+    transform 140ms ease,
+    color 140ms ease,
+    border-color 140ms ease,
+    background 140ms ease;
+}
+
+.article-heading-link svg {
+  width: 15px;
+  height: 15px;
+
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Ikona se objeví při hoveru nadpisu nebo při ovládání klávesnicí. */
+body.article-text-page
+.article-content
+.article-text-section > h2:hover
+.article-heading-link,
+.article-heading-link:focus-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(0, -50%);
+}
+
+.article-heading-link:hover,
+.article-heading-link:focus-visible {
+  color: var(--bitcoin-orange-light);
+  border-color: rgba(247, 147, 26, 0.28);
+  background: rgba(247, 147, 26, 0.07);
+  outline: none;
+}
+
+/* Krátká zpětná vazba po zkopírování odkazu. */
+.article-heading-link.is-copied {
+  opacity: 1;
+  visibility: visible;
+  color: var(--bitcoin-orange);
+  border-color: rgba(247, 147, 26, 0.38);
+  background: rgba(247, 147, 26, 0.09);
+  transform: translate(0, -50%);
+}
+
+/* Jemné zvýraznění sekce otevřené přes přímý odkaz. */
+body.article-text-page
+.article-content
+.article-text-section > h2:target {
+  color: var(--text);
+}
+
+body.article-text-page
+.article-content
+.article-text-section > h2:target::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -7px;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(247, 147, 26, 0.7),
+    transparent 55%
+  );
+}
+
+/*
+  Na dotykových zařízeních není hover spolehlivý, proto je ikona
+  nenápadně viditelná trvale.
+*/
+@media (hover: none), (pointer: coarse) {
+  .article-heading-link {
+    opacity: 0.38;
+    visibility: visible;
+    transform: translate(0, -50%);
+  }
+}
+
+@media (max-width: 760px) {
+  .article-heading-link {
+    left: -28px;
+    width: 22px;
+    height: 22px;
+  }
+
+  .article-heading-link svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+/* ========================================================================
+   TERMINÁLOVÁ LIŠTA V HLAVIČCE TEXTOVÉHO ČLÁNKU
+   Používá se pouze na stránkách s třídou .article-terminal-page.
+   Lišta využívá stejné .terminal-* prvky jako rozcestník /bitcoin/home.html,
+   ale je vložena přímo do horní hrany article panelu.
+   ======================================================================== */
+
+/*
+  Article panel si ponechává svoje stávající vnitřní odsazení.
+  Terminálovou lištu pouze vytáhneme přes horní a boční padding až k hranám
+  panelu. Díky tomu není nutné měnit strukturu ani rozložení zbytku článku.
+*/
+body.article-terminal-page .article-page-panel {
+  overflow: hidden;
+}
+
+body.article-terminal-page
+.article-page-panel > .article-terminal-bar {
+  margin-top: calc(0px - clamp(32px, 4vw, 64px));
+  margin-right: calc(0px - clamp(32px, 4vw, 64px));
+  margin-bottom: 0;
+  margin-left: calc(0px - clamp(32px, 4vw, 64px));
+
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+
+/*
+  Obecné pravidlo .article-panel > * + * by po terminálové liště vytvořilo
+  příliš velkou mezeru. Zde nastavujeme vlastní, kontrolovaný odstup.
+  Současně tím zůstává circuit grafika bezpečně pod terminálovou lištou:
+  její top: -22px se počítá až od této odsazené hlavičky.
+*/
+body.article-terminal-page
+.article-page-panel > .article-terminal-bar + .article-header {
+  margin-top: 34px;
+}
+
+/*
+  Terminálová cesta i příkaz zůstávají v jednom řádku na desktopu.
+  Text cesty může při nedostatku místa použít existující ellipsis.
+*/
+body.article-terminal-page .article-terminal-bar {
+  position: relative;
+  z-index: 2;
+}
+
+/*
+  Circuit grafika je pod terminálovou lištou a nepřekrývá ji.
+*/
+body.article-terminal-page .article-header-circuit {
+  z-index: 1;
+}
+
+
+/* ------------------------------------------------------------------------
+   RESPONZIVITA
+   ------------------------------------------------------------------------ */
+
+@media (max-width: 760px) {
+  /*
+    uvod.html má na mobilu vlastní padding 26px 22px,
+    proto lištu vytáhneme přesně o tyto hodnoty.
+  */
+  body.article-terminal-page
+  .article-page-panel > .article-terminal-bar {
+    margin-top: -26px;
+    margin-right: -22px;
+    margin-left: -22px;
+  }
+
+  body.article-terminal-page
+  .article-page-panel > .article-terminal-bar + .article-header {
+    margin-top: 26px;
+  }
+}
+
+@media (max-width: 620px) {
+  /*
+    Na velmi úzkém displeji má přednost cesta článku.
+    Pravý grep motiv se schová, aby se prvky navzájem nemačkaly.
+  */
+  body.article-terminal-page
+  .article-terminal-bar .terminal-meta {
+    display: none;
+  }
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  .back-to-top {
+    transition:
+      color 140ms ease,
+      background 140ms ease,
+      border-color 140ms ease;
+  }
+}
+
+
+/* ==========================================================================
+   Sdílený textový článek
+   ========================================================================== */
+/* ================================================================
+   TEXTOVÁ PODOBA ČLÁNKU ÚVOD DO BITCOINU
+   ================================================================ */
+
+.article-text-page .article-page-panel {
+  width: min(var(--content-article), 100%);
+  margin-inline: auto;
+  padding: clamp(32px, 4vw, 64px);
+}
+
+.article-text-page .article-header {
+  max-width: none;
+  margin: 0;
+  padding: 0 0 28px;
+}
+
+    .article-text-page .article-content {
+  width: 100%;
+}
+
+.article-text-page .article-text-section {
+  width: 100%;
+  max-width: none;
+}
+
+.article-text-page .article-text-section+.article-text-section {
+  margin-top: 46px;
+}
+
+.article-text-page .article-text-section h2 {
+  margin: 0 0 20px;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: clamp(22px, 2.2vw, 31px);
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+}
+
+/* Běžný text článku je o něco tlumenější než nadpisy,
+   aby na tmavém pozadí nebyl při delším čtení příliš ostrý. */
+.article-text-page .article-text-section:not(.references-section) p,
+.article-text-page .article-text-section:not(.references-section) li {
+  color: var(--text-body);
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.75;
+  text-align: left;
+  hyphens: none;
+  word-break: normal;
+  text-wrap: pretty;
+}
+
+.article-text-page .references-intro,
+.article-text-page .reference-item {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.75;
+  text-align: left;
+  hyphens: none;
+  word-break: normal;
+  text-wrap: pretty;
+}
+
+.article-text-page .article-text-section p {
+  margin: 0;
+}
+
+.article-text-page .article-text-section p+p {
+  margin-top: 18px;
+}
+
+.article-text-page .article-text-section strong {
+  font-weight: 700;
+}
+
+.article-text-page .article-list {
+  margin: 18px 0 20px;
+  padding-left: 24px;
+  color: var(--text-body);
+}
+
+.article-text-page .article-list li {
+  padding-left: 5px;
+}
+
+.article-text-page .article-list li+li {
+  margin-top: 7px;
+}
+
+/* Citace v textu. */
+.article-text-page .citation,
+.article-text-page .citation-group {
+  white-space: nowrap;
+  font-size: 0.9em;
+  font-weight: 700;
+}
+
+.article-text-page .citation,
+.article-text-page .citation-group a {
+  color: var(--bitcoin-orange-light);
+  text-decoration: none;
+}
+
+.article-text-page .citation:hover,
+.article-text-page .citation:focus-visible,
+.article-text-page .citation-group a:hover,
+.article-text-page .citation-group a:focus-visible {
+  color: var(--bitcoin-orange);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Seznam zdrojů. */
+.article-text-page .references-section {
+  margin-top: 58px;
+  padding-top: 34px;
+  border-top: 1px solid var(--line);
+}
+
+.article-text-page .references-section h2 {
+  margin-bottom: 12px;
+}
+
+.article-text-page .references-intro {
+  margin: 0 0 28px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.article-text-page .reference-list {
+  display: grid;
+  gap: 22px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.article-text-page .reference-item {
+  position: relative;
+  min-width: 0;
+  padding: 14px 16px 14px 54px;
+  border-left: 2px solid transparent;
+  color: var(--text-soft);
+  scroll-margin-top: calc(var(--topbar-height) + 24px);
+  transition:
+    border-color 160ms ease,
+    background 160ms ease;
+}
+
+.article-text-page .reference-item:target {
+  border-left-color: var(--bitcoin-orange);
+  background: rgba(247, 147, 26, 0.07);
+}
+
+.article-text-page .reference-number {
+  position: absolute;
+  top: 14px;
+  left: 12px;
+  color: var(--bitcoin-orange-light);
+  font-weight: 900;
+}
+
+.article-text-page .reference-title {
+  color: var(--text);
+  font-style: italic;
+}
+
+.article-text-page .reference-link {
+  color: var(--bitcoin-orange-light);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.article-text-page .reference-link:hover,
+.article-text-page .reference-link:focus-visible {
+  color: var(--bitcoin-orange);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.article-text-page .reference-back {
+  display: inline-flex;
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.article-text-page .reference-back:hover,
+.article-text-page .reference-back:focus-visible {
+  color: var(--bitcoin-orange);
+}
+
+@media (max-width: 760px) {
+  .article-text-page .article-page-panel {
+    padding: 26px 22px;
+  }
+
+  .article-text-page .article-text-section+.article-text-section {
+    margin-top: 38px;
+  }
+
+  .article-text-page .article-text-section:not(.references-section) p,
+  .article-text-page .article-text-section:not(.references-section) li,
+  .article-text-page .reference-item {
+    font-size: 15px;
+    line-height: 1.72;
+  }
+
+  .article-text-page .reference-item {
+    padding-left: 46px;
+  }
+}
+
+
+/* ==========================================================================
+   Projektové stránky
+   ========================================================================== */
+/* ================================================================
+   SPOLEČNÉ ROZLOŽENÍ PROJEKTOVÝCH STRÁNEK
+   ================================================================ */
+
+.project-text-page .article-page-panel {
+  width: min(var(--content-article), 100%);
+  margin-inline: auto;
+  padding: clamp(32px, 4vw, 64px);
+}
+
+.project-text-page .article-header {
+  max-width: none;
+  margin: 0;
+  padding: 0 0 28px;
+}
+
+.project-text-page .article-content {
+  width: 100%;
+}
+
+.project-text-page .article-text-section {
+  width: 100%;
+  max-width: none;
+}
+
+.project-text-page .article-text-section + .article-text-section {
+  margin-top: 46px;
+}
+
+.project-text-page .article-text-section h2 {
+  margin: 0 0 20px;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: clamp(22px, 2.2vw, 31px);
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+}
+
+.project-text-page .article-text-section p,
+.project-text-page .article-text-section li {
+  color: var(--text-body);
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.75;
+  text-align: left;
+  hyphens: none;
+  word-break: normal;
+  text-wrap: pretty;
+}
+
+.project-text-page .article-text-section p {
+  margin: 0;
+}
+
+.project-text-page .article-text-section p + p {
+  margin-top: 18px;
+}
+
+.project-text-page .article-list {
+  margin: 18px 0 20px;
+  padding-left: 24px;
+  color: var(--text-body);
+}
+
+.project-text-page .article-list li {
+  padding-left: 5px;
+}
+
+.project-text-page .article-list li + li {
+  margin-top: 7px;
+}
+
+.project-text-page .project-intro {
+  margin: 0 0 42px;
+  padding: 18px 20px;
+  border-left: 2px solid var(--bitcoin-orange);
+  background: rgba(247, 147, 26, 0.055);
+}
+
+.project-text-page .project-intro p {
+  margin: 0;
+  color: var(--text-body);
+  font-family: var(--font-mono);
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+.project-text-page .project-inline-link {
+  color: var(--bitcoin-orange-light);
+  text-decoration: none;
+}
+
+.project-text-page .project-inline-link:hover,
+.project-text-page .project-inline-link:focus-visible {
+  color: var(--bitcoin-orange);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (max-width: 760px) {
+  .project-text-page .article-page-panel {
+    padding: 26px 22px;
+  }
+
+  .project-text-page .article-text-section + .article-text-section {
+    margin-top: 38px;
+  }
+
+  .project-text-page .article-text-section p,
+  .project-text-page .article-text-section li,
+  .project-text-page .project-intro p {
+    font-size: 15px;
+    line-height: 1.72;
+  }
+}
+
+
+/* Souvislé prohlášení bez oddělovací linky. */
+.project-text-page .project-statement {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.project-text-page .project-statement::before {
+  display: none;
+}
+
+.project-text-page .project-signature {
+  margin-top: 30px !important;
+  color: var(--bitcoin-orange) !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.04em;
+}
+
+/* Inline značka <bytkojn/>. */
+.project-text-page .project-statement .bytkojn-inline {
+  font-weight: inherit;
+  letter-spacing: inherit;
+}
+
+.project-text-page .project-statement .bytkojn-inline-name {
+  color: inherit;
+}
+
+.project-text-page .project-statement .bytkojn-inline-mark {
+  color: var(--bitcoin-orange);
+}
+
+
+/* ================================================================
+   PROJEKTOVÉ STRÁNKY — JEDNOSLOUPCOVÉ ROZLOŽENÍ
+   ================================================================ */
+
+.project-text-page .app-shell {
+  display: block;
+}
+
+.project-text-page .content-area {
+  width: 100%;
+}
+
+.project-text-page .content-area > .article-page-panel {
+  width: min(var(--content-article), 100%);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (max-width: 760px) {
+  .project-text-page .content-area {
+    padding: 14px;
+  }
+}
+
+/* Menší mezera mezi oddělovací čárou hlavičky a textem
+   na projektových stránkách. */
+.project-text-page .article-page-panel > .article-content {
+  margin-top: 22px;
+}
+
+
+/* ==========================================================================
+   Interaktivní mapa toku transakce
+   ========================================================================== */
+/* ========================================================================
+   INTERAKTIVNÍ MAPA TOKU BITCOINOVÉ TRANSAKCE
+   Jedna panoramatická plocha: peněženka -> uzly -> těžař -> blok -> potvrzení
+   ======================================================================== */
+
+.article-text-page .btc-flow-map-section {
+  width: 100%;
+}
+
+.article-text-page .btc-flow-map-lead {
+  max-width: 920px;
+  margin-bottom: 20px !important;
+}
+
+.btc-flow-map {
+  margin-top: 22px;
+  border: 1px solid var(--line-strong);
+  border-radius: 3px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 18% 28%, rgba(247, 147, 26, 0.06), transparent 24%),
+    radial-gradient(circle at 76% 40%, rgba(247, 147, 26, 0.045), transparent 26%),
+    #080a0d;
+  box-shadow: var(--shadow);
+}
+
+.btc-flow-map__toolbar {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(8, 10, 13, 0.96);
+}
+
+.btc-flow-map__tool {
+  width: 34px;
+  height: 30px;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid var(--line-strong);
+  border-radius: 3px;
+  color: var(--text-soft);
+  background: rgba(255, 255, 255, 0.018);
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 16px;
+  line-height: 1;
+  transition:
+    color 150ms ease,
+    border-color 150ms ease,
+    background 150ms ease;
+}
+
+.btc-flow-map__tool:hover,
+.btc-flow-map__tool:focus-visible {
+  color: var(--bitcoin-orange-light);
+  border-color: rgba(247, 147, 26, 0.65);
+  background: rgba(247, 147, 26, 0.06);
+}
+
+.btc-flow-map__tool--reset {
+  width: auto;
+  padding-inline: 12px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.btc-flow-map__viewport {
+  position: relative;
+  height: clamp(280px, 30vw, 340px);
+  overflow: hidden;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  background:
+    linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px),
+    #07090b;
+  background-size: 32px 32px;
+}
+
+.btc-flow-map__viewport.is-dragging {
+  cursor: grabbing;
+}
+
+.btc-flow-map__stage {
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 3120px;
+  height: 720px;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+
+.btc-flow-map__stage svg {
+  width: 3120px;
+  height: 720px;
+  display: block;
+  overflow: visible;
+}
+
+.btc-flow-map__detail {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+  min-height: 126px;
+  padding: 18px 20px 20px;
+  border-top: 1px solid var(--line);
+  background:
+    linear-gradient(90deg, rgba(247, 147, 26, 0.045), transparent 38%),
+    #0b0d10;
+}
+
+.btc-flow-map__detail-index {
+  min-width: 38px;
+  color: var(--bitcoin-orange);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.btc-flow-map__detail-copy h3 {
+  margin: 0;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 16px;
+  line-height: 1.35;
+}
+
+.btc-flow-map__detail-copy p {
+  margin: 8px 0 0 !important;
+  color: var(--text-soft) !important;
+  font-size: 13px !important;
+  line-height: 1.7 !important;
+}
+
+.btc-flow-map__hint {
+  margin: 12px 0 0 !important;
+  color: var(--muted) !important;
+  font-size: 12px !important;
+  line-height: 1.6 !important;
+}
+
+/* SVG visual language */
+
+.btc-map-svg text {
+  font-family: var(--font-mono);
+}
+
+.btc-map-svg .map-main-title {
+  fill: #f4f1e9;
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+}
+
+.btc-map-svg .map-main-subtitle {
+  fill: #7f878f;
+  font-size: 15px;
+}
+
+.btc-map-svg .map-step-number {
+  fill: #f7931a;
+  font-size: 17px;
+  font-weight: 900;
+}
+
+.btc-map-svg .map-step-title {
+  fill: #f4f1e9;
+  font-size: 19px;
+  font-weight: 800;
+}
+
+.btc-map-svg .map-step-note {
+  fill: #8f969d;
+  font-size: 12px;
+}
+
+.btc-map-svg .map-card {
+  fill: rgba(13, 16, 20, 0.92);
+  stroke: rgba(196, 199, 202, 0.26);
+  stroke-width: 1.3;
+  vector-effect: non-scaling-stroke;
+}
+
+.btc-map-svg .map-group.is-active > .map-card {
+  stroke: rgba(247, 147, 26, 0.78);
+  filter: drop-shadow(0 0 10px rgba(247, 147, 26, 0.12));
+}
+
+.btc-map-svg .map-route-muted {
+  fill: none;
+  stroke: rgba(127, 135, 143, 0.43);
+  stroke-width: 2;
+  stroke-dasharray: 7 10;
+  vector-effect: non-scaling-stroke;
+}
+
+.btc-map-svg .map-route-tx {
+  fill: none;
+  stroke: #f7931a;
+  stroke-width: 3.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0 5px rgba(247, 147, 26, 0.25));
+}
+
+.btc-map-svg .map-route-block {
+  fill: none;
+  stroke: #63e67b;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0 5px rgba(99, 230, 123, 0.2));
+}
+
+.btc-map-svg .map-node-body,
+.btc-map-svg .map-wallet,
+.btc-map-svg .map-block,
+.btc-map-svg .map-doc,
+.btc-map-svg .map-header,
+.btc-map-svg .map-hash-box {
+  fill: #090b0e;
+  stroke: rgba(244, 241, 233, 0.88);
+  stroke-width: 2.2;
+  vector-effect: non-scaling-stroke;
+}
+
+.btc-map-svg .map-node-screen {
+  fill: rgba(24, 126, 178, 0.12);
+  stroke: #27bfff;
+  stroke-width: 1.7;
+  vector-effect: non-scaling-stroke;
+}
+
+.btc-map-svg .map-miner-body {
+  fill: rgba(247, 147, 26, 0.07);
+  stroke: #f7931a;
+  stroke-width: 2.2;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0 9px rgba(247, 147, 26, 0.16));
+}
+
+.btc-map-svg .map-mempool-cell {
+  fill: rgba(196, 199, 202, 0.34);
+  stroke: rgba(244, 241, 233, 0.66);
+  stroke-width: 1.2;
+  vector-effect: non-scaling-stroke;
+}
+
+.btc-map-svg .map-mempool-cell-active {
+  fill: rgba(247, 147, 26, 0.8);
+  stroke: #ffb14a;
+}
+
+.btc-map-svg .map-orange {
+  fill: #f7931a;
+}
+
+.btc-map-svg .map-green {
+  fill: #63e67b;
+}
+
+.btc-map-svg .map-muted {
+  fill: #7f878f;
+}
+
+.btc-map-svg .map-light {
+  fill: #f4f1e9;
+}
+
+.btc-map-svg .map-line-white {
+  fill: none;
+  stroke: rgba(244, 241, 233, 0.78);
+  stroke-width: 2;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.btc-map-svg .map-line-orange {
+  fill: none;
+  stroke: #f7931a;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.btc-map-svg .map-line-green {
+  fill: none;
+  stroke: #63e67b;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.btc-map-svg .map-check {
+  fill: none;
+  stroke: #63e67b;
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.btc-map-svg .map-hit {
+  fill: transparent;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.btc-map-svg .map-group {
+  opacity: 0.78;
+  transition:
+    opacity 160ms ease,
+    filter 160ms ease;
+}
+
+.btc-map-svg .map-group:hover,
+.btc-map-svg .map-group.is-active {
+  opacity: 1;
+}
+
+.btc-map-svg .map-group.is-active {
+  filter: drop-shadow(0 0 8px rgba(247, 147, 26, 0.13));
+}
+
+.btc-map-svg .map-flow-dot {
+  filter: drop-shadow(0 0 6px rgba(247, 147, 26, 0.7));
+}
+
+.btc-map-svg .map-block-dot {
+  filter: drop-shadow(0 0 6px rgba(99, 230, 123, 0.65));
+}
+
+@media (max-width: 760px) {
+  .btc-flow-map__viewport {
+    height: 320px;
+  }
+
+  .btc-flow-map__detail {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .btc-flow-map__status {
+    display: none;
+  }
+}
+
+@media (max-width: 420px) {
+  .btc-flow-map__viewport {
+    height: 300px;
+  }
+}
+
+
+/* ==========================================================================
+   Podpora projektu
+   ========================================================================== */
+/* ================================================================
+       PODPOŘIT PROJEKT — pouze tato stránka
+       ================================================================ */
+
+    .project-text-page .support-page {
+      margin-top: 0;
+      padding-top: 0;
+      border-top: 0;
+    }
+
+    .project-text-page .support-page::before {
+      display: none;
+    }
+
+    .support-box {
+      margin-top: 32px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(8, 10, 13, 0.42);
+      overflow: hidden;
+    }
+
+    .support-box-head {
+      min-height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 0 18px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(0, 0, 0, 0.20);
+      font-family: var(--font-mono);
+    }
+
+    .support-box-kicker {
+      color: var(--bitcoin-orange);
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.13em;
+    }
+
+    .support-box-type {
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+
+    .support-box-content {
+      display: grid;
+      grid-template-columns: 220px minmax(0, 1fr);
+      gap: 32px;
+      align-items: center;
+      padding: 28px;
+    }
+
+    .support-qr {
+      width: 100%;
+      max-width: 220px;
+      margin: 0;
+    }
+
+    .support-qr img {
+      display: block;
+      width: 100%;
+      height: auto;
+      padding: 8px;
+      border: 1px solid var(--line-strong);
+      background: #ffffff;
+    }
+
+    .support-qr figcaption {
+      margin-top: 8px;
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 9px;
+      line-height: 1.45;
+      text-align: center;
+    }
+
+    .support-payment {
+      min-width: 0;
+    }
+
+    .project-text-page .support-address-label {
+      margin: 0 0 8px !important;
+      color: var(--muted) !important;
+      font-size: 10px !important;
+      font-weight: 700 !important;
+      line-height: 1.3 !important;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-align: left !important;
+    }
+
+    .support-address {
+      display: block;
+      width: 100%;
+      padding: 12px 13px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      color: var(--text-soft);
+      background: #090b0e;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      line-height: 1.55;
+      overflow-wrap: anywhere;
+      word-break: break-all;
+    }
+
+    .support-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .support-copy,
+    .support-wallet-link {
+      min-height: 40px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 14px;
+      border: 1px solid rgba(247, 147, 26, 0.42);
+      border-radius: var(--radius);
+      color: var(--bitcoin-orange-light);
+      background: rgba(247, 147, 26, 0.05);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 800;
+      cursor: pointer;
+      text-decoration: none;
+      transition:
+        color 150ms ease,
+        border-color 150ms ease,
+        background 150ms ease;
+    }
+
+    .support-copy:hover,
+    .support-copy:focus-visible,
+    .support-wallet-link:hover,
+    .support-wallet-link:focus-visible {
+      color: #111;
+      border-color: var(--bitcoin-orange);
+      background: var(--bitcoin-orange);
+      outline: none;
+    }
+
+    .support-copy.is-copied {
+      color: var(--success);
+      border-color: rgba(99, 230, 123, 0.45);
+      background: rgba(99, 230, 123, 0.06);
+    }
+
+    .project-text-page .support-warning {
+      margin-top: 18px !important;
+      color: var(--muted) !important;
+      font-size: 11px !important;
+      line-height: 1.55 !important;
+      text-align: center !important;
+      text-align-last: center !important;
+    }
+
+    @media (max-width: 700px) {
+      .support-box-content {
+        grid-template-columns: 1fr;
+        gap: 22px;
+        padding: 20px;
+      }
+
+      .support-qr {
+        width: min(210px, 100%);
+        margin-inline: auto;
+      }
+
+      .support-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+    }
+
+
+/* ========================================================================== 
+   Mobilní a dotyková zařízení
+   ========================================================================== */
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+.top-tab.is-disabled {
+  cursor: default;
+  pointer-events: none;
+  user-select: none;
+  opacity: 0.46;
+}
+
+:where(a, button, [role="button"]):focus-visible {
+  outline: 2px solid var(--bitcoin-orange);
+  outline-offset: 3px;
+}
+
+@media (max-width: 760px) {
+  body {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  .top-navigation {
+    overscroll-behavior-inline: contain;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .top-tab {
+    flex: 0 0 auto;
+    min-width: max-content;
+    min-height: 52px;
+    padding-inline: 16px;
+    scroll-snap-align: start;
+  }
+
+  .page-bitcoin .sidebar {
+    overflow: hidden;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .page-bitcoin .sidebar-navigation-content {
+    padding: 14px;
+  }
+
+  .page-bitcoin .sidebar-heading {
+    padding: 0;
+  }
+
+  .page-bitcoin .sidebar-overview-link {
+    width: max-content;
+    margin-top: 6px;
+    padding: 7px 9px;
+    font-size: 15px;
+  }
+
+  .page-bitcoin .bitcoin-section-nav {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    padding-bottom: 4px;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scrollbar-width: thin;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .page-bitcoin .bitcoin-nav-link {
+    flex: 0 0 min(220px, 72vw);
+    width: auto;
+    min-height: 48px;
+    padding: 10px 11px;
+    scroll-snap-align: start;
+  }
+
+  .page-bitcoin .bitcoin-nav-link[href]:hover,
+  .page-bitcoin .bitcoin-nav-link[href]:focus-visible {
+    transform: none;
+  }
+
+  .article-text-page .article-text-section:not(.references-section) p,
+  .article-text-page .article-text-section:not(.references-section) li,
+  .article-text-page .reference-item,
+  .project-text-page .article-text-section p,
+  .project-text-page .article-text-section li,
+  .project-text-page .project-intro p {
+    font-size: 16px;
+    line-height: 1.7;
+  }
+
+  .project-text-page .article-header h1 {
+    font-size: clamp(26px, 9vw, 40px);
+  }
+
+  .article-heading-link {
+    position: static;
+    width: 24px;
+    height: 24px;
+    margin-right: 7px;
+    vertical-align: 2px;
+    opacity: 0.42;
+    visibility: visible;
+    transform: none;
+  }
+
+  body.article-text-page .article-content .article-text-section > h2:hover .article-heading-link,
+  .article-heading-link:focus-visible,
+  .article-heading-link.is-copied {
+    transform: none;
+  }
+
+  .article-figure-compact,
+  .support-box,
+  .btc-flow-map {
+    max-width: 100%;
+  }
+
+  .reference-link,
+  .article-inline-link,
+  .support-address {
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 480px) {
+  .content-area {
+    padding: 12px;
+  }
+
+  .article-panel,
+  .article-text-page .article-page-panel,
+  .project-text-page .article-page-panel {
+    padding-right: 18px;
+    padding-left: 18px;
+  }
+
+  body.article-terminal-page .article-page-panel > .article-terminal-bar {
+    margin-right: -18px;
+    margin-left: -18px;
+  }
+
+  .hero-layout {
+    padding-right: 18px;
+    padding-left: 18px;
+  }
+
+  .footer-main {
+    width: min(100% - 28px, 480px);
+  }
+
+  .support-box-content {
+    padding: 18px;
+  }
+
+  .btc-flow-map__detail {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 16px;
   }
 }
