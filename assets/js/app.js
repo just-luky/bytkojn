@@ -166,7 +166,7 @@ function renderGlobalHeader() {
     .join("");
 
   header.innerHTML = `
-    <a class="brand" href="${siteHref("home.html")}" aria-label="BYTKOJN – úvodní stránka">
+    <a class="brand" href="${siteHref("./")}" aria-label="BYTKOJN – úvodní stránka">
       <span class="brand-bracket" aria-hidden="true">&lt;</span>
       <span class="brand-name">${SITE_CONFIG.brand}</span>
       <span class="brand-slash" aria-hidden="true">/</span>
@@ -212,7 +212,7 @@ function renderGlobalFooter() {
   footer.innerHTML = `
     <div class="footer-main">
       <div class="footer-identity">
-        <a class="footer-brand" href="${siteHref("home.html")}" aria-label="BYTKOJN – úvodní stránka">
+        <a class="footer-brand" href="${siteHref("./")}" aria-label="BYTKOJN – úvodní stránka">
           <span class="brand-bracket" aria-hidden="true">&lt;</span>
           <span class="footer-brand-name">${SITE_CONFIG.brand}</span>
           <span class="brand-slash" aria-hidden="true">/</span>
