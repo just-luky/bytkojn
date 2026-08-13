@@ -5366,3 +5366,116 @@ img {
     padding: 16px;
   }
 }
+
+/* ==========================================================================
+   MOBILNÍ HORIZONTÁLNÍ NAVIGACE — VIZUÁLNÍ NÁPOVĚDA PRO POSUN
+   Na telefonu zůstává navigace 01–10 v jednom řádku. Další položka je
+   záměrně částečně viditelná a pravý okraj naznačuje pokračování doprava.
+   ========================================================================== */
+
+@media (max-width: 760px) {
+  .page-bitcoin .sidebar-navigation-content {
+    position: relative;
+  }
+
+  .page-bitcoin .bitcoin-section-nav {
+    /*
+      Pravé odsazení vytvoří po poslední kartě trochu prostoru a zároveň
+      nechá na obrazovce čitelný náhled následující položky.
+    */
+    gap: 10px;
+    padding-right: 52px;
+    padding-bottom: 7px;
+
+    scrollbar-width: none;
+    scroll-snap-type: x mandatory;
+  }
+
+  .page-bitcoin .bitcoin-section-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .page-bitcoin .bitcoin-nav-link {
+    /*
+      Karta zabere většinu šířky navigace, ale ne celou. Uživatel tak vždy
+      vidí začátek další položky a intuitivně pozná horizontální pokračování.
+    */
+    flex: 0 0 78%;
+    min-width: 0;
+    scroll-snap-align: start;
+    scroll-snap-stop: normal;
+  }
+
+  /*
+    Jemný fade s oranžovou šipkou zůstává na pravém okraji navigace.
+    Je pouze vizuální a neblokuje dotyk ani swipe.
+  */
+  .page-bitcoin .sidebar-navigation-content::after {
+    content: "›";
+
+    position: absolute;
+    right: 0;
+    bottom: 7px;
+    z-index: 4;
+
+    width: 52px;
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    padding-right: 8px;
+
+    color: var(--bitcoin-orange);
+    background: linear-gradient(
+      90deg,
+      rgba(12, 14, 17, 0),
+      rgba(12, 14, 17, 0.88) 58%,
+      rgba(12, 14, 17, 0.98) 100%
+    );
+
+    font-size: 27px;
+    font-weight: 800;
+    line-height: 1;
+
+    pointer-events: none;
+    user-select: none;
+
+    animation: bitcoinNavSwipeHint 1.8s ease-in-out infinite;
+  }
+}
+
+@media (max-width: 460px) {
+  .page-bitcoin .bitcoin-nav-link {
+    flex-basis: 82%;
+  }
+
+  .page-bitcoin .bitcoin-section-nav {
+    padding-right: 46px;
+  }
+
+  .page-bitcoin .sidebar-navigation-content::after {
+    width: 46px;
+  }
+}
+
+@keyframes bitcoinNavSwipeHint {
+  0%,
+  100% {
+    opacity: 0.58;
+    transform: translateX(-2px);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translateX(2px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-bitcoin .sidebar-navigation-content::after {
+    animation: none;
+  }
+}
+
