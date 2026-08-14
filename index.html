@@ -10,6 +10,7 @@
     >
     <meta name="theme-color" content="#0a0b0d">
 
+    <!-- Open Graph -->
     <meta property="og:locale" content="cs_CZ">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="&lt;bytkojn/&gt;">
@@ -22,8 +23,19 @@
       content="Průvodce Bitcoinem, penězi a světem kolem nich."
     >
     <meta property="og:url" content="https://bytkojn.cz/">
+    <meta
+      property="og:image"
+      content="https://bytkojn.cz/assets/media/social-preview.png"
+    >
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta
+      property="og:image:alt"
+      content="&lt;bytkojn/&gt; – Otevřeně o Bitcoinu a penězích"
+    >
 
-    <meta name="twitter:card" content="summary">
+    <!-- X / Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
     <meta
       name="twitter:title"
       content="&lt;bytkojn/&gt; // Otevřeně o Bitcoinu a penězích"
@@ -31,6 +43,14 @@
     <meta
       name="twitter:description"
       content="Průvodce Bitcoinem, penězi a světem kolem nich."
+    >
+    <meta
+      name="twitter:image"
+      content="https://bytkojn.cz/assets/media/social-preview.png"
+    >
+    <meta
+      name="twitter:image:alt"
+      content="&lt;bytkojn/&gt; – Otevřeně o Bitcoinu a penězích"
     >
 
     <link rel="canonical" href="https://bytkojn.cz/">
@@ -59,7 +79,13 @@
             preserveAspectRatio="xMidYMid slice"
           >
             <defs>
-              <filter id="circuitGlow" x="-100%" y="-100%" width="300%" height="300%">
+              <filter
+                id="circuitGlow"
+                x="-100%"
+                y="-100%"
+                width="300%"
+                height="300%"
+              >
                 <feGaussianBlur stdDeviation="5" result="blur"></feGaussianBlur>
                 <feMerge>
                   <feMergeNode in="blur"></feMergeNode>
@@ -72,18 +98,22 @@
               class="circuit-trace"
               d="M42 0 V76 H82 V140 H54 V226 H96 V310 H70 V414 H110 V504 H82 V760"
             ></path>
+
             <path
               class="circuit-trace"
               d="M92 0 V104 H122 V184 H88 V268 H132 V354 H102 V452 H142 V548 H110 V760"
             ></path>
+
             <path
               class="circuit-trace"
               d="M190 0 V92 H158 V178 H204 V270 H168 V366 H216 V458 H180 V560 H226 V760"
             ></path>
+
             <path
               class="circuit-trace circuit-trace-faint"
               d="M238 0 V118 H210 V210 H248 V304 H218 V398 H258 V488 H224 V596 H254 V760"
             ></path>
+
             <path
               class="circuit-trace circuit-trace-active"
               d="M132 0 V128 H112 V236 H146 V430 H126 V570 H160 V760"
@@ -103,6 +133,7 @@
               r="6"
               filter="url(#circuitGlow)"
             ></circle>
+
             <circle
               class="circuit-node circuit-node-active circuit-node-delay"
               cx="126"
@@ -138,12 +169,18 @@
 
           <div class="hero-layout">
             <div class="hero-copy">
-              <p class="hero-kicker">OTEVŘENĚ O BITCOINU A PENĚZÍCH</p>
+              <p class="hero-kicker">
+                OTEVŘENĚ O BITCOINU A PENĚZÍCH
+              </p>
 
               <h1 id="contentTitle" aria-label="Bitcoin bez pozlátka">
                 Bitcoin bez
                 <span class="rotating-line">
-                  <span class="rotating-word" id="rotatingWord" aria-hidden="true">
+                  <span
+                    class="rotating-word"
+                    id="rotatingWord"
+                    aria-hidden="true"
+                  >
                     pozlátka
                   </span>
                 </span>
@@ -168,7 +205,9 @@
                   bitcoin-cli getblockhash 0
                 </p>
 
-                <p class="hash-output">000000000019d668…a8ce26f</p>
+                <p class="hash-output">
+                  000000000019d668…a8ce26f
+                </p>
 
                 <p>
                   <span class="prompt">$</span>
@@ -193,7 +232,11 @@
           <a class="info-card" href="projekt/o-projektu.html">
             <span class="card-index">01</span>
             <p class="card-label">O PROJEKTU</p>
-            <h2>Co je projekt &lt;bytkojn/&gt;</h2>
+
+            <h2>
+              Co je projekt &lt;bytkojn/&gt;
+            </h2>
+
             <p>
               Proč projekt vznikl, jaký má cíl a jakým způsobem vzniká jeho obsah.
             </p>
@@ -202,7 +245,11 @@
           <a class="info-card" href="bitcoin/uvod.html">
             <span class="card-index">02</span>
             <p class="card-label">ZAČNĚTE ZDE</p>
-            <h2>Úvod do Bitcoinu</h2>
+
+            <h2>
+              Úvod do Bitcoinu
+            </h2>
+
             <p>
               Základní orientace v Bitcoinu, jeho síti, pravidlech, transakcích
               a fungování celého systému.
@@ -212,7 +259,11 @@
           <a class="info-card" href="bitcoin/vznik-a-historie.html">
             <span class="card-index">03</span>
             <p class="card-label">HISTORIE</p>
-            <h2>Vznik a historie Bitcoinu</h2>
+
+            <h2>
+              Vznik a historie Bitcoinu
+            </h2>
+
             <p>
               Od předchůdců digitálních peněz přes Satoshiho Nakamota až k prvním
               rokům bitcoinové sítě.
