@@ -295,7 +295,7 @@ function renderBitcoinNavigation() {
     stránce provedeme plynulé vystředění. Uživatel tak zároveň přirozeně
     zahlédne, že před i za aktivní položkou jsou další kapitoly.
   */
-  const mobileNavigation = window.matchMedia("(max-width: 760px)");
+  const mobileNavigation = window.matchMedia("(max-width: 820px)");
 
   const centerActiveNavigationItem = (behavior = "auto") => {
     if (!mobileNavigation.matches) {

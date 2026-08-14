@@ -24,7 +24,7 @@
   --success: #63e67b;
   --warning: #f4d35e;
   --topbar-height: 74px;
-  --sidebar-width: 250px;
+  --sidebar-width: 268px;
   --radius: 4px;
   --shadow: 0 20px 60px rgba(0, 0, 0, 0.38);
 
@@ -125,17 +125,21 @@ body::before {
   z-index: 50;
   min-height: var(--topbar-height);
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: var(--sidebar-width) minmax(0, 1fr) auto;
   align-items: stretch;
   border-bottom: 1px solid var(--line);
   background: rgba(8, 9, 11, 0.94);
   backdrop-filter: blur(16px);
 }
 .brand {
+  width: var(--sidebar-width);
+  min-width: var(--sidebar-width);
+  max-width: var(--sidebar-width);
+
   display: flex;
   align-items: center;
   gap: 10px;
-  min-width: var(--sidebar-width);
+
   padding: 14px 24px;
   border-right: 1px solid var(--line);
 }
@@ -5864,5 +5868,315 @@ body.article-text-page .article-header-circuit {
 
   .bitcoin-system-map > .bitcoin-system-map-mobile {
     display: none !important;
+  }
+}
+
+/* ========================================================================
+   TABLET / MENŠÍ NOTEBOOK — LOGO BEZ KOLIZE S HORNÍ NAVIGACÍ
+   V původním breakpointu do 1050 px se sidebar zúžil na 220 px, ale logo
+   zůstalo stejně velké jako na desktopu. Proto <bytkojn/> přetékalo do
+   záložky BITCOIN. V pásmu 761–1050 px držíme společnou šířku 250 px
+   a logo lehce zmenšíme, aby zůstalo bezpečně uvnitř svého sloupce.
+   ======================================================================== */
+@media (min-width: 761px) and (max-width: 1050px) {
+  :root {
+    --sidebar-width: 250px;
+  }
+
+  .topbar {
+    grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+  }
+
+  .brand {
+    width: var(--sidebar-width);
+    min-width: var(--sidebar-width);
+    max-width: var(--sidebar-width);
+
+    padding-inline: 16px;
+    overflow: hidden;
+
+    font-size: 2.35rem;
+  }
+}
+
+/* ========================================================================
+   TABLET / MENŠÍ NOTEBOOK — KOMPAKTNĚJŠÍ LEVÝ SLOUPEC
+   Předchozí oprava kolize nechávala v pásmu 761–1050 px sidebar zbytečně
+   široký. Teď jeho šířka plynule roste s viewportem a logo se současně
+   mírně zmenšuje, takže zůstane uvnitř bez kolize s BITCOIN.
+   ======================================================================== */
+@media (min-width: 761px) and (max-width: 1050px) {
+  :root {
+    --sidebar-width: clamp(220px, 22.5vw, 235px);
+  }
+
+  .topbar {
+    grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+  }
+
+  .brand {
+    width: var(--sidebar-width);
+    min-width: var(--sidebar-width);
+    max-width: var(--sidebar-width);
+
+    padding-inline: 14px;
+    overflow: hidden;
+
+    font-size: clamp(2rem, 3.2vw, 2.2rem);
+  }
+}
+
+/* ========================================================================
+   TABLET / MENŠÍ NOTEBOOK — JEŠTĚ KOMPAKTNĚJŠÍ LEVÝ SLOUPEC
+   V pásmu 761–1050 px zmenšíme současně logo i jeho sloupec. Díky tomu
+   získá hlavní obsah více místa, ale pravá hrana loga a sidebaru zůstane
+   pořád přesně v jedné svislici.
+   ======================================================================== */
+@media (min-width: 761px) and (max-width: 1050px) {
+  :root {
+    --sidebar-width: clamp(198px, 20vw, 218px);
+  }
+
+  .topbar {
+    grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+  }
+
+  .brand {
+    width: var(--sidebar-width);
+    min-width: var(--sidebar-width);
+    max-width: var(--sidebar-width);
+
+    padding-inline: 12px;
+    overflow: hidden;
+
+    font-size: clamp(1.8rem, 2.7vw, 2.05rem);
+  }
+}
+
+/* ========================================================================
+   MALÝ TABLET — STEJNÁ STRUKTURA JAKO MOBIL
+   Do 820 px už levý sidebar nedává smysl: ubírá příliš mnoho prostoru
+   článku. Proto se navigace přesune nahoru pod hlavní lištu a hlavní obsah
+   využije celou šířku. Od 821 px výše zůstává desktop/tabletový sidebar.
+   ======================================================================== */
+@media (min-width: 761px) and (max-width: 820px) {
+  :root {
+    --topbar-height: auto;
+  }
+
+  /* Logo je samostatný horní řádek, stejně jako na mobilu. */
+  .topbar {
+    position: relative;
+    display: block;
+    min-height: auto;
+  }
+
+  .brand {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+
+    padding: 12px 16px;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+
+    font-size: 1.7rem;
+    overflow: visible;
+  }
+
+  /* Hlavní horní záložky jsou pod logem a mohou se vodorovně posouvat. */
+  .top-navigation {
+    width: 100%;
+    min-height: 56px;
+
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    overscroll-behavior-inline: contain;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+
+    padding-bottom: 3px;
+
+    scrollbar-width: thin;
+    scrollbar-color: rgba(247, 147, 26, 0.78) transparent;
+  }
+
+  .top-navigation::-webkit-scrollbar {
+    height: 3px;
+  }
+
+  .top-navigation::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .top-navigation::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: rgba(247, 147, 26, 0.78);
+  }
+
+  .top-tab {
+    flex: 0 0 auto;
+    min-width: max-content;
+    min-height: 52px;
+    padding-inline: 16px;
+    white-space: nowrap;
+    scroll-snap-align: start;
+  }
+
+  /* Na malém tabletu používáme pouze jeden oranžový indikátor posunu. */
+  .top-tab::after {
+    display: none;
+  }
+
+  /*
+    Hlavní změna:
+    sidebar už není vlevo. Stane se horním pruhem nad obsahem.
+  */
+  .app-shell {
+    display: block;
+  }
+
+  .sidebar {
+    position: relative;
+    top: auto;
+
+    width: 100%;
+    min-height: auto;
+    max-height: none;
+
+    padding: 0;
+
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+
+    overflow: hidden;
+  }
+
+  /* Dekorativní sidebar hlavní úvodní stránky na malém tabletu schováme. */
+  .sidebar.is-home {
+    display: none;
+  }
+
+  /* Bitcoin navigace 01–XX je nahoře jako horizontální pás. */
+  .page-bitcoin .sidebar-navigation-content {
+    padding: 8px 12px 6px;
+  }
+
+  .page-bitcoin .bitcoin-section-nav {
+    display: flex;
+    gap: 6px;
+
+    margin-top: 0;
+    padding: 0 0 5px;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    overscroll-behavior-inline: contain;
+    scroll-snap-type: x proximity;
+    scroll-padding-left: 0;
+    -webkit-overflow-scrolling: touch;
+
+    scrollbar-width: thin;
+    scrollbar-color: rgba(247, 147, 26, 0.78) transparent;
+  }
+
+  .page-bitcoin .bitcoin-section-nav::-webkit-scrollbar {
+    height: 3px;
+  }
+
+  .page-bitcoin .bitcoin-section-nav::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .page-bitcoin .bitcoin-section-nav::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: rgba(247, 147, 26, 0.78);
+  }
+
+  .page-bitcoin .bitcoin-nav-link {
+    flex: 0 0 auto;
+    width: max-content;
+    min-width: 0;
+    min-height: 42px;
+
+    grid-template-columns: 26px max-content;
+    gap: 5px;
+
+    padding: 7px 10px 7px 8px;
+
+    scroll-snap-align: start;
+  }
+
+  .page-bitcoin .bitcoin-nav-link[href]:hover,
+  .page-bitcoin .bitcoin-nav-link[href]:focus-visible {
+    transform: none;
+  }
+
+  .page-bitcoin .bitcoin-nav-number {
+    font-size: 10px;
+  }
+
+  .page-bitcoin .bitcoin-nav-title {
+    white-space: nowrap;
+    font-size: 11px;
+    line-height: 1.2;
+  }
+
+  /* Hlavní obsah teď může využít prakticky celou šířku tabletu. */
+  .content-area {
+    width: 100%;
+    padding: 16px;
+  }
+
+  .content-area > *,
+  .page-bitcoin-article .content-area > .article-panel,
+  .article-page-panel {
+    width: 100%;
+  }
+
+  /* Footer se na tomto rozměru skládá stejně jako na mobilu. */
+  .footer-main {
+    width: min(100% - 40px, 480px);
+    max-width: none;
+    margin-inline: auto;
+
+    grid-template-columns: 1fr;
+    row-gap: 28px;
+    justify-content: stretch;
+
+    padding-block: 26px;
+  }
+
+  .footer-identity,
+  .footer-project {
+    align-items: flex-start;
+  }
+
+  .footer-identity {
+    gap: 16px;
+  }
+
+  .footer-socials {
+    justify-content: flex-start;
+  }
+}
+
+/* ========================================================================
+   MOBIL — LOGO PŘES CELOU ŠÍŘKU HORNÍHO ŘÁDKU
+   Po sjednocení šířky brandu se na mobilu zachovala desktopová pevná width,
+   takže spodní oddělovací čára končila jen pod logem. Na mobilu musí brand
+   vyplnit celý horní řádek.
+   ======================================================================== */
+@media (max-width: 760px) {
+  .brand {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
   }
 }
