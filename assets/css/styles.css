@@ -24,7 +24,7 @@
   --success: #63e67b;
   --warning: #f4d35e;
   --topbar-height: 74px;
-  --sidebar-width: 280px;
+  --sidebar-width: 250px;
   --radius: 4px;
   --shadow: 0 20px 60px rgba(0, 0, 0, 0.38);
 
@@ -247,7 +247,7 @@ body::before {
 
   min-height: calc(100vh - var(--topbar-height) - 34px);
 
-  padding: 28px 18px;
+  padding: 14px 14px;
 
   border-right: 1px solid var(--line);
 
@@ -657,12 +657,39 @@ body::before {
   font-size: clamp(40px, 4.25vw, 68px);
 }
 
+.page-home .hero-copy {
+  min-width: 0;
+}
+
+@media (max-width: 1100px) {
+  .page-home .hero-copy h1 {
+    font-size: clamp(36px, 5vw, 52px);
+  }
+
+  .page-home .rotating-line,
+  .page-home .rotating-word {
+    max-width: 100%;
+    white-space: normal;
+  }
+}
+
 
 /* Slovo, které se bude měnit:
    pozlátka, mýtů, humbuku, zkratek... */
 .rotating-word {
   display: inline-block;
+  max-width: 100%;
+
   color: var(--bitcoin-orange);
+
+  /*
+    Dlouhé víceslovné výrazy se smějí zalomit podle skutečně dostupné
+    šířky textového sloupce. To je důležité hlavně na tabletech, kde
+    vedle nadpisu stále zůstává terminál.
+  */
+  white-space: normal;
+  overflow-wrap: normal;
+  word-break: normal;
 
   transition:
     opacity 220ms ease,
@@ -672,9 +699,14 @@ body::before {
 /* Celý měnící se výraz je vždy na samostatném druhém řádku. */
 .rotating-line {
   display: block;
+  min-width: 0;
+  max-width: 100%;
 
-  /* Slovo a kurzor se od sebe neoddělí. */
-  white-space: nowrap;
+  /*
+    Nezakazujeme zalomení. Krátký výraz zůstane na jednom řádku,
+    dlouhý se zalomí pouze tehdy, když už vedle terminálu nemá místo.
+  */
+  white-space: normal;
 }
 
 /* JavaScript tuto třídu krátce přidá před výměnou slova. */
@@ -1227,7 +1259,7 @@ body::before {
    ------------------------------------------------------------------------ */
 @media (max-width: 1050px) {
   :root {
-    --sidebar-width: 230px;
+    --sidebar-width: 220px;
   }
 
   .node-status {
@@ -1273,8 +1305,15 @@ body::before {
    zabírá terminál méně místa a je přitažený blíž k pravému okraji panelu.
    ======================================================================== */
 .page-home .hero-layout {
-  grid-template-columns: minmax(0, 1fr) 232px;
-  gap: clamp(14px, 1.7vw, 26px);
+  /*
+    Terminál zůstává vedle textu i při postupném zužování okna.
+    Zmenšuje se především textový sloupec, takže se odstavce a nadpis
+    přirozeně zalamují. Pravý terminál má jen omezenou pružnou šířku.
+  */
+  grid-template-columns: minmax(0, 1fr) clamp(205px, 20vw, 232px);
+  gap: clamp(16px, 2vw, 28px);
+  align-items: start;
+
   padding:
     clamp(34px, 4vw, 56px)
     clamp(18px, 1.8vw, 28px)
@@ -1283,8 +1322,10 @@ body::before {
 }
 
 .page-home .node-card {
-  width: 232px;
+  width: 100%;
+  min-width: 0;
   justify-self: end;
+  align-self: start;
   margin-top: 0;
   transform: none;
 }
@@ -1316,17 +1357,38 @@ body::before {
 }
 
 /*
-  Terminál zůstává vpravo, dokud má nadpis rozumný prostor.
-  Pod text se přesune až na užších noteboocích a při větším přiblížení.
+  Na běžných noteboocích terminál stále zůstává vpravo.
+  Pouze mírně stáhneme jeho šířku a vnitřní rozestupy.
 */
-@media (max-width: 1480px) {
+@media (max-width: 1100px) {
+  .page-home .hero-layout {
+    grid-template-columns: minmax(0, 1fr) clamp(190px, 24vw, 218px);
+    gap: 18px;
+    padding:
+      34px
+      clamp(18px, 2.4vw, 26px)
+      38px
+      clamp(24px, 3vw, 36px);
+  }
+
+  .page-home .node-screen {
+    height: 238px;
+    padding: 16px 12px;
+  }
+}
+
+/*
+  Teprve na opravdu úzkém displeji už dva sloupce nedávají smysl.
+  Až zde se terminál přesune pod text.
+*/
+@media (max-width: 620px) {
   .page-home .hero-layout {
     grid-template-columns: 1fr;
   }
 
   .page-home .node-card {
     width: min(360px, 100%);
-    justify-self: end;
+    justify-self: stretch;
     margin-top: 8px;
   }
 
@@ -1483,7 +1545,7 @@ body::before {
   /* Programátorské písmo používané na celém webu. */
   font-family: var(--font-mono);
 
-  font-size: 3rem;
+  font-size: 2.7rem;
   font-weight: 700;
   line-height: 1;
 
@@ -1581,18 +1643,18 @@ body::before {
    ------------------------------------------------------------------------ */
 .bitcoin-section-nav {
   display: grid;
-  gap: 5px;
-  margin-top: 18px;
+  gap: 3px;
+  margin-top: 0;
 }
 
 .bitcoin-nav-link {
   width: 100%;
   min-width: 0;
   display: grid;
-  grid-template-columns: 34px minmax(0, 1fr);
+  grid-template-columns: 30px minmax(0, 1fr);
   align-items: center;
-  gap: 8px;
-  padding: 11px 9px;
+  gap: 7px;
+  padding: 9px 8px;
   border: 1px solid transparent;
   border-radius: var(--radius);
   color: var(--muted);
@@ -5246,6 +5308,10 @@ img {
     border-bottom: 1px solid var(--line);
   }
 
+  .page-bitcoin .sidebar {
+    padding: 0;
+  }
+
   .page-bitcoin .sidebar-navigation-content {
     padding: 14px;
   }
@@ -5368,70 +5434,435 @@ img {
 }
 
 /* ========================================================================
-   MOBILNÍ NAVIGACE SEKCE BITCOIN — VÝRAZNÝ HORIZONTÁLNÍ CAROUSEL
-   Na mobilu je první karta záměrně užší, aby byla viditelná podstatná část
-   následující karty. Tím je horizontální posun zřejmý i bez nápovědy.
+   MOBILNÍ NAVIGACE SEKCE BITCOIN — KOMPAKTNÍ HORIZONTÁLNÍ PÁS
+   Jednotlivé položky jsou nízké a úzké, takže jsou současně vidět dvě až
+   tři položky. Uživatel tak okamžitě vidí, že navigace pokračuje doprava.
+   Pod pásem zůstává tenký horizontální indikátor posunu.
    ======================================================================== */
 @media (max-width: 760px) {
+  .page-bitcoin .sidebar-navigation-content {
+    padding: 8px 12px 6px;
+  }
+
   .page-bitcoin .bitcoin-section-nav {
-    position: relative;
     display: flex;
-    gap: 12px;
-    margin-top: 14px;
-    padding: 0 18vw 12px 0;
+    gap: 6px;
+    margin-top: 0;
+    padding: 0 0 5px;
     overflow-x: auto;
     overflow-y: hidden;
     overscroll-behavior-inline: contain;
-    scrollbar-width: none;
-    scroll-snap-type: x mandatory;
+    scroll-snap-type: x proximity;
     scroll-padding-left: 0;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(247, 147, 26, 0.72) rgba(127, 135, 143, 0.18);
     -webkit-overflow-scrolling: touch;
   }
 
   .page-bitcoin .bitcoin-section-nav::-webkit-scrollbar {
-    display: none;
+    height: 3px;
+  }
+
+  .page-bitcoin .bitcoin-section-nav::-webkit-scrollbar-track {
+    background: rgba(127, 135, 143, 0.18);
+  }
+
+  .page-bitcoin .bitcoin-section-nav::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: rgba(247, 147, 26, 0.72);
   }
 
   .page-bitcoin .bitcoin-nav-link {
-    flex: 0 0 74vw;
-    width: 74vw;
+    flex: 0 0 auto;
+    width: max-content;
     min-width: 0;
-    min-height: 58px;
-    padding: 12px 14px;
+    min-height: 42px;
+    grid-template-columns: 26px max-content;
+    gap: 5px;
+    padding: 7px 10px 7px 8px;
     scroll-snap-align: start;
-    scroll-snap-stop: always;
   }
 
   .page-bitcoin .bitcoin-nav-number {
-    font-size: 11px;
+    font-size: 10px;
   }
 
   .page-bitcoin .bitcoin-nav-title {
-    font-size: 12px;
-  }
-
-  .page-bitcoin .bitcoin-section-nav::after {
-    content: "→";
-    flex: 0 0 auto;
-    align-self: center;
-    margin-left: -2px;
-    padding-right: 2px;
-    color: var(--bitcoin-orange);
-    font-size: 18px;
-    font-weight: 900;
-    line-height: 1;
-    opacity: 0.72;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 11px;
+    line-height: 1.2;
   }
 }
 
 @media (max-width: 460px) {
-  .page-bitcoin .bitcoin-section-nav {
-    gap: 10px;
-    padding-right: 22vw;
+  .page-bitcoin .sidebar-navigation-content {
+    padding-inline: 10px;
   }
 
   .page-bitcoin .bitcoin-nav-link {
-    flex-basis: 72vw;
-    width: 72vw;
+    flex-basis: auto;
+    width: max-content;
+    min-width: 0;
+  }
+}
+
+/* ========================================================================
+   ÚVODNÍ ROTUJÍCÍ NADPIS — MOBILNÍ OPRAVA DLOUHÝCH VÝRAZŮ
+   Dlouhé výrazy se už neoříznou o pravý okraj panelu. Pokud se nevejdou,
+   zalomí se přirozeně mezi slovy a na telefonu se nadpis mírně zmenší.
+   ======================================================================== */
+@media (max-width: 760px) {
+  .page-home .hero-copy h1 {
+    font-size: clamp(32px, 9vw, 42px);
+    line-height: 1.02;
+  }
+
+  .page-home .rotating-line {
+    max-width: 100%;
+    white-space: normal;
+  }
+
+  .page-home .rotating-word {
+    display: inline-block;
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+}
+
+@media (max-width: 420px) {
+  .page-home .hero-copy h1 {
+    font-size: clamp(30px, 8.6vw, 36px);
+  }
+}
+
+/* ========================================================================
+   MOBILNÍ HORIZONTÁLNÍ NAVIGACE — JEDNOTNÝ INDIKÁTOR POSUNU
+   Horní navigace i navigace 01–XX používají na telefonu stejný princip:
+   pouze tenký oranžový scrollbar bez šedé lišty pod ním.
+   ======================================================================== */
+@media (max-width: 760px) {
+  /*
+    Horní oranžová čára pod aktivním tabem by se s indikátorem posunu
+    opticky zdvojovala, proto ji na mobilu vypneme. Aktivní Bitcoin je
+    stále poznat podle světlého textu a lehce oranžového pozadí.
+  */
+  .top-tab::after {
+    display: none;
+  }
+
+  .top-navigation {
+    padding-bottom: 3px;
+
+    scrollbar-width: thin;
+    scrollbar-color: rgba(247, 147, 26, 0.78) transparent;
+  }
+
+  .top-navigation::-webkit-scrollbar {
+    height: 3px;
+  }
+
+  .top-navigation::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .top-navigation::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: rgba(247, 147, 26, 0.78);
+  }
+
+  /*
+    Stejný vzhled spodní navigace 01–XX:
+    oranžový jezdec, žádná šedá stopa.
+  */
+  .page-bitcoin .bitcoin-section-nav {
+    scrollbar-color: rgba(247, 147, 26, 0.78) transparent;
+  }
+
+  .page-bitcoin .bitcoin-section-nav::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .page-bitcoin .bitcoin-section-nav::-webkit-scrollbar-thumb {
+    background: rgba(247, 147, 26, 0.78);
+  }
+}
+
+/* ========================================================================
+   MOBILNÍ FOOTER — JEDNOTNÉ ZAROVNÁNÍ
+   Na desktopu zůstávají dva sloupce proti sobě. Na mobilu se footer skládá
+   do jednoho sloupce, proto logo, sociální odkazy i projektové odkazy
+   zarovnáme na stejnou levou osu.
+   ======================================================================== */
+@media (max-width: 760px) {
+  .footer-main {
+    width: min(100% - 40px, 480px);
+    grid-template-columns: 1fr;
+    row-gap: 28px;
+    justify-content: stretch;
+  }
+
+  .footer-identity {
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .footer-socials {
+    justify-content: flex-start;
+  }
+
+  .footer-project {
+    align-items: flex-start;
+  }
+}
+
+/* ========================================================================
+   ÚVOD BITCOINU — VERTIKÁLNÍ SCHÉMA PRO TABLET / MOBIL
+   Desktop nad 768 px používá původní horizontální SVG. Od 768 px níže se
+   zobrazí samostatná svislá varianta, takže uživatel pokračuje přirozeně
+   dolů a nemusí uvnitř stránky horizontálně posouvat grafiku.
+   ======================================================================== */
+
+.bitcoin-system-map-mobile {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .bitcoin-system-map {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .bitcoin-system-map-graphic {
+    display: none;
+  }
+
+  .bitcoin-system-map-mobile {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /*
+    Na mobilní variantě nechceme žádnou minimální šířku ani horizontální
+    scrollbar zděděný z desktopového schématu.
+  */
+  .bitcoin-system-map {
+    overflow-x: hidden;
+  }
+
+  .bitcoin-system-map-mobile .system-stage-panel {
+    fill: rgba(17, 20, 24, 0.94);
+    stroke: rgba(58, 65, 73, 0.98);
+  }
+
+  .bitcoin-system-map-mobile .system-stage-accent .system-stage-panel {
+    fill: url("#mobileMapActiveBlock");
+    stroke: rgba(247, 147, 26, 0.78);
+  }
+
+  .bitcoin-system-map-mobile .mobile-flow-line {
+    fill: none;
+    stroke: rgba(247, 147, 26, 0.72);
+    stroke-width: 1.5;
+    stroke-dasharray: 4 8;
+    vector-effect: non-scaling-stroke;
+    animation: bitcoinFlow 12s linear infinite;
+  }
+
+  .bitcoin-system-map-mobile .mobile-chain-line {
+    fill: none;
+    stroke: rgba(127, 135, 143, 0.48);
+    stroke-width: 1.2;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .bitcoin-system-map-mobile .mobile-chain-line-active {
+    stroke: rgba(247, 147, 26, 0.78);
+    stroke-dasharray: 4 7;
+    animation: bitcoinFlow 10s linear infinite;
+  }
+
+  .bitcoin-system-map-mobile .chain-block rect {
+    fill: rgba(17, 20, 24, 0.94);
+  }
+
+  .bitcoin-system-map-mobile .chain-block-active rect {
+    fill: url("#mobileMapActiveBlock");
+  }
+
+  .bitcoin-system-map-mobile .pow-symbol {
+    filter: url("#mobileMapOrangeGlow");
+  }
+}
+
+/* ========================================================================
+   HORNÍ NAVIGACE — OPRAVA ÚZKÉHO TABLETU
+   ======================================================================== */
+@media (max-width: 800px) and (min-width: 761px) {
+  .top-navigation {
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-inline: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .top-tab {
+    flex: 0 0 auto;
+    min-width: max-content;
+    padding-inline: 18px;
+    white-space: nowrap;
+  }
+}
+
+/* ========================================================================
+   HORNÍ NAVIGACE — JEDEN INDIKÁTOR POSUNU I NA TABLETU
+   ======================================================================== */
+@media (max-width: 800px) and (min-width: 761px) {
+  .top-tab::after {
+    display: none;
+  }
+
+  .top-navigation {
+    padding-bottom: 3px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(247, 147, 26, 0.78) transparent;
+  }
+
+  .top-navigation::-webkit-scrollbar {
+    height: 3px;
+  }
+
+  .top-navigation::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .top-navigation::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: rgba(247, 147, 26, 0.78);
+  }
+}
+
+/* ========================================================================
+   MOBILNÍ NADPISY ČLÁNKŮ — OPRAVA USEKNUTÍ
+   ======================================================================== */
+@media (max-width: 760px) {
+  body.article-text-page .article-header h1,
+  body.project-text-page .article-header h1 {
+    max-width: 100%;
+    font-size: clamp(24px, 9.4vw, 42px);
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+
+  body.article-text-page #contentTitle.bitcoin-title-enhanced,
+  body.project-text-page #contentTitle.bitcoin-title-enhanced {
+    display: block;
+    max-width: 100%;
+    padding-bottom: 16px;
+  }
+
+  body.article-text-page #contentTitle.bitcoin-title-enhanced .bitcoin-title-word,
+  body.project-text-page #contentTitle.bitcoin-title-enhanced .bitcoin-title-word {
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+}
+
+/* ========================================================================
+   CIRCUIT GRAFIKA V HLAVIČCE ČLÁNKU — POUZE VELKÉ DESKTOPY
+   ======================================================================== */
+body.article-text-page .article-header {
+  padding-right: 0;
+}
+
+body.article-text-page .article-header-circuit {
+  display: none;
+}
+
+@media (min-width: 1440px) {
+  body.article-text-page .article-header {
+    padding-right: 250px;
+  }
+
+  body.article-text-page .article-header-circuit {
+    display: block;
+    top: -22px;
+    right: -8px;
+    width: 225px;
+    height: 175px;
+    opacity: 0.88;
+  }
+}
+
+/* ========================================================================
+   MOBILNÍ ODKAZ NA NADPIS — MIMO TOK TEXTU
+   ======================================================================== */
+@media (max-width: 760px) {
+  body.article-text-page
+  .article-content
+  .article-text-section > h2 {
+    padding-right: 34px;
+  }
+
+  .article-heading-link {
+    position: absolute;
+    top: 0.12em;
+    right: 0;
+    left: auto;
+
+    width: 27px;
+    height: 27px;
+
+    margin: 0;
+    vertical-align: initial;
+
+    opacity: 0.42;
+    visibility: visible;
+    transform: none;
+  }
+
+  body.article-text-page
+  .article-content
+  .article-text-section > h2:hover
+  .article-heading-link,
+  .article-heading-link:focus-visible,
+  .article-heading-link.is-copied {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ========================================================================
+   ÚVOD BITCOINU — STRIKTNĚ JEDNA VARIANTA SCHÉMATU
+   Pojistka proti tomu, aby se horizontální a vertikální SVG zobrazily
+   současně. 768 px a méně = pouze vertikální. 769 px a více = pouze
+   horizontální.
+   ======================================================================== */
+@media (max-width: 768px) {
+  .bitcoin-system-map > .bitcoin-system-map-graphic {
+    display: none !important;
+  }
+
+  .bitcoin-system-map > .bitcoin-system-map-mobile {
+    display: block !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .bitcoin-system-map > .bitcoin-system-map-graphic {
+    display: block !important;
+  }
+
+  .bitcoin-system-map > .bitcoin-system-map-mobile {
+    display: none !important;
   }
 }

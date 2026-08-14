@@ -166,7 +166,7 @@ function renderGlobalHeader() {
     .join("");
 
   header.innerHTML = `
-    <a class="brand" href="${siteHref("./")}" aria-label="BYTKOJN – úvodní stránka">
+    <a class="brand" href="/" aria-label="BYTKOJN – úvodní stránka">
       <span class="brand-bracket" aria-hidden="true">&lt;</span>
       <span class="brand-name">${SITE_CONFIG.brand}</span>
       <span class="brand-slash" aria-hidden="true">/</span>
@@ -212,7 +212,7 @@ function renderGlobalFooter() {
   footer.innerHTML = `
     <div class="footer-main">
       <div class="footer-identity">
-        <a class="footer-brand" href="${siteHref("./")}" aria-label="BYTKOJN – úvodní stránka">
+        <a class="footer-brand" href="/" aria-label="BYTKOJN – úvodní stránka">
           <span class="brand-bracket" aria-hidden="true">&lt;</span>
           <span class="footer-brand-name">${SITE_CONFIG.brand}</span>
           <span class="brand-slash" aria-hidden="true">/</span>
@@ -249,7 +249,6 @@ function renderBitcoinNavigation() {
   }
 
   const currentPage = currentFileName();
-  const overviewActive = currentPage === "home.html";
 
   const items = BITCOIN_NAVIGATION.map((item, index) => {
     const number = String(index + 1).padStart(2, "0");
@@ -278,20 +277,74 @@ function renderBitcoinNavigation() {
 
   sidebar.innerHTML = `
     <div class="sidebar-navigation-content">
-      <div class="sidebar-heading">
-        <span class="eyebrow">// OBSAH SEKCE</span>
-        <a
-          class="sidebar-overview-link${overviewActive ? " is-active" : ""}"
-          href="home.html"
-          ${overviewActive ? 'aria-current="page"' : ""}
-        >
-          <span class="sidebar-overview-prefix" aria-hidden="true">~/</span>
-          <span>Bitcoin</span>
-        </a>
-      </div>
       <nav class="bitcoin-section-nav" aria-label="Obsah sekce Bitcoin">${items}</nav>
     </div>
   `;
+
+  const navigation = sidebar.querySelector(".bitcoin-section-nav");
+  const activeLink = navigation?.querySelector(".bitcoin-nav-link.is-active");
+
+  if (!navigation || !activeLink) {
+    return;
+  }
+
+  /*
+    Mobilní horizontální navigace:
+    aktivní kapitolu držíme přibližně uprostřed lišty. Po kliknutí na jinou
+    kapitolu si krátce uložíme informaci do sessionStorage a na nově otevřené
+    stránce provedeme plynulé vystředění. Uživatel tak zároveň přirozeně
+    zahlédne, že před i za aktivní položkou jsou další kapitoly.
+  */
+  const mobileNavigation = window.matchMedia("(max-width: 760px)");
+
+  const centerActiveNavigationItem = (behavior = "auto") => {
+    if (!mobileNavigation.matches) {
+      return;
+    }
+
+    const maxScrollLeft = Math.max(0, navigation.scrollWidth - navigation.clientWidth);
+    const targetScrollLeft =
+      activeLink.offsetLeft -
+      (navigation.clientWidth - activeLink.offsetWidth) / 2;
+
+    navigation.scrollTo({
+      left: Math.min(maxScrollLeft, Math.max(0, targetScrollLeft)),
+      behavior
+    });
+  };
+
+  let smoothCenter = false;
+
+  try {
+    smoothCenter = sessionStorage.getItem("bytkojn-bitcoin-nav-center") === "1";
+    sessionStorage.removeItem("bytkojn-bitcoin-nav-center");
+  } catch (error) {
+    // sessionStorage může být v některých režimech prohlížeče nedostupné.
+  }
+
+  navigation.querySelectorAll(".bitcoin-nav-link[href]").forEach((link) => {
+    link.addEventListener("click", () => {
+      if (!mobileNavigation.matches) {
+        return;
+      }
+
+      try {
+        sessionStorage.setItem("bytkojn-bitcoin-nav-center", "1");
+      } catch (error) {
+        // Navigace funguje i bez sessionStorage, pouze bez plynulé animace.
+      }
+    });
+  });
+
+  window.requestAnimationFrame(() => {
+    window.requestAnimationFrame(() => {
+      centerActiveNavigationItem(smoothCenter ? "smooth" : "auto");
+    });
+  });
+
+  mobileNavigation.addEventListener?.("change", () => {
+    centerActiveNavigationItem("auto");
+  });
 }
 
 /* --------------------------------------------------------------------------
@@ -634,10 +687,30 @@ function initBitcoinFlowMap() {
   const stepHitAreas = [...root.querySelectorAll(".map-hit[data-map-step]")];
 
   stepHitAreas.forEach((hitArea) => {
+    /*
+      Desktop:
+      detail se mění při najetí myší / perem.
+
+      Mobil a dotyková zařízení:
+      hover neexistuje, proto krok aktivujeme také při klepnutí.
+      pointerdown používáme záměrně, protože viewport mapy používá
+      pointer capture kvůli posouvání a klasický click se na některých
+      mobilních prohlížečích nemusí vždy doručit přímo SVG hit-area.
+    */
     hitArea.addEventListener("pointerenter", (event) => {
       if (event.pointerType === "mouse" || event.pointerType === "pen") {
         selectStep(hitArea.dataset.mapStep);
       }
+    });
+
+    hitArea.addEventListener("pointerdown", (event) => {
+      if (event.pointerType === "touch") {
+        selectStep(hitArea.dataset.mapStep);
+      }
+    });
+
+    hitArea.addEventListener("click", () => {
+      selectStep(hitArea.dataset.mapStep);
     });
   });
 
