@@ -2703,8 +2703,10 @@ function initEllipticCurveGeometryDemo() {
     return;
   }
 
-  const viewWidth = 700;
-  const viewHeight = 450;
+  const compactGeometry = window.matchMedia("(max-width: 560px)").matches;
+
+  const viewWidth = compactGeometry ? 520 : 700;
+  const viewHeight = compactGeometry ? 334 : 450;
 
   const world = {
     xMin: -2.05,
@@ -2719,12 +2721,19 @@ function initEllipticCurveGeometryDemo() {
     minimumSeparation: 0.10
   };
 
-  const margin = {
-    left: 26,
-    right: 26,
-    top: 22,
-    bottom: 22
-  };
+  const margin = compactGeometry
+    ? {
+        left: 16,
+        right: 16,
+        top: 14,
+        bottom: 14
+      }
+    : {
+        left: 26,
+        right: 26,
+        top: 22,
+        bottom: 22
+      };
 
   const plotWidth = viewWidth - margin.left - margin.right;
   const plotHeight = viewHeight - margin.top - margin.bottom;
@@ -2878,6 +2887,11 @@ function initEllipticCurveGeometryDemo() {
     let activePointerId = null;
 
     svg.setAttribute(
+      "viewBox",
+      `0 0 ${viewWidth} ${viewHeight}`
+    );
+
+    svg.setAttribute(
       "preserveAspectRatio",
       "xMidYMid meet"
     );
@@ -2922,7 +2936,13 @@ function initEllipticCurveGeometryDemo() {
         createSvgElement("circle", {
           cx: toSvgX(point.x),
           cy: toSvgY(point.y),
-          r: handle ? 7 : 6,
+          r: handle
+            ? compactGeometry
+              ? 9
+              : 7
+            : compactGeometry
+              ? 8
+              : 6,
           class:
             `ec-point ${className}` +
             `${handle ? " ec-point-handle" : ""}`
@@ -3034,11 +3054,12 @@ function initEllipticCurveGeometryDemo() {
 
       const estimatedWidth =
         Math.max(
-          12,
-          label.length * 8
+          compactGeometry ? 18 : 12,
+          label.length * (compactGeometry ? 11 : 8)
         );
 
-      const estimatedHeight = 14;
+      const estimatedHeight =
+        compactGeometry ? 20 : 14;
 
       const candidates =
         label === "−R"
@@ -4047,6 +4068,298 @@ function initEllipticCurveGeometryDemo() {
 }
 
 /* --------------------------------------------------------------------------
+   Soukromý klíč — pohyblivý indikátor horizontální tabulky
+   -------------------------------------------------------------------------- */
+
+function initPrivateKeyPracticeTableScrollIndicators() {
+  const tableWraps = [
+    ...document.querySelectorAll(".private-key-practice-table-wrap")
+  ];
+
+  if (!tableWraps.length) {
+    return;
+  }
+
+  tableWraps.forEach((tableWrap) => {
+    let indicator = tableWrap.nextElementSibling;
+
+    if (
+      !indicator?.classList.contains(
+        "private-key-practice-scroll-indicator"
+      )
+    ) {
+      indicator = document.createElement("div");
+      indicator.className = "private-key-practice-scroll-indicator";
+      indicator.setAttribute("aria-hidden", "true");
+
+      const thumb = document.createElement("span");
+      thumb.className = "private-key-practice-scroll-thumb";
+
+      indicator.appendChild(thumb);
+      tableWrap.insertAdjacentElement("afterend", indicator);
+    }
+
+    const thumb = indicator.querySelector(
+      ".private-key-practice-scroll-thumb"
+    );
+
+    if (!thumb) {
+      return;
+    }
+
+    let animationFrame = null;
+
+    const updateIndicator = () => {
+      animationFrame = null;
+
+      const viewportWidth = tableWrap.clientWidth;
+      const contentWidth = tableWrap.scrollWidth;
+      const maxScroll = Math.max(0, contentWidth - viewportWidth);
+      const isScrollable = maxScroll > 1;
+
+      indicator.classList.toggle("is-scrollable", isScrollable);
+
+      if (!isScrollable || contentWidth <= 0) {
+        thumb.style.width = "100%";
+        thumb.style.left = "0%";
+        return;
+      }
+
+      const visibleRatio = Math.min(1, viewportWidth / contentWidth);
+      const thumbWidthPercent = Math.max(18, visibleRatio * 100);
+      const scrollProgress = clamp(tableWrap.scrollLeft / maxScroll, 0, 1);
+      const thumbLeftPercent =
+        (100 - thumbWidthPercent) * scrollProgress;
+
+      thumb.style.width = `${thumbWidthPercent.toFixed(3)}%`;
+      thumb.style.left = `${thumbLeftPercent.toFixed(3)}%`;
+    };
+
+    const requestUpdate = () => {
+      if (animationFrame !== null) {
+        return;
+      }
+
+      animationFrame = window.requestAnimationFrame(updateIndicator);
+    };
+
+    tableWrap.addEventListener("scroll", requestUpdate, { passive: true });
+    window.addEventListener("resize", requestUpdate, { passive: true });
+
+    if ("ResizeObserver" in window) {
+      const resizeObserver = new ResizeObserver(requestUpdate);
+
+      resizeObserver.observe(tableWrap);
+
+      const table = tableWrap.querySelector(".private-key-practice-table");
+
+      if (table) {
+        resizeObserver.observe(table);
+      }
+    }
+
+    updateIndicator();
+  });
+}
+
+/* --------------------------------------------------------------------------
+   Veřejný klíč — pohyblivý indikátor posloupnosti násobků G
+   -------------------------------------------------------------------------- */
+
+function initPublicKeyMathSequenceScrollIndicators() {
+  const sequences = [
+    ...document.querySelectorAll(".public-key-math-sequence")
+  ];
+
+  if (!sequences.length) {
+    return;
+  }
+
+  sequences.forEach((sequence) => {
+    let shell = sequence.parentElement;
+
+    if (
+      !shell?.classList.contains(
+        "public-key-math-sequence-shell"
+      )
+    ) {
+      shell = document.createElement("div");
+      shell.className = "public-key-math-sequence-shell";
+
+      sequence.parentNode.insertBefore(shell, sequence);
+      shell.appendChild(sequence);
+    }
+
+    let indicator = shell.querySelector(
+      ":scope > .public-key-math-sequence-scroll-indicator"
+    );
+
+    if (!indicator) {
+      indicator = document.createElement("div");
+      indicator.className = "public-key-math-sequence-scroll-indicator";
+      indicator.setAttribute("aria-hidden", "true");
+
+      const thumb = document.createElement("span");
+      thumb.className = "public-key-math-sequence-scroll-thumb";
+
+      indicator.appendChild(thumb);
+      shell.appendChild(indicator);
+    }
+
+    const thumb = indicator.querySelector(
+      ".public-key-math-sequence-scroll-thumb"
+    );
+
+    if (!thumb) {
+      return;
+    }
+
+    let animationFrame = null;
+
+    const updateIndicator = () => {
+      animationFrame = null;
+
+      const viewportWidth = sequence.clientWidth;
+      const contentWidth = sequence.scrollWidth;
+      const maxScroll = Math.max(0, contentWidth - viewportWidth);
+      const isScrollable = maxScroll > 1;
+
+      indicator.classList.toggle("is-scrollable", isScrollable);
+
+      if (!isScrollable || contentWidth <= 0) {
+        thumb.style.width = "100%";
+        thumb.style.left = "0%";
+        return;
+      }
+
+      const visibleRatio = Math.min(1, viewportWidth / contentWidth);
+      const thumbWidthPercent = Math.max(18, visibleRatio * 100);
+      const scrollProgress = clamp(sequence.scrollLeft / maxScroll, 0, 1);
+      const thumbLeftPercent =
+        (100 - thumbWidthPercent) * scrollProgress;
+
+      thumb.style.width = `${thumbWidthPercent.toFixed(3)}%`;
+      thumb.style.left = `${thumbLeftPercent.toFixed(3)}%`;
+    };
+
+    const requestUpdate = () => {
+      if (animationFrame !== null) {
+        return;
+      }
+
+      animationFrame = window.requestAnimationFrame(updateIndicator);
+    };
+
+    sequence.addEventListener("scroll", requestUpdate, { passive: true });
+    window.addEventListener("resize", requestUpdate, { passive: true });
+
+    if ("ResizeObserver" in window) {
+      const resizeObserver = new ResizeObserver(requestUpdate);
+      resizeObserver.observe(sequence);
+    }
+
+    updateIndicator();
+  });
+}
+
+/* --------------------------------------------------------------------------
+   Tabulky výstupů a adres — pohyblivý mobilní indikátor horizontálního posunu
+   -------------------------------------------------------------------------- */
+
+function initAddressExampleTableScrollIndicators() {
+  const tableWraps = [
+    ...document.querySelectorAll(".address-example-table-wrap")
+  ];
+
+  if (!tableWraps.length) {
+    return;
+  }
+
+  tableWraps.forEach((tableWrap) => {
+    let indicator = tableWrap.nextElementSibling;
+
+    if (
+      !indicator?.classList.contains(
+        "address-example-scroll-indicator"
+      )
+    ) {
+      indicator = document.createElement("div");
+      indicator.className =
+        "address-example-scroll-indicator private-key-practice-scroll-indicator";
+      indicator.setAttribute("aria-hidden", "true");
+
+      const thumb = document.createElement("span");
+      thumb.className =
+        "address-example-scroll-thumb private-key-practice-scroll-thumb";
+
+      indicator.appendChild(thumb);
+      tableWrap.insertAdjacentElement("afterend", indicator);
+    }
+
+    const thumb = indicator.querySelector(
+      ".address-example-scroll-thumb"
+    );
+
+    if (!thumb) {
+      return;
+    }
+
+    let animationFrame = null;
+
+    const updateIndicator = () => {
+      animationFrame = null;
+
+      const viewportWidth = tableWrap.clientWidth;
+      const contentWidth = tableWrap.scrollWidth;
+      const maxScroll = Math.max(0, contentWidth - viewportWidth);
+      const isScrollable = maxScroll > 1;
+
+      indicator.classList.toggle("is-scrollable", isScrollable);
+
+      if (!isScrollable || contentWidth <= 0) {
+        thumb.style.width = "100%";
+        thumb.style.left = "0%";
+        return;
+      }
+
+      const visibleRatio = Math.min(1, viewportWidth / contentWidth);
+      const thumbWidthPercent = Math.max(18, visibleRatio * 100);
+      const scrollProgress = clamp(tableWrap.scrollLeft / maxScroll, 0, 1);
+      const thumbLeftPercent =
+        (100 - thumbWidthPercent) * scrollProgress;
+
+      thumb.style.width = `${thumbWidthPercent.toFixed(3)}%`;
+      thumb.style.left = `${thumbLeftPercent.toFixed(3)}%`;
+    };
+
+    const requestUpdate = () => {
+      if (animationFrame !== null) {
+        return;
+      }
+
+      animationFrame = window.requestAnimationFrame(updateIndicator);
+    };
+
+    tableWrap.addEventListener("scroll", requestUpdate, { passive: true });
+    window.addEventListener("resize", requestUpdate, { passive: true });
+
+    if ("ResizeObserver" in window) {
+      const resizeObserver = new ResizeObserver(requestUpdate);
+
+      resizeObserver.observe(tableWrap);
+
+      const table = tableWrap.querySelector(".address-example-table");
+
+      if (table) {
+        resizeObserver.observe(table);
+      }
+    }
+
+    updateIndicator();
+  });
+}
+
+/* --------------------------------------------------------------------------
    Pojmy v článku — první výskyt v každé H2 sekci
    Každá .article-text-section představuje jednu sekci začínající <h2>.
    Stejný data-term se v ní smí zobrazit jako popup pouze jednou.
@@ -4301,6 +4614,9 @@ function initializeSite() {
   initEllipticCurveFieldDemo();
   initPublicKeyDerivationDemo();
   initEllipticCurveGeometryDemo();
+  initPrivateKeyPracticeTableScrollIndicators();
+  initPublicKeyMathSequenceScrollIndicators();
+  initAddressExampleTableScrollIndicators();
   normalizeArticleTermOccurrences();
   initArticleHeadingLinks();
   initHashExampleMorph();
