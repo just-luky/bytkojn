@@ -589,7 +589,7 @@ window.BYTKOJN_TERMS = {
 },
 "binary-system": {
   title: "Binární soustava",
-  text: "Číselná soustava se základem 2 používající pouze znaky 0 a 1. Každá pozice představuje jeden bit, takže plná 256bitová reprezentace obsahuje přesně 256 takových pozic. Při pevné délce mohou být zleva doplněny nuly; ty nemění samotnou číselnou hodnotu.",
+  text: "Číselná soustava se základem 2 používající pouze znaky 0 a 1. Každá pozice představuje jeden bit, takže plná 256bitová reprezentace obsahuje přesně 256 takových pozic.",
   href: ""
 },
 
