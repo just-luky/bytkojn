@@ -1,29 +1,27 @@
-/* =========================================================================
-   BYTKOJN – INTERAKTIVNÍ POJMY
-
-   Data se načítají z:
-   /assets/data/terms-data.js
-
-   Tento soubor neobsahuje definice pojmů, pouze obsluhu popupu.
-   ========================================================================= */
+/*
+ * BYTKOJN – interaktivní pojmy
+ *
+ * Použití v HTML:
+ * <button class="term" type="button" data-term="bitcoin-symbol">₿</button>
+ *
+ * Data:
+ * /assets/data/terms-data.js
+ *
+ * Databáze je načtena před tímto skriptem do window.BYTKOJN_TERMS.
+ * Každá definice používá pouze vlastnost "text".
+ * Definice mohou obsahovat jednoduché HTML formátování, například <sup>
+ * pro matematický horní index.
+ */
 
 (() => {
   "use strict";
 
   const terms = window.BYTKOJN_TERMS || {};
-
-  if (!window.BYTKOJN_TERMS) {
-    console.error(
-      "[BYTKOJN terms] Databáze pojmů nebyla načtena. " +
-      "Zkontroluj, že assets/data/terms-data.js je v HTML vložen před assets/js/terms.js."
-    );
-  }
-
   let activeTrigger = null;
 
-  /* -----------------------------------------------------------------------
+  /* ------------------------------------------------------------
      VYTVOŘENÍ JEDNOHO SPOLEČNÉHO POPUPU
-     ----------------------------------------------------------------------- */
+     ------------------------------------------------------------ */
 
   const popup = document.createElement("aside");
 
@@ -35,16 +33,10 @@
   popup.setAttribute("aria-labelledby", "termPopupTitle");
 
   popup.innerHTML = `
-
     <h2
       class="term-popup-title"
       id="termPopupTitle"
     ></h2>
-
-    <span
-      class="term-popup-subtitle"
-      id="termPopupSubtitle"
-    ></span>
 
     <p
       class="term-popup-text"
@@ -54,89 +46,58 @@
     <a
       class="term-popup-link"
       id="termPopupLink"
+      href="#"
       hidden
     >
-      Přejít na podrobné vysvětlení →
+      Podrobněji →
     </a>
   `;
 
   document.body.appendChild(popup);
 
-  const titleElement =
-    popup.querySelector("#termPopupTitle");
+  const titleElement = popup.querySelector("#termPopupTitle");
+  const textElement = popup.querySelector("#termPopupText");
+  const linkElement = popup.querySelector("#termPopupLink");
 
-  const subtitleElement =
-    popup.querySelector("#termPopupSubtitle");
-
-  const textElement =
-    popup.querySelector("#termPopupText");
-
-  const linkElement =
-    popup.querySelector("#termPopupLink");
-
-
-  /* -----------------------------------------------------------------------
+  /* ------------------------------------------------------------
      ZAVŘENÍ POPUPU
-     ----------------------------------------------------------------------- */
+     ------------------------------------------------------------ */
 
   function closePopup() {
     if (activeTrigger) {
-      activeTrigger.setAttribute(
-        "aria-expanded",
-        "false"
-      );
+      activeTrigger.setAttribute("aria-expanded", "false");
     }
 
     popup.classList.remove("is-open");
-
-    popup.setAttribute(
-      "aria-hidden",
-      "true"
-    );
-
+    popup.setAttribute("aria-hidden", "true");
     popup.dataset.currentTerm = "";
 
     activeTrigger = null;
   }
 
-
-  /* -----------------------------------------------------------------------
+  /* ------------------------------------------------------------
      UMÍSTĚNÍ POPUPU
-     ----------------------------------------------------------------------- */
+     ------------------------------------------------------------ */
 
   function positionPopup(trigger) {
-
     /*
-      Na telefonu pozici kompletně řídí CSS
-      jako spodní informační panel.
-    */
-    if (
-      window.matchMedia(
-        "(max-width: 620px)"
-      ).matches
-    ) {
+     * Na telefonu pozici kompletně řídí CSS.
+     */
+    if (window.matchMedia("(max-width: 600px)").matches) {
       popup.style.left = "";
       popup.style.top = "";
       return;
     }
 
-    const triggerRect =
-      trigger.getBoundingClientRect();
-
-    const popupRect =
-      popup.getBoundingClientRect();
+    const triggerRect = trigger.getBoundingClientRect();
+    const popupRect = popup.getBoundingClientRect();
 
     const gap = 10;
     const viewportPadding = 16;
 
-    let left =
-      triggerRect.left;
+    let left = triggerRect.left;
+    let top = triggerRect.bottom + gap;
 
-    let top =
-      triggerRect.bottom + gap;
-
-
-    /* Pokud popup přetéká doprava, posuneme jej doleva. */
     if (
       left + popupRect.width >
       window.innerWidth - viewportPadding
@@ -147,14 +108,10 @@
         viewportPadding;
     }
 
-    left =
-      Math.max(
-        viewportPadding,
-        left
-      );
+    if (left < viewportPadding) {
+      left = viewportPadding;
+    }
 
-
-    /* Pokud se nevejde pod pojem, zobrazí se nad ním. */
     if (
       top + popupRect.height >
       window.innerHeight - viewportPadding
@@ -165,228 +122,138 @@
         gap;
     }
 
-    top =
-      Math.max(
-        viewportPadding,
-        top
-      );
+    if (top < viewportPadding) {
+      top = viewportPadding;
+    }
 
-
-    popup.style.left =
-      `${Math.round(left)}px`;
-
-    popup.style.top =
-      `${Math.round(top)}px`;
+    popup.style.left = `${Math.round(left)}px`;
+    popup.style.top = `${Math.round(top)}px`;
   }
 
-
-  /* -----------------------------------------------------------------------
+  /* ------------------------------------------------------------
      OTEVŘENÍ POPUPU
-     ----------------------------------------------------------------------- */
+     ------------------------------------------------------------ */
 
-  function openPopup(trigger) {
-
-    const termId =
-      trigger.dataset.term;
-
-    const item =
-      terms[termId];
-
+  function openPopup(trigger, termId) {
+    const item = terms[termId];
 
     if (!item) {
       console.warn(
-        `[BYTKOJN terms] Pojem "${termId}" není v assets/data/terms-data.js.`
+        `[BYTKOJN terms] Pojem "${termId}" nebyl nalezen v terms-data.js.`
       );
-
       return;
     }
-
 
     if (
       activeTrigger &&
       activeTrigger !== trigger
     ) {
-      activeTrigger.setAttribute(
-        "aria-expanded",
-        "false"
-      );
+      activeTrigger.setAttribute("aria-expanded", "false");
     }
 
+    titleElement.textContent = item.title || termId;
+    textElement.innerHTML = item.text || "";
 
-    titleElement.textContent =
-      item.title || termId;
-
-    subtitleElement.textContent =
-      item.subtitle || "";
-
-    textElement.textContent =
-      item.text || "";
-
-
-    /* Odkaz je volitelný. */
     if (item.href) {
-
-      linkElement.href =
-        item.href;
-
+      linkElement.href = item.href;
       linkElement.textContent =
-        item.linkText ||
-        "Přejít na podrobné vysvětlení →";
-
-      linkElement.hidden =
-        false;
-
+        item.linkText || "Podrobněji →";
+      linkElement.hidden = false;
     } else {
-
-      linkElement.hidden =
-        true;
-
-      linkElement.removeAttribute(
-        "href"
-      );
+      linkElement.hidden = true;
+      linkElement.removeAttribute("href");
     }
 
+    popup.dataset.currentTerm = termId;
+    popup.classList.add("is-open");
+    popup.setAttribute("aria-hidden", "false");
 
-    popup.dataset.currentTerm =
-      termId;
+    trigger.setAttribute("aria-controls", popup.id);
+    trigger.setAttribute("aria-expanded", "true");
 
-    popup.classList.add(
-      "is-open"
-    );
-
-    popup.setAttribute(
-      "aria-hidden",
-      "false"
-    );
-
-
-    trigger.setAttribute(
-      "aria-controls",
-      popup.id
-    );
-
-    trigger.setAttribute(
-      "aria-expanded",
-      "true"
-    );
-
-
-    activeTrigger =
-      trigger;
-
+    activeTrigger = trigger;
 
     requestAnimationFrame(() => {
       positionPopup(trigger);
     });
   }
 
-
-  /* -----------------------------------------------------------------------
+  /* ------------------------------------------------------------
      KLIKNUTÍ NA POJEM
-     ----------------------------------------------------------------------- */
+     ------------------------------------------------------------ */
 
-  document.addEventListener(
-    "click",
-    (event) => {
+  document.addEventListener("click", (event) => {
+    const trigger =
+      event.target.closest(".term[data-term]");
 
-      const trigger =
-        event.target.closest(
-          ".term[data-term]"
-        );
+    if (trigger) {
+      event.preventDefault();
+      event.stopPropagation();
 
+      const termId = trigger.dataset.term;
 
-      if (trigger) {
+      const isSameOpen =
+        popup.classList.contains("is-open") &&
+        popup.dataset.currentTerm === termId &&
+        activeTrigger === trigger;
 
-        event.preventDefault();
-        event.stopPropagation();
-
-
-        const isSameOpen =
-          popup.classList.contains(
-            "is-open"
-          ) &&
-          activeTrigger === trigger;
-
-
-        if (isSameOpen) {
-
-          closePopup();
-
-        } else {
-
-          openPopup(
-            trigger
-          );
-
-        }
-
-        return;
-      }
-
-
-      /* Kliknutí mimo popup jej zavře. */
-      if (
-        !event.target.closest(
-          ".term-popup"
-        )
-      ) {
+      if (isSameOpen) {
         closePopup();
+      } else {
+        openPopup(trigger, termId);
       }
 
+      return;
     }
-  );
 
+    if (!event.target.closest(".term-popup")) {
+      closePopup();
+    }
+  });
 
-  /* -----------------------------------------------------------------------
+  /* ------------------------------------------------------------
      ESCAPE
-     ----------------------------------------------------------------------- */
+     ------------------------------------------------------------ */
 
-  document.addEventListener(
-    "keydown",
-    (event) => {
+  document.addEventListener("keydown", (event) => {
+    if (
+      event.key === "Escape" &&
+      popup.classList.contains("is-open")
+    ) {
+      const triggerToFocus = activeTrigger;
 
-      if (
-        event.key === "Escape" &&
-        popup.classList.contains(
-          "is-open"
-        )
-      ) {
-
-        const triggerToFocus =
-          activeTrigger;
-
-        closePopup();
-
-        triggerToFocus?.focus();
-      }
-
+      closePopup();
+      triggerToFocus?.focus();
     }
-  );
+  });
 
-
-  /* -----------------------------------------------------------------------
-     SCROLL / RESIZE
-
-     Popup je kontextová vysvětlivka k právě viditelnému pojmu.
-     Při posunu stránky nebo změně velikosti okna se zavře.
-     ----------------------------------------------------------------------- */
-
-  window.addEventListener(
-    "scroll",
-    closePopup,
-    {
-      passive: true
-    }
-  );
+  /* ------------------------------------------------------------
+     PŘEPOČÍTÁNÍ POZICE
+     ------------------------------------------------------------ */
 
   window.addEventListener(
     "resize",
-    closePopup
+    () => {
+      if (
+        activeTrigger &&
+        popup.classList.contains("is-open")
+      ) {
+        positionPopup(activeTrigger);
+      }
+    },
+    { passive: true }
   );
 
-
-  console.info(
-    `[BYTKOJN terms] Připraveno ${Object.keys(terms).length} pojmů.`
+  window.addEventListener(
+    "scroll",
+    () => {
+      if (
+        activeTrigger &&
+        popup.classList.contains("is-open")
+      ) {
+        positionPopup(activeTrigger);
+      }
+    },
+    { passive: true }
   );
-
 })();

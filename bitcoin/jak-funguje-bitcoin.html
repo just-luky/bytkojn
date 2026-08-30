@@ -5,8 +5,29 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="Jak Bitcoin funguje – protokol, bitcoinová jednotka, UTXO, klíče, peněženky, síť, uzly, těžba, proof-of-work a blockchain." name="description">
     <meta content="#0a0b0d" name="theme-color">
+    
+    <!-- Open Graph -->
+    <meta property="og:locale" content="cs_CZ">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="&lt;bytkojn/&gt;">
+    <meta property="og:title" content="Jak funguje Bitcoin // &lt;bytkojn/&gt;">
+    <meta property="og:description" content="Jak Bitcoin funguje – protokol, bitcoinová jednotka, UTXO, klíče, peněženky, síť, uzly, těžba, proof-of-work a blockchain.">
+    <meta property="og:url" content="https://bytkojn.cz/bitcoin/jak-funguje-bitcoin.html">
+    <meta property="og:image" content="https://bytkojn.cz/assets/media/social-preview.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Jak funguje Bitcoin // &lt;bytkojn/&gt;">
+
+    <!-- X / Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Jak funguje Bitcoin // &lt;bytkojn/&gt;">
+    <meta name="twitter:description" content="Jak Bitcoin funguje – protokol, bitcoinová jednotka, UTXO, klíče, peněženky, síť, uzly, těžba, proof-of-work a blockchain.">
+    <meta name="twitter:image" content="https://bytkojn.cz/assets/media/social-preview.png">
+    <meta name="twitter:image:alt" content="Jak funguje Bitcoin // &lt;bytkojn/&gt;">
+
+    <link rel="canonical" href="https://bytkojn.cz/bitcoin/jak-funguje-bitcoin.html">
     <link href="../assets/media/favicon.svg" rel="icon" type="image/svg+xml">
-    <link href="../assets/css/styles.css?v=20260813-3" rel="stylesheet">
+    <link href="../assets/css/styles.css?v=20260815-3" rel="stylesheet">
     <title>Jak funguje Bitcoin // &lt;bytkojn/&gt;</title>
   </head>
   <body class="page-bitcoin page-bitcoin-article article-text-page article-terminal-page">
@@ -70,7 +91,7 @@
             <img class="article-meta-avatar" src="../assets/media/author_justluky.png" alt="" decoding="async">
             <div class="article-meta-copy">
               <span class="article-meta-author">justluky</span>
-              <time class="article-meta-date" datetime="2026-08-10">10. 8. 2026</time>
+              <time class="article-meta-date" datetime="2026-08-16">16. 8. 2026</time>
             </div>
           </div>
           <div class="article-content">
@@ -94,7 +115,7 @@
               <p>Slovo Bitcoin se používá v několika úzce souvisejících významech. Bitcoin s velkým počátečním písmenem označuje celý systém, jeho protokol nebo síť. Bitcoin s malým písmenem označuje měnovou jednotku používanou uvnitř tohoto systému, pro kterou se běžně používá zkratka BTC. </p>
               <p>Jeden bitcoin lze rozdělit na 100 000 000 nejmenších jednotek označovaných jako <button class="term" type="button" data-term="satoshi">satoshi</button>, přičemž jeden satoshi odpovídá 0,00000001 BTC.</p>
               <span aria-label="Zdroje 1, 4" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 4" href="#ref-4" id="cite-4">4</a>]</span>.
-<div class="btc-sats-table-wrap">
+              <div class="btc-sats-table-wrap">
                 <table class="btc-sats-table" aria-label="Příklady převodu mezi BTC a satoshi">
                   <thead>
                     <tr>
@@ -130,20 +151,22 @@
             <section aria-labelledby="kde-jsou-bitcoiny" class="article-text-section">
               <h2 id="kde-jsou-bitcoiny">Kde jsou bitcoiny?</h2>
               <p>Co v bitcoinovém systému vlastně znamená „mít bitcoin“ a kde je tato hodnota zaznamenána? Bitcoin nemá jednotlivé digitální mince uložené v <button class="term" type="button" data-term="penezenka">peněžence</button> nebo v počítači a nepoužívá ani bankovní model účtů, ve kterém by existoval centrální záznam o tom, že určitý uživatel vlastní například 1,25 BTC. Hodnota je v systému reprezentována prostřednictvím transakcí a jejich výstupů <span aria-label="Zdroje 1, 4, 5" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 4" href="#ref-4">4</a>, <a aria-label="Přejít na zdroj 5" href="#ref-5" id="cite-5">5</a>]</span>.</p>
-              <p>Pokud například někdo pošle uživateli určité množství bitcoinů, neznamená to, že se digitální mince přesunou do jeho peněženky nebo se připíšou na jeho účet. Odeslaná transakce vytvoří nový výstup představující určité množství BTC a podmínky určující, za jakých okolností může být tato hodnota později utracena. Dokud tento výstup ještě nebyl použit v další platné transakci, označuje se jako Unspent Transaction Output (<button class="term" type="button" data-term="utxo">UTXO</button>) tedy neutracený výstup transakce <span aria-label="Zdroje 1, 4, 5" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 4" href="#ref-4">4</a>, <a aria-label="Přejít na zdroj 5" href="#ref-5">5</a>]</span>.</p>
+              <p>Bitcoinová transakce je datová struktura, která určuje, které dosavadní transakční výstupy mají být utraceny a jaké nové výstupy mají z jejich hodnoty vzniknout. Pokud například někdo pošle uživateli určité množství bitcoinů, neznamená to, že se digitální mince přesunou do jeho peněženky nebo se připíšou na jeho účet. Odeslaná transakce vytvoří nový výstup představující určité množství BTC a podmínky určující, za jakých okolností může být tato hodnota později utracena. Dokud tento výstup ještě nebyl použit v další platné transakci, označuje se jako Unspent Transaction Output (<button class="term" type="button" data-term="utxo">UTXO</button>) tedy neutracený výstup transakce <span aria-label="Zdroje 1, 4, 5" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 4" href="#ref-4">4</a>, <a aria-label="Přejít na zdroj 5" href="#ref-5">5</a>]</span>.</p>
               <p>Pro základní představu lze transakční výstup přirovnat k uzamčené schránce s určitou bitcoinovou hodnotou. Nejde o skutečný objekt ani o samostatné místo v <button class="term" type="button" data-term="blockchain">blockchainu</button>, ale o užitečnou pomůcku pro pochopení principu: při utrácení transakce použije jeden nebo více existujících výstupů, splní jejich podmínky a z jejich hodnoty vytvoří výstupy nové. Ty jsou znovu spojeny s podmínkami určujícími, jak mohou být v budoucnu utraceny <a aria-label="Přejít na zdroj 9" class="citation" href="#ref-9" id="cite-9">[9]</a>.</p>
-              <p>UTXO není zbytek po transakci, ale samostatný dosud neutracený výstup. Při jeho použití se původní UTXO nesnižuje pouze o odesílanou část, ale spotřebuje se celé a transakce vytvoří výstupy nové. Ve zjednodušeném příkladu bez uvažování transakčního poplatku může uživatel použít UTXO o hodnotě 100 000 sat a poslat 30 000 sat příjemci. Transakce přitom vytvoří výstup 30 000 sat pro příjemce a nový výstup 70 000 sat zpět pro odesílatele. Původní UTXO o hodnotě 100 000 sat tím přestává být neutraceným výstupem a je nahrazeno novými výstupy <span aria-label="Zdroje 1, 2, 4" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 2" href="#ref-2">2</a>, <a aria-label="Přejít na zdroj 4" href="#ref-4">4</a>]</span>.</p>
+              <p>UTXO není zbytek po transakci, ale samostatný dosud neutracený výstup. Při jeho použití se původní UTXO nesnižuje pouze o odesílanou část, ale spotřebuje se celé a transakce vytvoří výstupy nové. Ve zjednodušeném příkladu může uživatel použít UTXO o hodnotě 100 000 sat a poslat 30 000 sat příjemci. Transakce vytvoří výstup 30 000 sat pro příjemce a 69 500 sat jako <button class="term" type="button" data-term="change-output">vratný výstup</button>, kterým se zbývající hodnota vrací pod kontrolu odesílatele. Zbylých 500 sat tvoří <button class="term" type="button" data-term="transaction-fee">transakční poplatek</button>. Vratný výstup přitom není z pohledu bitcoinového protokolu zvláštním typem výstupu; jde o běžný nový výstup stejné transakce. Původní UTXO o hodnotě 100 000 sat tím přestává být neutraceným výstupem a je nahrazeno novými výstupy <span aria-label="Zdroje 1, 4, 8" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 4" href="#ref-4">4</a>, <a aria-label="Přejít na zdroj 8" href="#ref-8">8</a>]</span>.</p>
               <figure class="article-figure-compact article-figure-diagram">
-                <img alt="Příklad spotřebování UTXO v transakci" src="../assets/media/utxo.png" decoding="async" loading="lazy">
+                <img alt="Příklad spotřebování UTXO v transakci včetně vratného výstupu a transakčního poplatku" src="../assets/media/utxo.png" decoding="async" loading="lazy">
                 <figcaption>
-                  <span class="figure-caption">Příklad spotřebování UTXO v transakci</span>
+                  <span class="figure-caption">Příklad spotřebování UTXO včetně vratného výstupu a transakčního poplatku</span>
                   <span class="figure-source">Zdroj: generated by AI</span>
                 </figcaption>
               </figure>
               <p>
-                <button class="term" type="button" data-term="bitcoin-address">bitcoinová adresa</button> proto není účet se zůstatkem a bitcoinová peněženka neobsahuje samotné bitcoiny. Peněženka spravuje údaje potřebné k nakládání s příslušnými výstupy a dokáže určit, které UTXO může uživatel utratit. Jejich hodnoty následně sečte a zobrazí jako výsledný zůstatek</p>
-              <p>Jednotlivé transakce na sebe tímto způsobem navazují. Vstupy nové transakce odkazují na dřívější výstupy a nově vytvořené výstupy se mohou později stát vstupy dalších transakcí. Z pohledu historie tak vzniká graf vazeb mezi transakcemi a jejich výstupy. Soubor všech právě existujících neutracených výstupů se označuje jako UTXO set. Plně ověřující uzel si tento stav vytváří z historie blockchainu a průběžně jej aktualizuje: utracené výstupy odstraňuje a nově vzniklé přidává <span aria-label="Zdroje 1, 5, 9" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 5" href="#ref-5">5</a>, <a aria-label="Přejít na zdroj 9" href="#ref-9">9</a>]</span>.</p>
-              <p>Vlastnictví bitcoinů neznamená držení konkrétních digitálních mincí ani existenci zůstatku vedeného na účtu. Zjednodušeně jde o možnost utratit jeden nebo více UTXO představujících určitou bitcoinovou hodnotu. Přesná konstrukce transakcí, způsob určování podmínek pro utracení a role adres, klíčů a peněženek budou podrobněji vysvětleny v dalších částech.</p>
+                <button class="term" type="button" data-term="bitcoin-address">bitcoinová adresa</button> proto není účet se zůstatkem a bitcoinová peněženka neobsahuje samotné bitcoiny. Peněženka spravuje údaje potřebné k nakládání s příslušnými výstupy a dokáže určit, které UTXO může uživatel utratit. Jejich hodnoty následně sečte a zobrazí jako výsledný zůstatek.</p>
+              <p>Jednotlivé transakce na sebe tímto způsobem navazují. Vstup nové transakce sám o sobě neobsahuje bitcoinovou hodnotu, kterou uživatel utrácí, ale odkazuje na konkrétní výstup některé dřívější transakce. Uzel podle tohoto odkazu dohledá předchozí výstup a z něj zjistí jeho hodnotu a podmínky utracení. Současně ověří, že výstup skutečně existuje a že již nebyl utracen jinou transakcí. Teprve poté může být tento výstup použit při ověřování nové transakce. Jedna transakce může použít více takových vstupů a současně vytvořit více nových výstupů <span aria-label="Zdroj 1" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>]</span>.</p>
+              <p>Konkrétní uspořádání vstupů a výstupů se může lišit podle účelu transakce. Jednoduchá platba může například použít jeden vstup a vytvořit výstup pro příjemce spolu s vratným výstupem. Jiná transakce může spojit několik dřívějších výstupů do jednoho nového výstupu nebo naopak vytvořit více výstupů pro několik příjemců. Základní princip se tím nemění: transakce spotřebovává existující výstupy a vytváří výstupy nové <span aria-label="Zdroj 1" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>]</span>.</p>
+              <p>Nově vytvořené výstupy se mohou později stát vstupy dalších transakcí. Z pohledu historie tak vzniká graf vazeb mezi transakcemi a jejich výstupy. Soubor všech právě existujících neutracených výstupů se označuje jako UTXO set. Plně ověřující uzel si tento stav vytváří z historie blockchainu a průběžně jej aktualizuje: při přijetí platných transakcí v novém bloku odstraňuje utracené výstupy a přidává nově vzniklé. Díky tomu může při ověřování dalších transakcí zjišťovat, zda odkazované výstupy stále existují jako neutracené <span aria-label="Zdroje 1, 5, 8" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 5" href="#ref-5">5</a>, <a aria-label="Přejít na zdroj 8" href="#ref-8">8</a>]</span>.</p>
+              <p>Vlastnictví bitcoinů neznamená držení konkrétních digitálních mincí ani existenci zůstatku vedeného na účtu. Zjednodušeně jde o možnost utratit jeden nebo více UTXO představujících určitou bitcoinovou hodnotu. Následující část se proto zaměří na to, jak Bitcoin určuje oprávnění k utracení jednotlivých výstupů.</p>
             </section>
             <section aria-labelledby="jak-se-bitcoin-ovlada" class="article-text-section">
               <h2 id="jak-se-bitcoin-ovlada">Jak se bitcoin ovládá?</h2>
@@ -167,9 +190,10 @@
             <section aria-labelledby="penezenka-a-transakce" class="article-text-section">
               <h2 id="penezenka-a-transakce">Peněženka a cesta transakce do sítě</h2>
               <p>V praxi uživatel s <button class="term" type="button" data-term="cryptographic-keys" aria-controls="termPopup" aria-expanded="false">kryptografickými klíči</button> obvykle nepracuje přímo. Spravuje je bitcoinová <button class="term" type="button" data-term="penezenka">peněženka</button>, která zároveň dokáže zjistit, která <button class="term" type="button" data-term="utxo">UTXO</button> může uživatel utratit, vytvořit novou transakci a pomocí příslušných soukromých klíčů ji podepsat. Samotné bitcoiny však peněženka neuchovává. Hodnota je reprezentována dosud neutracenými výstupy předchozích transakcí – UTXO – evidovanými v bitcoinovém systému <span aria-label="Zdroje 1, 8" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 8" href="#ref-8">8</a>]</span>.</p>
-              <p>Při odeslání platby nedochází k přenosu digitální mince z jednoho zařízení do druhého. Peněženka vytvoří transakci, která spotřebuje vybrané dosavadní UTXO a vytvoří nové výstupy. Část hodnoty může například připadnout příjemci, část se může vrátit odesílateli jako nový výstup a rozdíl mezi celkovou hodnotou vstupů a výstupů tvoří <button class="term" type="button" data-term="transaction-fee">transakční poplatek</button>. Původní UTXO jsou přitom spotřebována celá a po potvrzení transakce jsou nahrazena nově vytvořenými výstupy <span aria-label="Zdroje 1, 4" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 4" href="#ref-4">4</a>]</span>.</p>
-              <p>Podepsaná transakce je následně předána jednomu nebo více bitcoinovým <button class="term" type="button" data-term="node">uzlům</button>. Uzel ji ověří například z hlediska její struktury, použitých vstupů, splnění podmínek pro jejich utracení a skutečnosti, zda odkazované výstupy již nebyly utraceny. Pokud transakci přijme, může ji uložit mezi své dosud nepotvrzené transakce a oznámit ji dalším uzlům, které provedou vlastní kontrolu a mohou ji šířit dál. Transakce se tak <button class="term" type="button" data-term="peer-to-peer">peer-to-peer</button> sítí postupně dostává k dalším účastníkům, včetně uzlů používaných <button class="term" type="button" data-term="miner">těžaři</button>
-                <span aria-label="Zdroje 1, 2, 8, 9" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 2" href="#ref-2">2</a>, <a aria-label="Přejít na zdroj 8" href="#ref-8">8</a>, <a aria-label="Přejít na zdroj 9" href="#ref-9">9</a>]</span>.</p>
+              <p>Při odeslání platby nedochází k přenosu digitální mince z jednoho zařízení do druhého. Peněženka nejprve vybere jedno nebo více UTXO, jejichž společná hodnota postačuje k zamýšlené platbě. Z nich sestaví vstupy nové transakce a vytvoří nové výstupy. Část hodnoty může připadnout příjemci a zbývající část se může vrátit pod kontrolu odesílatele prostřednictvím nového <button class="term" type="button" data-term="change-output">vratného výstupu</button>. Z pohledu bitcoinového protokolu jde o běžný transakční výstup, nikoli o zvláštní typ výstupu. Rozdíl mezi celkovou hodnotou vstupů a výstupů tvoří <button class="term" type="button" data-term="transaction-fee">transakční poplatek</button>. Původní UTXO jsou přitom spotřebována celá a po potvrzení transakce jsou nahrazena nově vytvořenými výstupy <span aria-label="Zdroje 1, 4, 8" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 4" href="#ref-4">4</a>, <a aria-label="Přejít na zdroj 8" href="#ref-8">8</a>]</span>.</p>
+              <p>Sestavení a podepsání transakce je přitom oddělené od jejího odeslání do sítě. Pokud má peněženka k dispozici potřebné informace o UTXO, která chce použít, a přístup k příslušným soukromým klíčům, může transakci vytvořit a podepsat i bez připojení k bitcoinové síti. Připojení je potřeba až ve chvíli, kdy má být hotová transakce předána některému uzlu a dále šířena sítí <span aria-label="Zdroj 1" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>]</span>.</p>
+              <p>Hotová podepsaná transakce nemusí být předána přímo peněžence příjemce. Stačí ji předat jednomu nebo více bitcoinovým <button class="term" type="button" data-term="node">uzlům</button>. Uzel ji ověří například z hlediska její struktury, použitých vstupů, splnění podmínek pro jejich utracení a skutečnosti, zda odkazované výstupy již nebyly utraceny. Pokud transakci přijme, může ji uložit mezi své dosud nepotvrzené transakce a oznámit ji dalším uzlům, které provedou vlastní kontrolu a mohou ji šířit dál. Transakce se tak <button class="term" type="button" data-term="peer-to-peer">peer-to-peer</button> sítí postupně dostává k dalším účastníkům, včetně uzlů používaných <button class="term" type="button" data-term="miner">těžaři</button>. Peněženka odesílatele tedy nemusí navazovat přímé spojení s peněženkou příjemce <span aria-label="Zdroje 1, 2, 8" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 2" href="#ref-2">2</a>, <a aria-label="Přejít na zdroj 8" href="#ref-8">8</a>]</span>.</p>
+              <p>Jakmile se transakce dostane k uzlu nebo jiné službě, ze které čerpá informace peněženka příjemce, může peněženka rozpoznat výstup vytvořený pod podmínkami, které odpovídají klíčům pod její kontrolou, a zobrazit jej jako příchozí platbu. To však ještě neznamená, že je transakce potvrzena v blockchainu. Příjemce ji může vidět už během jejího šíření sítí, zatímco stále čeká na zahrnutí do bloku <span aria-label="Zdroj 1" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>]</span>.</p>
               <p>Transakce je v této fázi platná, ale dosud nepotvrzená – ještě nebyla zahrnuta do žádného <button class="term" type="button" data-term="blok">bloku</button>. Lokální sadě takových transakcí se běžně říká <button class="term" type="button" data-term="mempool">mempool</button>. Neexistuje jeden společný mempool pro celý Bitcoin. Jednotlivé uzly si spravují vlastní mempooly, a proto se mohou v konkrétním okamžiku lišit v tom, které nepotvrzené transakce znají nebo uchovávají <a aria-label="Přejít na zdroj 1" class="citation" href="#ref-1">[1]</a>.</p>
               <p>Těžaři vybírají transakce, které znají jejich vlastní uzly, a mohou je zahrnout do <button class="term" type="button" data-term="candidate-block">kandidátního bloku</button>. Jakmile je nalezen platný blok, začne se sítí šířit samotný blok. Ostatní uzly jej nezávisle ověří a pokud jej přijmou jako součást <button class="term" type="button" data-term="blockchain">blockchainu</button>, získají transakce obsažené v tomto bloku první potvrzení. Do té doby zůstávají pouze nepotvrzenými transakcemi šířenými mezi uzly <span aria-label="Zdroje 1, 2, 9" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 2" href="#ref-2">2</a>, <a aria-label="Přejít na zdroj 9" href="#ref-9">9</a>]</span>.</p>
               <figure class="article-figure-compact article-figure-diagram">
@@ -185,7 +209,7 @@
               <p>
                 <button class="term" type="button" data-term="digital-signatures">Digitální podpis</button> může prokázat, že jsou splněny podmínky pro utracení určitého výstupu, sám o sobě ale neřeší problém <button class="term" type="button" data-term="double-spending">dvojí útraty</button>. Dokud transakce není potvrzena v <button class="term" type="button" data-term="blockchain">blockchainu</button>, může totiž vzniknout jiná transakce, která se pokouší utratit stejné <button class="term" type="button" data-term="utxo">UTXO</button> jiným způsobem. Takové transakce jsou navzájem konfliktní a obě nemohou být součástí stejné platné historie. Jednotlivé uzly navíc mohou v určitém okamžiku znát různé konfliktní verze, protože se transakce sítí šíří postupně. Bitcoin proto potřebuje mechanismus, podle kterého se síť dlouhodobě shodne na jediné historii, v níž může být konkrétní výstup utracen pouze jednou <span aria-label="Zdroje 1, 2, 3" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 2" href="#ref-2">2</a>, <a aria-label="Přejít na zdroj 3" href="#ref-3">3</a>]</span>.</p>
               <p>Do procesu zde vstupují <button class="term" type="button" data-term="miner">těžaři</button>. Těžař vybírá platné nepotvrzené transakce, které zná jeho <button class="term" type="button" data-term="node">uzel</button>, a sestavuje z nich <button class="term" type="button" data-term="candidate-block">kandidátní blok</button>. Součástí <button class="term" type="button" data-term="blok">bloku</button> je jeho <button class="term" type="button" data-term="block-header">hlavička</button>, která obsahuje mimo jiné kryptografický odkaz na předchozí blok, souhrnný <button class="term" type="button" data-term="hash">hash</button> transakcí v bloku a hodnotu označovanou jako <button class="term" type="button" data-term="nonce">nonce</button>. Těžař opakovaně mění nonce a případně i další údaje, čímž vytváří nové varianty hlavičky, a pro každou z nich počítá kryptografický hash. Cílem je nalézt takovou variantu, jejíž hash je jako číselná hodnota menší nebo roven aktuálně stanové <button class="term" type="button" data-term="target">cílové hodnotě</button>. Protože výsledek hashování nelze předem předvídat, nalezení vyhovující hodnoty obvykle vyžaduje obrovské množství pokusů. Splnění této podmínky představuje <button class="term" type="button" data-term="proof-of-work">proof-of-work</button>, zatímco jeho následné ověření je velmi snadné <span aria-label="Zdroje 1, 2, 4, 9" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 2" href="#ref-2">2</a>, <a aria-label="Přejít na zdroj 4" href="#ref-4">4</a>, <a aria-label="Přejít na zdroj 9" href="#ref-9">9</a>]</span>.</p>
-              <p>Pokud těžař nalezne blok s vyhovujícím proof-of-work, rozešle jej do bitcoinové sítě. Ostatní uzly nemusí opakovat obrovské množství pokusů, které těžař předtím provedl. Z předložené hlavičky jednoduše vypočítají hash a ověří, zda splňuje požadovaný cíl. Současně zkontrolují celý blok podle vlastních pravidel – jeho strukturu, návaznost na předchozí blok, všechny obsažené transakce i povolenou blokovou odměnu. Pokud některá z podmínek neplatí, blok odmítnou bez ohledu na množství práce vynaložené těžařem. Pokud blok všemi kontrolami projde a uzel jej přijme jako součást své aktivní historie, získají transakce obsažené v tomto bloku první potvrzení <span aria-label="Zdroje 1, 5, 7" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 5" href="#ref-5">5</a>, <a aria-label="Přejít na zdroj 7" href="#ref-7">7</a>]</span>.</p>
+              <p>Pokud těžař nalezne blok s vyhovujícím proof-of-work, rozešle jej do bitcoinové sítě. Ostatní uzly nemusí opakovat obrovské množství pokusů, které těžař předtím provedl. Z předložené hlavičky jednoduše vypočítají hash a ověří, zda splňuje požadovaný cíl. Současně zkontrolují celý blok podle vlastních pravidel – jeho strukturu, návaznost na předchozí blok, všechny obsažené transakce i povolenou blokovou odměnu. Pokud některá z podmínek neplatí, blok odmítnou bez ohledu na množství práce vynaložené těžařem. Pokud blok všemi kontrolami projde a uzel jej přijme jako součást své aktivní historie, získají transakce obsažené v tomto bloku první potvrzení. Blok, ve kterém byla transakce zahrnuta, se tedy počítá jako její první potvrzení a každý další platný blok navazující nad ním přidává další potvrzení. Transakce se tak postupně nachází hlouběji v historii blockchainu <span aria-label="Zdroje 1, 5, 7" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 5" href="#ref-5">5</a>, <a aria-label="Přejít na zdroj 7" href="#ref-7">7</a>]</span>.</p>
               <p>Každý blok obsahuje kryptografický odkaz na předchozí blok, takže platné bloky vytvářejí navazující řetězec – blockchain. Může se však stát, že dva těžaři téměř současně naleznou dva různé platné bloky navazující na stejný předchozí blok. Část sítě může nejprve obdržet jeden z nich a jiná část druhý, takže dočasně vzniknou dvě platné větve. Situace se zpravidla vyřeší ve chvíli, kdy na některou z větví naváže další blok a jedna větev tak získá větší <button class="term" type="button" data-term="cumulative-work">kumulativní prací</button> proof-of-work. Uzly jako svou aktivní historii sledují platný řetězec s největší kumulativní prací; druhá větev přestane být součástí této historie <span aria-label="Zdroje 1, 2, 8" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 2" href="#ref-2">2</a>, <a aria-label="Přejít na zdroj 8" href="#ref-8">8</a>]</span>.</p>
               <p>Proof-of-work současně zvyšuje náklady na zpětnou změnu historie. Útočník, který by chtěl nahradit starší potvrzený blok jinou verzí, by musel vytvořit alternativní platnou větev a vynaložit dostatek výpočetní práce, aby překonala kumulativní práci řetězce, který mezitím přijala síť. S každým dalším blokem navazujícím na danou transakci se proto její přepsání stává obtížnější. Potvrzení v Bitcoinu není absolutní matematickou finalitou, ale pravděpodobnost úspěšné reorganizace historie s rostoucí hloubkou klesá <span aria-label="Zdroje 1, 2, 5" class="citation-group">[<a aria-label="Přejít na zdroj 1" href="#ref-1">1</a>, <a aria-label="Přejít na zdroj 2" href="#ref-2">2</a>, <a aria-label="Přejít na zdroj 5" href="#ref-5">5</a>]</span>.</p>
               <figure class="article-figure-compact article-figure-diagram">
@@ -460,85 +484,86 @@
             </section>
             <section aria-labelledby="pouzite-zdroje" class="article-text-section references-section">
               <h2 id="pouzite-zdroje">Použité zdroje</h2>
-              <p class="references-intro">
-Záznamy jsou upraveny podle číselného systému normy ISO 690:2022 a seřazeny podle prvního výskytu v textu.
-</p>
               <ol class="reference-list">
                 <li class="reference-item" id="ref-1">
                   <span class="reference-number">[1]</span>
-ANTONOPOULOS, Andreas M. a David A. HARDING.
-<span class="reference-title">Mastering Bitcoin: Programming the Open Blockchain</span>.
-3. vyd. Sebastopol, CA: O’Reilly Media, 2023. 402 s. ISBN 978-1-098-15009-9.
-Open-source text 3. vydání je dostupný také z:
-<a class="reference-link" href="https://github.com/bitcoinbook/bitcoinbook" rel="noopener noreferrer" target="_blank">https://github.com/bitcoinbook/bitcoinbook</a>
+                  ANTONOPOULOS, Andreas M. a David A. HARDING.
+                  <span class="reference-title">Mastering Bitcoin: Programming the Open Blockchain</span>.
+                  3. vyd. Sebastopol, CA: O’Reilly Media, 2023. 402 s. ISBN 978-1-098-15009-9.
+                  Open-source text 3. vydání [online]. GitHub [cit. 2026-08-16]. Dostupné z:
+                  <a class="reference-link" href="https://github.com/bitcoinbook/bitcoinbook" rel="noopener noreferrer" target="_blank">https://github.com/bitcoinbook/bitcoinbook</a>.
+                  Pro tuto část byly využity zejména kapitoly:
+                  <a class="reference-link" href="https://github.com/bitcoinbook/bitcoinbook/blob/develop/ch02_overview.adoc" rel="noopener noreferrer" target="_blank">Chapter 2 – Overview</a>
+                  a
+                  <a class="reference-link" href="https://github.com/bitcoinbook/bitcoinbook/blob/develop/ch06_transactions.adoc" rel="noopener noreferrer" target="_blank">Chapter 6 – Transactions</a>.
                   <br>
                   <a class="reference-back" href="#cite-1">↑ zpět k první citaci</a>
                 </li>
                 <li class="reference-item" id="ref-2">
                   <span class="reference-number">[2]</span>
-NAKAMOTO, Satoshi.
-<span class="reference-title">Bitcoin: A Peer-to-Peer Electronic Cash System</span> [online].
-2008 [cit. 2026-08-09]. Dostupné z:
-<a class="reference-link" href="https://bitcoin.org/bitcoin.pdf" rel="noopener noreferrer" target="_blank">https://bitcoin.org/bitcoin.pdf</a>
+                  NAKAMOTO, Satoshi.
+                  <span class="reference-title">Bitcoin: A Peer-to-Peer Electronic Cash System</span> [online].
+                  2008 [cit. 2026-08-09]. Dostupné z:
+                  <a class="reference-link" href="https://bitcoin.org/bitcoin.pdf" rel="noopener noreferrer" target="_blank">https://bitcoin.org/bitcoin.pdf</a>
                   <br>
                   <a class="reference-back" href="#cite-2">↑ zpět k první citaci</a>
                 </li>
                 <li class="reference-item" id="ref-3">
                   <span class="reference-number">[3]</span>
-PRITZKER, Yan.
-<span class="reference-title">Inventing Bitcoin: The Technology Behind the First Truly Scarce and Decentralized Money Explained</span>.
-2019. ISBN 978-1-79432-631-6.
-<br>
+                  PRITZKER, Yan.
+                  <span class="reference-title">Inventing Bitcoin: The Technology Behind the First Truly Scarce and Decentralized Money Explained</span>.
+                  2019. ISBN 978-1-79432-631-6.
+                  <br>
                   <a class="reference-back" href="#cite-3">↑ zpět k první citaci</a>
                 </li>
                 <li class="reference-item" id="ref-4">
                   <span class="reference-number">[4]</span>
-KARASAVVAS, Konstantinos.
-<span class="reference-title">Bitcoin Programming</span>.
-Verze 0.4. 2022. Licence Creative Commons Attribution-ShareAlike 4.0 International.
-<br>
+                  KARASAVVAS, Konstantinos.
+                  <span class="reference-title">Bitcoin Programming</span>.
+                  Verze 0.4. 2022. Licence Creative Commons Attribution-ShareAlike 4.0 International.
+                  <br>
                   <a class="reference-back" href="#cite-4">↑ zpět k první citaci</a>
                 </li>
                 <li class="reference-item" id="ref-5">
                   <span class="reference-number">[5]</span>
-LLANOS, Diego R.; Javier PEROTE a José D. VICENTE-LORENTE.
-<span class="reference-title">Bitcoin Protocol Mechanics for Economists: A Compact Reference</span>.
-University of Valladolid a University of Salamanca, 27. ledna 2026.
-<br>
+                  LLANOS, Diego R.; Javier PEROTE a José D. VICENTE-LORENTE.
+                  <span class="reference-title">Bitcoin Protocol Mechanics for Economists: A Compact Reference</span>.
+                  University of Valladolid a University of Salamanca, 27. ledna 2026.
+                  <br>
                   <a class="reference-back" href="#cite-5">↑ zpět k první citaci</a>
                 </li>
                 <li class="reference-item" id="ref-6">
                   <span class="reference-number">[6]</span>
-LEE KUO CHUEN, David, ed.
-<span class="reference-title">Handbook of Digital Currency: Bitcoin, Innovation, Financial Instruments, and Big Data</span>.
-Amsterdam: Academic Press, 2015. ISBN 978-0-12-802117-0.
-<br>
+                  LEE KUO CHUEN, David, ed.
+                  <span class="reference-title">Handbook of Digital Currency: Bitcoin, Innovation, Financial Instruments, and Big Data</span>.
+                  Amsterdam: Academic Press, 2015. ISBN 978-0-12-802117-0.
+                  <br>
                   <a class="reference-back" href="#cite-6">↑ zpět k první citaci</a>
                 </li>
                 <li class="reference-item" id="ref-7">
                   <span class="reference-number">[7]</span>
-BITCOIN CORE PROJECT.
-<span class="reference-title">Bitcoin Core integration/staging tree</span> [online].
-GitHub [cit. 2026-08-09]. Dostupné z:
-<a class="reference-link" href="https://github.com/bitcoin/bitcoin" rel="noopener noreferrer" target="_blank">https://github.com/bitcoin/bitcoin</a>
+                  BITCOIN CORE PROJECT.
+                  <span class="reference-title">Bitcoin Core integration/staging tree</span> [online].
+                  GitHub [cit. 2026-08-09]. Dostupné z:
+                  <a class="reference-link" href="https://github.com/bitcoin/bitcoin" rel="noopener noreferrer" target="_blank">https://github.com/bitcoin/bitcoin</a>
                   <br>
                   <a class="reference-back" href="#cite-7">↑ zpět k první citaci</a>
                 </li>
                 <li class="reference-item" id="ref-8">
                   <span class="reference-number">[8]</span>
-BITCOIN PROJECT.
-<span class="reference-title">Developer Guides</span> [online].
-Bitcoin.org [cit. 2026-08-09]. Dostupné z:
-<a class="reference-link" href="https://developer.bitcoin.org/devguide/" rel="noopener noreferrer" target="_blank">https://developer.bitcoin.org/devguide/</a>
+                  BITCOIN PROJECT.
+                  <span class="reference-title">Developer Guides</span> [online].
+                  Bitcoin.org [cit. 2026-08-09]. Dostupné z:
+                  <a class="reference-link" href="https://developer.bitcoin.org/devguide/" rel="noopener noreferrer" target="_blank">https://developer.bitcoin.org/devguide/</a>
                   <br>
                   <a class="reference-back" href="#cite-8">↑ zpět k první citaci</a>
                 </li>
                 <li class="reference-item" id="ref-9">
                   <span class="reference-number">[9]</span>
-WALKER, Greg.
-<span class="reference-title">How Does Bitcoin Work? A Quick Explanation for Beginners</span> [online].
-Learn Me A Bitcoin, 21. července 2026 [cit. 2026-08-09]. Dostupné z:
-<a class="reference-link" href="https://learnmeabitcoin.com/beginners/how-does-bitcoin-work/" rel="noopener noreferrer" target="_blank">https://learnmeabitcoin.com/beginners/how-does-bitcoin-work/</a>
+                  WALKER, Greg.
+                  <span class="reference-title">How Does Bitcoin Work? A Quick Explanation for Beginners</span> [online].
+                  Learn Me A Bitcoin, 21. července 2026 [cit. 2026-08-09]. Dostupné z:
+                  <a class="reference-link" href="https://learnmeabitcoin.com/beginners/how-does-bitcoin-work/" rel="noopener noreferrer" target="_blank">https://learnmeabitcoin.com/beginners/how-does-bitcoin-work/</a>
                   <br>
                   <a class="reference-back" href="#cite-9">↑ zpět k první citaci</a>
                 </li>
@@ -554,8 +579,8 @@ Learn Me A Bitcoin, 21. července 2026 [cit. 2026-08-09]. Dostupné z:
       Bez JavaScriptu zůstanou všechny články dostupné; vypnuté budou pouze drobné animace.
     </div>
     </noscript>
-    <script src="../assets/js/app.js?v=20260813-3"></script>
-    <script src="../assets/data/terms-data.js?v=20260810-1"></script>
+    <script src="../assets/js/app.js?v=20260815-3"></script>
+    <script src="../assets/data/terms-data.js?v=20260816-1149"></script>
     <script src="../assets/js/terms.js?v=20260810-2"></script>
   </body>
 </html>

@@ -38,10 +38,10 @@ const SITE_CONFIG = {
 };
 
 const BITCOIN_NAVIGATION = [
-  { title: "Úvod", href: "uvod.html" },
-  { title: "Vznik a historie", href: "vznik-a-historie.html" },
-  { title: "Jak funguje Bitcoin", href: "jak-funguje-bitcoin.html" },
-  { title: "ERR://CONTENT_PENDING" },
+  { title: "Úvod", href: "bitcoin/uvod.html" },
+  { title: "Vznik a historie", href: "bitcoin/vznik-a-historie.html" },
+  { title: "Jak funguje Bitcoin", href: "bitcoin/jak-funguje-bitcoin.html" },
+  { title: "Klíče, podpisy a adresy", href: "bitcoin/klice-podpisy-a-adresy.html" },
   { title: "ERR://CONTENT_PENDING" },
   { title: "ERR://CONTENT_PENDING" },
   { title: "ERR://CONTENT_PENDING" },
@@ -106,11 +106,50 @@ const HOME_ROTATING_WORDS = [
    Cesty a společné UI
    -------------------------------------------------------------------------- */
 
+const SVG_NAMESPACE = "http://www.w3.org/2000/svg";
+
+function clamp(value, minimum, maximum) {
+  return Math.min(maximum, Math.max(minimum, value));
+}
+
+function prefersReducedMotion() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+function createSvgElement(tagName, attributes = {}, text = "") {
+  const element = document.createElementNS(SVG_NAMESPACE, tagName);
+
+  Object.entries(attributes).forEach(([name, value]) => {
+    element.setAttribute(name, String(value));
+  });
+
+  if (text) {
+    element.textContent = text;
+  }
+
+  return element;
+}
+
 function getSiteRootPrefix() {
-  const body = document.body;
-  return body.classList.contains("page-bitcoin") || body.classList.contains("page-project")
-    ? "../"
-    : "";
+  const segments = decodeURIComponent(window.location.pathname)
+    .split("/")
+    .filter(Boolean);
+
+  const sectionIndex = segments.findIndex((segment) =>
+    ["bitcoin", "projekt"].includes(segment.toLowerCase())
+  );
+
+  if (sectionIndex === -1) {
+    return "";
+  }
+
+  const lastSegment = segments.at(-1) || "";
+  const isFile = /\.[a-z0-9]+$/i.test(lastSegment);
+  const currentDirectoryDepth = isFile
+    ? segments.length - sectionIndex - 1
+    : segments.length - sectionIndex;
+
+  return "../".repeat(Math.max(1, currentDirectoryDepth));
 }
 
 function siteHref(path) {
@@ -119,6 +158,26 @@ function siteHref(path) {
   }
 
   return `${getSiteRootPrefix()}${path}`;
+}
+
+function currentSitePath() {
+  const segments = decodeURIComponent(window.location.pathname)
+    .split("/")
+    .filter(Boolean);
+
+  const sectionIndex = segments.findIndex((segment) =>
+    ["bitcoin", "projekt"].includes(segment.toLowerCase())
+  );
+
+  if (sectionIndex !== -1) {
+    return segments.slice(sectionIndex).join("/").toLowerCase();
+  }
+
+  return (segments.at(-1) || "index.html").toLowerCase();
+}
+
+function isCurrentSitePath(path) {
+  return currentSitePath() === path.replace(/^\/+/, "").toLowerCase();
 }
 
 function socialIcon(id) {
@@ -166,7 +225,7 @@ function renderGlobalHeader() {
     .join("");
 
   header.innerHTML = `
-    <a class="brand" href="/" aria-label="BYTKOJN – úvodní stránka">
+    <a class="brand" href="${siteHref("")}" aria-label="BYTKOJN – úvodní stránka">
       <span class="brand-bracket" aria-hidden="true">&lt;</span>
       <span class="brand-name">${SITE_CONFIG.brand}</span>
       <span class="brand-slash" aria-hidden="true">/</span>
@@ -195,7 +254,7 @@ function renderGlobalFooter() {
       (item) => `
         <a
           class="footer-social-link"
-          href="${item.href}"
+          href="${siteHref(item.href)}"
           target="_blank"
           rel="noopener noreferrer"
           aria-label="${item.label}"
@@ -212,7 +271,7 @@ function renderGlobalFooter() {
   footer.innerHTML = `
     <div class="footer-main">
       <div class="footer-identity">
-        <a class="footer-brand" href="/" aria-label="BYTKOJN – úvodní stránka">
+        <a class="footer-brand" href="${siteHref("")}" aria-label="BYTKOJN – úvodní stránka">
           <span class="brand-bracket" aria-hidden="true">&lt;</span>
           <span class="footer-brand-name">${SITE_CONFIG.brand}</span>
           <span class="brand-slash" aria-hidden="true">/</span>
@@ -238,17 +297,11 @@ function renderGlobalFooter() {
    Navigace sekce Bitcoin
    -------------------------------------------------------------------------- */
 
-function currentFileName() {
-  return (window.location.pathname.split("/").pop() || "home.html").toLowerCase();
-}
-
 function renderBitcoinNavigation() {
   const sidebar = document.querySelector("#sidebar");
   if (!document.body.classList.contains("page-bitcoin") || !sidebar) {
     return;
   }
-
-  const currentPage = currentFileName();
 
   const items = BITCOIN_NAVIGATION.map((item, index) => {
     const number = String(index + 1).padStart(2, "0");
@@ -262,11 +315,12 @@ function renderBitcoinNavigation() {
       `;
     }
 
-    const active = currentPage === item.href.toLowerCase();
+    const active = isCurrentSitePath(item.href);
+
     return `
       <a
         class="bitcoin-nav-link${active ? " is-active" : ""}"
-        href="${item.href}"
+        href="${siteHref(item.href)}"
         ${active ? 'aria-current="page"' : ""}
       >
         <span class="bitcoin-nav-number">${number}</span>
@@ -282,30 +336,29 @@ function renderBitcoinNavigation() {
   `;
 
   const navigation = sidebar.querySelector(".bitcoin-section-nav");
-  const activeLink = navigation?.querySelector(".bitcoin-nav-link.is-active");
+  const activeItem = navigation?.querySelector(".bitcoin-nav-link.is-active");
+  const compactNavigation = window.matchMedia("(max-width: 820px)");
 
-  if (!navigation || !activeLink) {
+  if (!navigation || !activeItem) {
     return;
   }
 
-  /*
-    Mobilní horizontální navigace:
-    aktivní kapitolu držíme přibližně uprostřed lišty. Po kliknutí na jinou
-    kapitolu si krátce uložíme informaci do sessionStorage a na nově otevřené
-    stránce provedeme plynulé vystředění. Uživatel tak zároveň přirozeně
-    zahlédne, že před i za aktivní položkou jsou další kapitoly.
-  */
-  const mobileNavigation = window.matchMedia("(max-width: 820px)");
-
-  const centerActiveNavigationItem = (behavior = "auto") => {
-    if (!mobileNavigation.matches) {
+  const centerActiveItem = (behavior = "auto") => {
+    if (!compactNavigation.matches) {
       return;
     }
 
-    const maxScrollLeft = Math.max(0, navigation.scrollWidth - navigation.clientWidth);
+    const navigationRect = navigation.getBoundingClientRect();
+    const itemRect = activeItem.getBoundingClientRect();
+    const maxScrollLeft = Math.max(
+      0,
+      navigation.scrollWidth - navigation.clientWidth
+    );
+
     const targetScrollLeft =
-      activeLink.offsetLeft -
-      (navigation.clientWidth - activeLink.offsetWidth) / 2;
+      navigation.scrollLeft +
+      (itemRect.left - navigationRect.left) -
+      (navigation.clientWidth - itemRect.width) / 2;
 
     navigation.scrollTo({
       left: Math.min(maxScrollLeft, Math.max(0, targetScrollLeft)),
@@ -319,31 +372,31 @@ function renderBitcoinNavigation() {
     smoothCenter = sessionStorage.getItem("bytkojn-bitcoin-nav-center") === "1";
     sessionStorage.removeItem("bytkojn-bitcoin-nav-center");
   } catch (error) {
-    // sessionStorage může být v některých režimech prohlížeče nedostupné.
+    // Navigace funguje i bez sessionStorage.
   }
 
-  navigation.querySelectorAll(".bitcoin-nav-link[href]").forEach((link) => {
+  sidebar.querySelectorAll(".bitcoin-nav-link[href]").forEach((link) => {
     link.addEventListener("click", () => {
-      if (!mobileNavigation.matches) {
+      if (!compactNavigation.matches) {
         return;
       }
 
       try {
         sessionStorage.setItem("bytkojn-bitcoin-nav-center", "1");
       } catch (error) {
-        // Navigace funguje i bez sessionStorage, pouze bez plynulé animace.
+        // Navigace funguje i bez sessionStorage.
       }
     });
   });
 
   window.requestAnimationFrame(() => {
     window.requestAnimationFrame(() => {
-      centerActiveNavigationItem(smoothCenter ? "smooth" : "auto");
+      centerActiveItem(smoothCenter ? "smooth" : "auto");
     });
   });
 
-  mobileNavigation.addEventListener?.("change", () => {
-    centerActiveNavigationItem("auto");
+  compactNavigation.addEventListener?.("change", () => {
+    centerActiveItem("auto");
   });
 }
 
@@ -372,7 +425,7 @@ function initHomeRotatingTitle() {
   }
 
   const words = shuffle(HOME_ROTATING_WORDS);
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const reduceMotion = prefersReducedMotion();
   let index = 0;
 
   word.textContent = words[index];
@@ -424,7 +477,7 @@ function initBackToTop() {
   };
 
   button.addEventListener("click", () => {
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduceMotion = prefersReducedMotion();
     window.scrollTo({ top: 0, left: 0, behavior: reduceMotion ? "auto" : "smooth" });
   });
 
@@ -552,8 +605,6 @@ function initBitcoinFlowMap() {
   let translateY = 0;
   let dragState = null;
   let pinchState = null;
-
-  const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 
   const applyTransform = () => {
     stage.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
@@ -1788,6 +1839,2247 @@ function initHistoryTimeline() {
 }
 
 
+
+/* --------------------------------------------------------------------------
+   Interaktivní kontrola a zobrazení hodnoty soukromého klíče
+   Platnost se vyhodnocuje odděleně od samotného 256bitového rozsahu.
+   -------------------------------------------------------------------------- */
+
+
+/* --------------------------------------------------------------------------
+   Eliptická křivka — ilustrační konečné pole modulo p
+   Posuvník používá pouze malé prvočíselné moduly. Skutečné p secp256k1
+   je pevné a v této ukázce se nemění.
+   -------------------------------------------------------------------------- */
+
+function initEllipticCurveFieldDemo() {
+  const root = document.querySelector("[data-finite-field-demo]");
+
+  if (!root) {
+    return;
+  }
+
+  const slider = root.querySelector("[data-finite-field-slider]");
+  const svg = root.querySelector("[data-finite-field-svg]");
+  const pointsLayer = root.querySelector("[data-finite-field-points]");
+  const scalePositionOutput = root.querySelector("[data-finite-field-scale-position]");
+  const ticksLayer = root.querySelector("[data-finite-field-ticks]");
+
+  if (
+    !slider ||
+    !svg ||
+    !pointsLayer ||
+    !scalePositionOutput ||
+    !ticksLayer
+  ) {
+    return;
+  }
+
+  /*
+    Pouze šest názorných úrovní.
+    "visualPoints" je počet teček zobrazených v grafu, nikoli skutečný
+    počet bodů celé křivky. Hodnota je záměrně nastavena tak, aby každá
+    další úroveň byla na první pohled výrazně hustší než předchozí.
+  */
+  const levels = [
+    {
+      p: 5n,
+      label: "5",
+      htmlLabel: "5",
+      visualPoints: 5
+    },
+    {
+      p: 47n,
+      label: "47",
+      htmlLabel: "47",
+      visualPoints: 30
+    },
+    {
+      p: 2503n,
+      label: "2 503",
+      htmlLabel: "2&nbsp;503",
+      visualPoints: 160
+    },
+    {
+      p: 2147483647n,
+      label: "2,15 × 10⁹",
+      htmlLabel: "2,15 × 10<sup>9</sup>",
+      visualPoints: 420
+    },
+    {
+      p: 170141183460469231731687303715884105727n,
+      label: "1,70 × 10³⁸",
+      htmlLabel: "1,70 × 10<sup>38</sup>",
+      visualPoints: 850
+    },
+    {
+      p: 115792089237316195423570985008687907853269984665640564039457584007908834671663n,
+      label: "2²⁵⁶ − 2³² − 977",
+      htmlLabel: "2<sup>256</sup> − 2<sup>32</sup> − 977",
+      visualPoints: 1500,
+      secp256k1: true
+    }
+  ];
+
+  const viewBoxSize = 600;
+  const padding = 48;
+  const usableSize = viewBoxSize - 2 * padding;
+  const exactLimit = 2503n;
+  const cache = new Map();
+
+  const ratioToNumber = (value, modulus) => {
+    const scale = 1000000n;
+    return Number((value * scale) / (modulus - 1n)) / Number(scale);
+  };
+
+  const modPow = (base, exponent, modulus) => {
+    let result = 1n;
+    let value = base % modulus;
+    let power = exponent;
+
+    while (power > 0n) {
+      if (power & 1n) {
+        result = (result * value) % modulus;
+      }
+
+      value = (value * value) % modulus;
+      power >>= 1n;
+    }
+
+    return result;
+  };
+
+  const findAllPoints = (pBigInt) => {
+    const p = Number(pBigInt);
+    const roots = Array.from({ length: p }, () => []);
+
+    for (let y = 0; y < p; y += 1) {
+      roots[(y * y) % p].push(y);
+    }
+
+    const points = [];
+
+    for (let x = 0; x < p; x += 1) {
+      const rightSide = ((x * x * x) + 7) % p;
+
+      roots[rightSide].forEach((y) => {
+        points.push({
+          xRatio: x / (p - 1),
+          yRatio: y / (p - 1)
+        });
+      });
+    }
+
+    return points;
+  };
+
+  /*
+    Pro velmi velká p vybíráme pouze vzorek platných řešení rovnice.
+    Použitá velká prvočísla mají p ≡ 3 (mod 4), takže lze pro vybrané x
+    efektivně dopočítat modulární odmocninu y.
+  */
+  const sampleCurvePoints = (p, targetPoints) => {
+    const points = [];
+    const exponent = (p + 1n) / 4n;
+    const multiplier = 6364136223846793005n;
+    const increment = 1442695040888963407n;
+
+    let state = 1n;
+    let attempts = 0;
+    const maxAttempts = targetPoints * 14;
+
+    while (points.length < targetPoints && attempts < maxAttempts) {
+      state = (state * multiplier + increment) % p;
+
+      const x = state;
+      const rightSide = ((x * x % p) * x + 7n) % p;
+      const y = modPow(rightSide, exponent, p);
+
+      if ((y * y) % p === rightSide) {
+        points.push({
+          xRatio: ratioToNumber(x, p),
+          yRatio: ratioToNumber(y, p)
+        });
+
+        if (y !== 0n && points.length < targetPoints) {
+          points.push({
+            xRatio: ratioToNumber(x, p),
+            yRatio: ratioToNumber(p - y, p)
+          });
+        }
+      }
+
+      attempts += 1;
+    }
+
+    return points;
+  };
+
+  const evenlyDownsample = (points, targetCount) => {
+    if (points.length <= targetCount) {
+      return points;
+    }
+
+    const sampled = [];
+
+    for (let index = 0; index < targetCount; index += 1) {
+      const sourceIndex = Math.round(
+        (index * (points.length - 1)) / (targetCount - 1)
+      );
+
+      sampled.push(points[sourceIndex]);
+    }
+
+    return sampled;
+  };
+
+  const getPoints = (level) => {
+    const key = `${level.p.toString()}:${level.visualPoints}`;
+
+    if (cache.has(key)) {
+      return cache.get(key);
+    }
+
+    const pool =
+      level.p <= exactLimit
+        ? findAllPoints(level.p)
+        : sampleCurvePoints(level.p, level.visualPoints);
+
+    const points = evenlyDownsample(pool, level.visualPoints);
+
+    cache.set(key, points);
+    return points;
+  };
+
+  const pointRadius = (count) => {
+    if (count <= 5) return 5;
+    if (count <= 30) return 3.7;
+    if (count <= 160) return 2.5;
+    if (count <= 420) return 1.9;
+    if (count <= 850) return 1.5;
+    return 1.2;
+  };
+
+
+  const renderTicks = () => {
+    const fragment = document.createDocumentFragment();
+
+    levels.forEach((level, index) => {
+      const tick = document.createElement("span");
+      tick.className = "finite-field-slider-tick";
+
+      if (index === 0 || index === levels.length - 1) {
+        tick.classList.add("is-major");
+      }
+
+      tick.style.left = `${(index / (levels.length - 1)) * 100}%`;
+      fragment.appendChild(tick);
+    });
+
+    ticksLayer.replaceChildren(fragment);
+  };
+
+  const render = (level, index) => {
+    const points = getPoints(level);
+    const fragment = document.createDocumentFragment();
+    const radius = pointRadius(points.length);
+
+    points.forEach((point) => {
+      const cx = padding + point.xRatio * usableSize;
+      const cy = viewBoxSize - padding - point.yRatio * usableSize;
+      const circle = createSvgElement("circle", {
+        cx: cx.toFixed(2),
+        cy: cy.toFixed(2),
+        r: radius
+      });
+
+      fragment.appendChild(circle);
+    });
+
+    pointsLayer.replaceChildren(fragment);
+
+    const pText = level.secp256k1
+      ? "p = 2²⁵⁶ − 2³² − 977"
+      : `p = ${level.label}`;
+
+    const pHtml = `<span class="math-inline"><var>p</var> = ${level.htmlLabel ?? level.label}</span>`;
+
+    scalePositionOutput.innerHTML = pHtml;
+
+    svg.setAttribute(
+      "aria-label",
+      `${pText}; názorná vizualizace bodů eliptické křivky`
+    );
+  };
+
+  const updateProgress = (index) => {
+    const progress = (index / (levels.length - 1)) * 100;
+    slider.style.setProperty("--finite-field-progress", `${progress}%`);
+  };
+
+  slider.addEventListener("input", () => {
+    const index = Math.max(
+      0,
+      Math.min(levels.length - 1, Number(slider.value))
+    );
+
+    updateProgress(index);
+    render(levels[index], index);
+  });
+
+  renderTicks();
+
+  const defaultIndex = 1;
+
+  slider.value = String(defaultIndex);
+  updateProgress(defaultIndex);
+  render(levels[defaultIndex], defaultIndex);
+}
+
+
+/* --------------------------------------------------------------------------
+   Veřejný klíč — malý výukový příklad skalárního násobení
+   p = 17, G = (6, 6), k = 1 ... 5.
+   Ukázka není secp256k1 parametricky; používá stejná algebraická pravidla
+   na malých číslech, aby bylo možné zobrazit všechny body i ruční výpočet.
+   -------------------------------------------------------------------------- */
+
+function initPublicKeyDerivationDemo() {
+  const root = document.querySelector("[data-public-key-derivation-demo]");
+
+  if (!root) {
+    return;
+  }
+
+  const svg = root.querySelector("[data-public-key-demo-svg]");
+  const gridLayer = root.querySelector("[data-public-key-demo-grid]");
+  const pointsLayer = root.querySelector("[data-public-key-demo-points]");
+  const multiplesLayer = root.querySelector("[data-public-key-demo-multiples]");
+  let constructionLayer = root.querySelector("[data-public-key-demo-construction]");
+  const slider = root.querySelector("[data-public-key-demo-slider]");
+  const sequence = root.querySelector("[data-public-key-demo-sequence]");
+  const calculation = root.querySelector("[data-public-key-demo-calculation]");
+
+  if (
+    !svg ||
+    !gridLayer ||
+    !pointsLayer ||
+    !multiplesLayer ||
+    !slider ||
+    !sequence ||
+    !calculation
+  ) {
+    return;
+  }
+
+  const p = 17;
+  const G = { x: 6, y: 6 };
+  const size = 600;
+  const padding = 52;
+  const usable = size - 2 * padding;
+
+  const mod = (value) => ((value % p) + p) % p;
+
+  const inverse = (value) => {
+    const normalized = mod(value);
+
+    for (let candidate = 1; candidate < p; candidate += 1) {
+      if (mod(normalized * candidate) === 1) {
+        return candidate;
+      }
+    }
+
+    throw new Error(`Modulární inverze pro ${value} modulo ${p} neexistuje.`);
+  };
+
+  const addPoints = (first, second) => {
+    if (!first) return second;
+    if (!second) return first;
+
+    const xP = first.x;
+    const yP = first.y;
+    const xQ = second.x;
+    const yQ = second.y;
+
+    if (xP === xQ && mod(yP + yQ) === 0) {
+      return null;
+    }
+
+    let m;
+
+    if (xP === xQ && yP === yQ) {
+      m = mod((3 * xP * xP) * inverse(2 * yP));
+    } else {
+      m = mod((yQ - yP) * inverse(xQ - xP));
+    }
+
+    const xR = mod(m * m - xP - xQ);
+    const yR = mod(m * (xP - xR) - yP);
+
+    return { x: xR, y: yR };
+  };
+
+  const multiplyPoint = (scalar) => {
+    let result = null;
+
+    for (let index = 0; index < scalar; index += 1) {
+      result = addPoints(result, G);
+    }
+
+    return result;
+  };
+
+  const allCurvePoints = [];
+
+  for (let x = 0; x < p; x += 1) {
+    for (let y = 0; y < p; y += 1) {
+      if (mod(y * y) === mod(x * x * x + 7)) {
+        allCurvePoints.push({ x, y });
+      }
+    }
+  }
+
+  if (!constructionLayer) {
+    constructionLayer = createSvgElement("g", { class: "public-key-demo-construction" });
+    constructionLayer.setAttribute("data-public-key-demo-construction", "");
+    svg.insertBefore(constructionLayer, multiplesLayer);
+  }
+
+  const toSvg = (point) => ({
+    x: padding + (point.x / (p - 1)) * usable,
+    y: size - padding - (point.y / (p - 1)) * usable
+  });
+
+  const fractionHtml = (numerator, denominator) => `
+    <span class="math-frac">
+      <span class="math-frac-num">${numerator}</span>
+      <span class="math-frac-den">${denominator}</span>
+    </span>
+  `;
+
+  const mathVar = (symbol) => `<var>${symbol}</var>`;
+  const pointName = (scalar) => (scalar === 1 ? "G" : `${scalar}G`);
+  const pointNameHtml = (scalar) =>
+    scalar === 1 ? mathVar("G") : `${scalar}${mathVar("G")}`;
+
+  const renderGrid = () => {
+    const fragment = document.createDocumentFragment();
+    const ticks = [0, 4, 8, 12, 16];
+
+    ticks.forEach((value) => {
+      const x = padding + (value / (p - 1)) * usable;
+      const y = size - padding - (value / (p - 1)) * usable;
+
+      fragment.appendChild(
+        createSvgElement("line", {
+          x1: x,
+          x2: x,
+          y1: padding,
+          y2: size - padding,
+          class: value === 0 ? "is-axis" : ""
+        })
+      );
+
+      fragment.appendChild(
+        createSvgElement("line", {
+          x1: padding,
+          x2: size - padding,
+          y1: y,
+          y2: y,
+          class: value === 0 ? "is-axis" : ""
+        })
+      );
+
+      const xLabel = createSvgElement("text", {
+        x,
+        y: size - 25,
+        "text-anchor": "middle"
+      });
+      xLabel.textContent = String(value);
+      fragment.appendChild(xLabel);
+
+      const yLabel = createSvgElement("text", {
+        x: 35,
+        y: y + 4,
+        "text-anchor": "end"
+      });
+      yLabel.textContent = String(value);
+      fragment.appendChild(yLabel);
+    });
+
+    const xAxis = createSvgElement("text", {
+      x: size - 24,
+      y: size - 25,
+      "text-anchor": "end",
+      class: "is-axis-variable"
+    });
+    xAxis.textContent = "x";
+    fragment.appendChild(xAxis);
+
+    const yAxis = createSvgElement("text", {
+      x: 34,
+      y: 28,
+      "text-anchor": "end",
+      class: "is-axis-variable"
+    });
+    yAxis.textContent = "y";
+    fragment.appendChild(yAxis);
+
+    gridLayer.replaceChildren(fragment);
+  };
+
+  const renderAllPoints = () => {
+    const fragment = document.createDocumentFragment();
+
+    allCurvePoints.forEach((point) => {
+      const position = toSvg(point);
+
+      fragment.appendChild(
+        createSvgElement("circle", {
+          cx: position.x.toFixed(2),
+          cy: position.y.toFixed(2),
+          r: 6
+        })
+      );
+    });
+
+    pointsLayer.replaceChildren(fragment);
+  };
+
+  const renderConstruction = (scalar) => {
+    const fragment = document.createDocumentFragment();
+
+    if (scalar <= 1) {
+      constructionLayer.replaceChildren();
+      return;
+    }
+
+    /*
+      Nezobrazujeme pouze body použité v právě počítané rovnici.
+      Graf má ukazovat celou postupně vznikající cestu skalárního násobení:
+
+          G → 2G → 3G → ... → kG
+
+      Každý další krok proto přidá jeden nový úsek mezi dvěma po sobě
+      jdoucími násobky G. Poslední úsek je zvýrazněný a krátce se dokreslí.
+    */
+    for (let value = 2; value <= scalar; value += 1) {
+      const previousPoint = multiplyPoint(value - 1);
+      const currentPoint = multiplyPoint(value);
+
+      if (!previousPoint || !currentPoint) {
+        continue;
+      }
+
+      const start = toSvg(previousPoint);
+      const end = toSvg(currentPoint);
+      const isCurrentSegment = value === scalar;
+
+      fragment.appendChild(
+        createSvgElement("line", {
+          x1: start.x.toFixed(2),
+          y1: start.y.toFixed(2),
+          x2: end.x.toFixed(2),
+          y2: end.y.toFixed(2),
+          pathLength: 1,
+          class: isCurrentSegment
+            ? "is-multiplication-path is-current-segment"
+            : "is-multiplication-path is-previous-segment"
+        })
+      );
+    }
+
+    constructionLayer.replaceChildren(fragment);
+  };
+
+  const multipleLabelPlacement = (value, isCurrent) => {
+    const text = isCurrent ? `${pointName(value)} (${multiplyPoint(value).x}, ${multiplyPoint(value).y})` : pointName(value);
+
+    switch (value) {
+      case 2:
+        return {
+          dx: 10,
+          dy: 26,
+          anchor: "start",
+          text
+        };
+      case 3:
+        return {
+          dx: -14,
+          dy: -10,
+          anchor: "end",
+          text
+        };
+      case 4:
+        return {
+          dx: 0,
+          dy: 34,
+          anchor: "middle",
+          text
+        };
+      case 5:
+        return {
+          dx: 12,
+          dy: 18,
+          anchor: "start",
+          text
+        };
+      default:
+        return {
+          dx: 14,
+          dy: -13,
+          anchor: "start",
+          text
+        };
+    }
+  };
+
+  const renderMultiples = (scalar) => {
+    const fragment = document.createDocumentFragment();
+
+    for (let value = 1; value <= scalar; value += 1) {
+      const point = multiplyPoint(value);
+
+      if (!point) {
+        continue;
+      }
+
+      const position = toSvg(point);
+      const isCurrent = value === scalar;
+      const isGenerator = value === 1;
+
+      fragment.appendChild(
+        createSvgElement("circle", {
+          cx: position.x.toFixed(2),
+          cy: position.y.toFixed(2),
+          r: isCurrent ? 12 : isGenerator ? 10 : 7,
+          class: isCurrent
+            ? "is-current"
+            : isGenerator
+              ? "is-generator"
+              : "is-previous"
+        })
+      );
+
+      const placement = multipleLabelPlacement(value, isCurrent || isGenerator);
+
+      const label = createSvgElement("text", {
+        x: (position.x + placement.dx).toFixed(2),
+        y: (position.y + placement.dy).toFixed(2),
+        "text-anchor": placement.anchor,
+        class: isCurrent
+          ? "is-current-label"
+          : isGenerator
+            ? "is-generator-label"
+            : ""
+      });
+
+      label.textContent = placement.text;
+      fragment.appendChild(label);
+    }
+
+    multiplesLayer.replaceChildren(fragment);
+  };
+
+  const renderSequence = (scalar) => {
+    const fragment = document.createDocumentFragment();
+
+    for (let value = 1; value <= 5; value += 1) {
+      const point = multiplyPoint(value);
+      const item = document.createElement("span");
+      item.className = "public-key-demo-slider-label";
+
+      if (value < scalar) item.classList.add("is-reached");
+      if (value === scalar) item.classList.add("is-current");
+
+      item.innerHTML = `
+        <strong>${pointNameHtml(value)}</strong>
+        <span class="math-inline">(${point.x}, ${point.y})</span>
+      `;
+      fragment.appendChild(item);
+    }
+
+    sequence.replaceChildren(fragment);
+  };
+
+  const renderCalculationRow = (title, math, note = "") => `
+    <div class="public-key-demo-calc-row">
+      <div>
+        <b>${title}</b>
+        <div class="public-key-demo-calc-math">${math}</div>
+        ${note ? `<small>${note}</small>` : ""}
+      </div>
+    </div>
+  `;
+
+  const calculationForOne = () => {
+    const R = G;
+
+    return `
+      <div class="public-key-demo-calc-title">
+        <span>Krok 1 / 5</span>
+        <strong>${mathVar("G")}</strong>
+      </div>
+
+      ${renderCalculationRow(
+        "Výchozí generátorový bod",
+        `${mathVar("G")} = (6, 6)`,
+        "První člen posloupnosti je přímo zadaný generátorový bod."
+      )}
+
+      ${renderCalculationRow(
+        "Kontrola bodu v rovnici",
+        `6<sup>2</sup> = 36 ≡ 2 &nbsp;&nbsp; a &nbsp;&nbsp; 6<sup>3</sup> + 7 = 223 ≡ 2 (mod 17)`
+      )}
+
+      <div class="public-key-demo-calc-result">
+        <span>výsledek</span>
+        <strong>${mathVar("G")} = (${R.x}, ${R.y})</strong>
+      </div>
+    `;
+  };
+
+  const calculationForTwo = () => {
+    const P = G;
+    const R = multiplyPoint(2);
+
+    const numerator = 3 * P.x * P.x;
+    const denominator = 2 * P.y;
+    const denominatorInverse = inverse(denominator);
+    const m = mod(numerator * denominatorInverse);
+
+    const xRaw = m * m - P.x - P.x;
+    const yRaw = m * (P.x - R.x) - P.y;
+
+    return `
+      <div class="public-key-demo-calc-title">
+        <span>Krok 2 / 5 · zdvojení bodu</span>
+        <strong>2${mathVar("G")} = ${mathVar("G")} + ${mathVar("G")}</strong>
+      </div>
+
+      <div class="public-key-demo-calc-context">
+        <span class="math-inline">${mathVar("P")} = ${mathVar("Q")} = ${mathVar("G")} = (${P.x}, ${P.y})</span>
+      </div>
+
+      ${renderCalculationRow(
+        "Směrnice",
+        `${mathVar("m")} ≡ ${fractionHtml(
+          `3 · ${P.x}<sup>2</sup>`,
+          `2 · ${P.y}`
+        )} ≡ ${numerator} · ${denominator}<sup>−1</sup> ≡ ${numerator} · ${denominatorInverse} ≡ ${m} (mod 17)`,
+        `${denominator}<sup>−1</sup> ≡ ${denominatorInverse} (mod 17).`
+      )}
+
+      ${renderCalculationRow(
+        "x-ová souřadnice",
+        `${mathVar("x")}<sub><var>R</var></sub> ≡ ${m}<sup>2</sup> − ${P.x} − ${P.x} = ${xRaw} ≡ ${R.x} (mod 17)`
+      )}
+
+      ${renderCalculationRow(
+        "y-ová souřadnice",
+        `${mathVar("y")}<sub><var>R</var></sub> ≡ ${m}(${P.x} − ${R.x}) − ${P.y} = ${yRaw} ≡ ${R.y} (mod 17)`
+      )}
+
+      <div class="public-key-demo-calc-result">
+        <span>výsledek</span>
+        <strong>2${mathVar("G")} = (${R.x}, ${R.y})</strong>
+      </div>
+    `;
+  };
+
+  const calculationForAddition = (scalar) => {
+    const P = multiplyPoint(scalar - 1);
+    const Q = G;
+    const R = multiplyPoint(scalar);
+
+    const numeratorRaw = Q.y - P.y;
+    const denominatorRaw = Q.x - P.x;
+    const numerator = mod(numeratorRaw);
+    const denominator = mod(denominatorRaw);
+    const denominatorInverse = inverse(denominator);
+    const m = mod(numerator * denominatorInverse);
+
+    const xRaw = m * m - P.x - Q.x;
+    const yRaw = m * (P.x - R.x) - P.y;
+
+    return `
+      <div class="public-key-demo-calc-title">
+        <span>Krok ${scalar} / 5 · součet různých bodů</span>
+        <strong>${scalar}${mathVar("G")} = ${scalar - 1}${mathVar("G")} + ${mathVar("G")}</strong>
+      </div>
+
+      <div class="public-key-demo-calc-context">
+        <span class="math-inline">${mathVar("P")} = ${scalar - 1}${mathVar("G")} = (${P.x}, ${P.y})</span>
+        <span class="math-inline">${mathVar("Q")} = ${mathVar("G")} = (${Q.x}, ${Q.y})</span>
+      </div>
+
+      ${renderCalculationRow(
+        "Směrnice",
+        `${mathVar("m")} ≡ ${fractionHtml(
+          `${Q.y} − ${P.y}`,
+          `${Q.x} − ${P.x}`
+        )} ≡ ${numerator} · ${denominator}<sup>−1</sup> ≡ ${numerator} · ${denominatorInverse} ≡ ${m} (mod 17)`,
+        `${denominator}<sup>−1</sup> ≡ ${denominatorInverse} (mod 17).`
+      )}
+
+      ${renderCalculationRow(
+        "x-ová souřadnice",
+        `${mathVar("x")}<sub><var>R</var></sub> ≡ ${m}<sup>2</sup> − ${P.x} − ${Q.x} = ${xRaw} ≡ ${R.x} (mod 17)`
+      )}
+
+      ${renderCalculationRow(
+        "y-ová souřadnice",
+        `${mathVar("y")}<sub><var>R</var></sub> ≡ ${m}(${P.x} − ${R.x}) − ${P.y} = ${yRaw} ≡ ${R.y} (mod 17)`
+      )}
+
+      <div class="public-key-demo-calc-result">
+        <span>výsledek</span>
+        <strong>${scalar}${mathVar("G")} = (${R.x}, ${R.y})${scalar === 5 ? ` = ${mathVar("K")}` : ""}</strong>
+      </div>
+    `;
+  };
+
+  const renderCalculation = (scalar) => {
+    if (scalar === 1) {
+      calculation.innerHTML = calculationForOne();
+      return;
+    }
+
+    if (scalar === 2) {
+      calculation.innerHTML = calculationForTwo();
+      return;
+    }
+
+    calculation.innerHTML = calculationForAddition(scalar);
+  };
+
+  const update = () => {
+    const scalar = Math.max(1, Math.min(5, Number(slider.value)));
+    const point = multiplyPoint(scalar);
+    const progress = ((scalar - 1) / 4) * 100;
+
+    slider.style.setProperty("--public-key-demo-progress", `${progress}%`);
+
+    renderConstruction(scalar);
+    renderMultiples(scalar);
+    renderSequence(scalar);
+    renderCalculation(scalar);
+
+    svg.setAttribute(
+      "aria-label",
+      `Ilustrační křivka modulo 17; G = (6, 6); zobrazený krok ${pointName(scalar)} = (${point.x}, ${point.y})`
+    );
+  };
+
+  slider.addEventListener("input", update);
+
+  renderGrid();
+  renderAllPoints();
+  update();
+}
+
+
+
+/* --------------------------------------------------------------------------
+   Eliptická křivka — interaktivní geometrie nad reálnými čísly
+   y² = x³ + 7
+
+   data-ec-mode="double":
+   bod P lze táhnout po křivce; přepočítává se tečna, třetí průsečík
+   a výsledný bod 2P.
+
+   data-ec-mode="add":
+   body P a Q lze táhnout nezávisle; přepočítává se jejich spojnice,
+   třetí průsečík a výsledný bod R = P + Q.
+
+   Jde pouze o geometrickou ilustraci nad reálnými čísly. Skutečné
+   výpočty secp256k1 probíhají v konečném poli modulo p.
+   -------------------------------------------------------------------------- */
+
+function initEllipticCurveGeometryDemo() {
+  const roots = [...document.querySelectorAll(".ec-interactive[data-ec-mode]")];
+
+  if (!roots.length) {
+    return;
+  }
+
+  const viewWidth = 700;
+  const viewHeight = 450;
+
+  const world = {
+    xMin: -2.05,
+    xMax: 5,
+    yMin: -7.5,
+    yMax: 7.5
+  };
+
+  const dragLimits = {
+    xMin: -1.55,
+    xMax: 3.55,
+    minimumSeparation: 0.10
+  };
+
+  const margin = {
+    left: 26,
+    right: 26,
+    top: 22,
+    bottom: 22
+  };
+
+  const plotWidth = viewWidth - margin.left - margin.right;
+  const plotHeight = viewHeight - margin.top - margin.bottom;
+
+  const curveY = (x) => {
+    const value = x * x * x + 7;
+    return value >= 0 ? Math.sqrt(value) : Number.NaN;
+  };
+
+  const toSvgX = (x) =>
+    margin.left +
+    ((x - world.xMin) / (world.xMax - world.xMin)) *
+      plotWidth;
+
+  const toSvgY = (y) =>
+    margin.top +
+    ((world.yMax - y) / (world.yMax - world.yMin)) *
+      plotHeight;
+
+  const toWorldX = (svgX) =>
+    world.xMin +
+    ((svgX - margin.left) / plotWidth) *
+      (world.xMax - world.xMin);
+
+  const createCurvePath = (sign) => {
+    const curveStart = Math.cbrt(-7) + 0.0005;
+    const steps = 520;
+    let path = "";
+
+    for (let index = 0; index <= steps; index += 1) {
+      const x =
+        curveStart +
+        ((world.xMax - curveStart) * index) /
+          steps;
+
+      const y = sign * curveY(x);
+
+      path +=
+        `${index === 0 ? "M" : "L"}` +
+        `${toSvgX(x).toFixed(2)},${toSvgY(y).toFixed(2)} `;
+    }
+
+    return path.trim();
+  };
+
+  const doublePoint = (point) => {
+    const slope =
+      (3 * point.x * point.x) /
+      (2 * point.y);
+
+    const resultX =
+      slope * slope -
+      2 * point.x;
+
+    const resultY =
+      slope * (point.x - resultX) -
+      point.y;
+
+    return {
+      slope,
+      thirdIntersection: {
+        x: resultX,
+        y: -resultY
+      },
+      result: {
+        x: resultX,
+        y: resultY
+      }
+    };
+  };
+
+  const addPoints = (first, second) => {
+    const slope =
+      (second.y - first.y) /
+      (second.x - first.x);
+
+    const resultX =
+      slope * slope -
+      first.x -
+      second.x;
+
+    const resultY =
+      slope * (first.x - resultX) -
+      first.y;
+
+    return {
+      slope,
+      thirdIntersection: {
+        x: resultX,
+        y: -resultY
+      },
+      result: {
+        x: resultX,
+        y: resultY
+      }
+    };
+  };
+
+  const isVisiblePoint = (point) =>
+    Number.isFinite(point.x) &&
+    Number.isFinite(point.y) &&
+    point.x >= world.xMin &&
+    point.x <= world.xMax &&
+    point.y >= world.yMin &&
+    point.y <= world.yMax;
+
+  const formatNumber = (value) => {
+    if (!Number.isFinite(value)) {
+      return "—";
+    }
+
+    const normalized =
+      Math.abs(value) < 0.005
+        ? 0
+        : value;
+
+    return normalized.toFixed(2);
+  };
+
+  roots.forEach((root, rootIndex) => {
+    const svg =
+      root.querySelector(".ec-interactive-svg");
+
+    const readout =
+      root.querySelector(".ec-interactive-readout");
+
+    if (!svg || !readout) {
+      return;
+    }
+
+    const mode =
+      root.dataset.ecMode;
+
+    const showCoordinates =
+      root.hasAttribute("data-ec-coordinates");
+
+    if (mode !== "double" && mode !== "add") {
+      return;
+    }
+
+    const clipId =
+      `ec-geometry-clip-${rootIndex + 1}`;
+
+    let pointPX =
+      Number(root.dataset.pX || 3);
+
+    let pointQX =
+      Number(root.dataset.qX || 3.5);
+
+    let activeHandle = null;
+    let activePointerId = null;
+
+    svg.setAttribute(
+      "preserveAspectRatio",
+      "xMidYMid meet"
+    );
+
+    const pointOnCurve = (x) => ({
+      x,
+      y: curveY(x)
+    });
+
+    const appendText = (
+      parent,
+      point,
+      label,
+      className,
+      anchor = "start"
+    ) => {
+      parent.appendChild(
+        createSvgElement(
+          "text",
+          {
+            x: toSvgX(point.x),
+            y: toSvgY(point.y),
+            class: className,
+            "text-anchor": anchor
+          },
+          label
+        )
+      );
+    };
+
+    const appendPointCircle = (
+      parent,
+      point,
+      className,
+      handle = ""
+    ) => {
+      if (!isVisiblePoint(point)) {
+        return null;
+      }
+
+      const circle =
+        createSvgElement("circle", {
+          cx: toSvgX(point.x),
+          cy: toSvgY(point.y),
+          r: handle ? 7 : 6,
+          class:
+            `ec-point ${className}` +
+            `${handle ? " ec-point-handle" : ""}`
+        });
+
+      if (handle) {
+        circle.dataset.handle = handle;
+        circle.setAttribute("tabindex", "0");
+        circle.setAttribute("role", "slider");
+        circle.setAttribute(
+          "aria-label",
+          `Bod ${handle}; táhni jej po eliptické křivce.`
+        );
+        circle.setAttribute(
+          "aria-valuemin",
+          String(dragLimits.xMin)
+        );
+        circle.setAttribute(
+          "aria-valuemax",
+          String(dragLimits.xMax)
+        );
+        circle.setAttribute(
+          "aria-valuenow",
+          point.x.toFixed(2)
+        );
+      }
+
+      parent.appendChild(circle);
+      return circle;
+    };
+
+    const boxesOverlap = (
+      first,
+      second,
+      padding = 0
+    ) =>
+      !(
+        first.right + padding <
+          second.left ||
+        first.left - padding >
+          second.right ||
+        first.bottom + padding <
+          second.top ||
+        first.top - padding >
+          second.bottom
+      );
+
+    const pointToSegmentDistance = (
+      pointX,
+      pointY,
+      x1,
+      y1,
+      x2,
+      y2
+    ) => {
+      const dx = x2 - x1;
+      const dy = y2 - y1;
+      const lengthSquared =
+        dx * dx + dy * dy;
+
+      if (lengthSquared === 0) {
+        return Math.hypot(
+          pointX - x1,
+          pointY - y1
+        );
+      }
+
+      const t =
+        clamp(
+          (
+            (pointX - x1) * dx +
+            (pointY - y1) * dy
+          ) / lengthSquared,
+          0,
+          1
+        );
+
+      const nearestX =
+        x1 + t * dx;
+
+      const nearestY =
+        y1 + t * dy;
+
+      return Math.hypot(
+        pointX - nearestX,
+        pointY - nearestY
+      );
+    };
+
+    const appendPointLabel = (
+      parent,
+      pointInfo,
+      allPointInfos,
+      placedLabelBoxes,
+      constructionLine
+    ) => {
+      const { point, label, className } =
+        pointInfo;
+
+      if (!isVisiblePoint(point)) {
+        return;
+      }
+
+      const pointX =
+        toSvgX(point.x);
+
+      const pointY =
+        toSvgY(point.y);
+
+      const estimatedWidth =
+        Math.max(
+          12,
+          label.length * 8
+        );
+
+      const estimatedHeight = 14;
+
+      const candidates =
+        label === "−R"
+          ? [
+              {
+                dx: 0,
+                dy: 24,
+                anchor: "middle"
+              },
+              {
+                dx: 14,
+                dy: 22,
+                anchor: "start"
+              },
+              {
+                dx: -14,
+                dy: 22,
+                anchor: "end"
+              }
+            ]
+          : [
+              {
+                dx: 12,
+                dy: -12,
+                anchor: "start"
+              },
+              {
+                dx: -12,
+                dy: -12,
+                anchor: "end"
+              },
+              {
+                dx: 12,
+                dy: 18,
+                anchor: "start"
+              },
+              {
+                dx: -12,
+                dy: 18,
+                anchor: "end"
+              },
+              {
+                dx: 15,
+                dy: 4,
+                anchor: "start"
+              },
+              {
+                dx: -15,
+                dy: 4,
+                anchor: "end"
+              }
+            ];
+
+      let bestCandidate =
+        candidates[0];
+
+      let bestBox = null;
+      let bestScore = Infinity;
+
+      candidates.forEach(
+        (candidate, index) => {
+          const textX =
+            pointX + candidate.dx;
+
+          const baselineY =
+            pointY + candidate.dy;
+
+          const left =
+            candidate.anchor === "end"
+              ? textX -
+                estimatedWidth
+              : textX;
+
+          const right =
+            candidate.anchor === "end"
+              ? textX
+              : textX +
+                estimatedWidth;
+
+          const top =
+            baselineY -
+            estimatedHeight +
+            2;
+
+          const bottom =
+            baselineY + 3;
+
+          const box = {
+            left,
+            right,
+            top,
+            bottom
+          };
+
+          let score = index * 0.15;
+
+          if (
+            left < margin.left + 4 ||
+            right >
+              viewWidth -
+                margin.right -
+                4 ||
+            top < margin.top + 4 ||
+            bottom >
+              viewHeight -
+                margin.bottom -
+                4
+          ) {
+            score += 1000;
+          }
+
+          allPointInfos.forEach(
+            (otherInfo) => {
+              if (
+                otherInfo === pointInfo ||
+                !isVisiblePoint(
+                  otherInfo.point
+                )
+              ) {
+                return;
+              }
+
+              const otherX =
+                toSvgX(
+                  otherInfo.point.x
+                );
+
+              const otherY =
+                toSvgY(
+                  otherInfo.point.y
+                );
+
+              const pointBox = {
+                left: otherX - 10,
+                right: otherX + 10,
+                top: otherY - 10,
+                bottom: otherY + 10
+              };
+
+              if (
+                boxesOverlap(
+                  box,
+                  pointBox,
+                  3
+                )
+              ) {
+                score += 500;
+              }
+            }
+          );
+
+          placedLabelBoxes.forEach(
+            (placedBox) => {
+              if (
+                boxesOverlap(
+                  box,
+                  placedBox,
+                  3
+                )
+              ) {
+                score += 800;
+              }
+            }
+          );
+
+          const centerX =
+            (left + right) / 2;
+
+          const centerY =
+            (top + bottom) / 2;
+
+          if (constructionLine) {
+            const distanceToLine =
+              pointToSegmentDistance(
+                centerX,
+                centerY,
+                constructionLine.x1,
+                constructionLine.y1,
+                constructionLine.x2,
+                constructionLine.y2
+              );
+
+            if (
+              distanceToLine < 10
+            ) {
+              score +=
+                (10 -
+                  distanceToLine) *
+                18;
+            }
+          }
+
+          const worldXAtLabel =
+            toWorldX(centerX);
+
+          const curveValue =
+            curveY(worldXAtLabel);
+
+          if (
+            Number.isFinite(
+              curveValue
+            )
+          ) {
+            const upperCurveY =
+              toSvgY(curveValue);
+
+            const lowerCurveY =
+              toSvgY(-curveValue);
+
+            const distanceToCurve =
+              Math.min(
+                Math.abs(
+                  centerY -
+                    upperCurveY
+                ),
+                Math.abs(
+                  centerY -
+                    lowerCurveY
+                )
+              );
+
+            if (
+              distanceToCurve < 11
+            ) {
+              score +=
+                (11 -
+                  distanceToCurve) *
+                14;
+            }
+          }
+
+          if (score < bestScore) {
+            bestScore = score;
+            bestCandidate =
+              candidate;
+            bestBox = box;
+          }
+        }
+      );
+
+      let labelClass =
+        "ec-label";
+
+      if (
+        className.includes(
+          "ec-point-result"
+        )
+      ) {
+        labelClass +=
+          " ec-label-result";
+      }
+
+      if (
+        className.includes(
+          "ec-point-third"
+        )
+      ) {
+        labelClass +=
+          " ec-label-third";
+      }
+
+      parent.appendChild(
+        createSvgElement(
+          "text",
+          {
+            x:
+              pointX +
+              bestCandidate.dx,
+            y:
+              pointY +
+              bestCandidate.dy,
+            class: labelClass,
+            "text-anchor":
+              bestCandidate.anchor
+          },
+          label
+        )
+      );
+
+      if (bestBox) {
+        placedLabelBoxes.push(
+          bestBox
+        );
+      }
+    };
+
+    const currentHandleX = (handle) =>
+      handle === "Q"
+        ? pointQX
+        : pointPX;
+
+    const moveHandle = (handle, requestedX) => {
+      let x =
+        clamp(
+          requestedX,
+          dragLimits.xMin,
+          dragLimits.xMax
+        );
+
+      if (mode === "add") {
+        if (
+          handle === "P" &&
+          Math.abs(x - pointQX) <
+            dragLimits.minimumSeparation
+        ) {
+          x =
+            x < pointQX
+              ? pointQX -
+                dragLimits.minimumSeparation
+              : pointQX +
+                dragLimits.minimumSeparation;
+        }
+
+        if (
+          handle === "Q" &&
+          Math.abs(x - pointPX) <
+            dragLimits.minimumSeparation
+        ) {
+          x =
+            x < pointPX
+              ? pointPX -
+                dragLimits.minimumSeparation
+              : pointPX +
+                dragLimits.minimumSeparation;
+        }
+
+        x =
+          clamp(
+            x,
+            dragLimits.xMin,
+            dragLimits.xMax
+          );
+      }
+
+      if (handle === "Q") {
+        pointQX = x;
+      } else {
+        pointPX = x;
+      }
+
+      render();
+    };
+
+    const bindHandle = (circle) => {
+      if (!circle) {
+        return;
+      }
+
+      circle.addEventListener(
+        "pointerdown",
+        (event) => {
+          activeHandle =
+            circle.dataset.handle;
+
+          activePointerId =
+            event.pointerId;
+
+          svg.classList.add(
+            "is-dragging"
+          );
+
+          try {
+            svg.setPointerCapture(
+              event.pointerId
+            );
+          } catch (error) {
+            // Interakce funguje i bez pointer capture.
+          }
+
+          event.preventDefault();
+        }
+      );
+
+      circle.addEventListener(
+        "keydown",
+        (event) => {
+          if (
+            event.key !== "ArrowLeft" &&
+            event.key !== "ArrowRight"
+          ) {
+            return;
+          }
+
+          const direction =
+            event.key === "ArrowLeft"
+              ? -1
+              : 1;
+
+          moveHandle(
+            circle.dataset.handle,
+            currentHandleX(
+              circle.dataset.handle
+            ) +
+              direction * 0.10
+          );
+
+          event.preventDefault();
+        }
+      );
+    };
+
+    const render = () => {
+      svg.replaceChildren();
+
+      const definitions =
+        createSvgElement("defs");
+
+      const clipPath =
+        createSvgElement(
+          "clipPath",
+          { id: clipId }
+        );
+
+      clipPath.appendChild(
+        createSvgElement("rect", {
+          x: margin.left,
+          y: margin.top,
+          width: plotWidth,
+          height: plotHeight
+        })
+      );
+
+      definitions.appendChild(
+        clipPath
+      );
+
+      svg.appendChild(
+        definitions
+      );
+
+      const layer =
+        document.createDocumentFragment();
+
+      for (
+        let x = -2;
+        x <= 5;
+        x += 1
+      ) {
+        layer.appendChild(
+          createSvgElement("line", {
+            x1: toSvgX(x),
+            y1: toSvgY(world.yMin),
+            x2: toSvgX(x),
+            y2: toSvgY(world.yMax),
+            class:
+              x === 0
+                ? "ec-axis"
+                : "ec-grid-line"
+          })
+        );
+      }
+
+      for (
+        let y = -6;
+        y <= 6;
+        y += 3
+      ) {
+        layer.appendChild(
+          createSvgElement("line", {
+            x1: toSvgX(world.xMin),
+            y1: toSvgY(y),
+            x2: toSvgX(world.xMax),
+            y2: toSvgY(y),
+            class:
+              y === 0
+                ? "ec-axis"
+                : "ec-grid-line"
+          })
+        );
+      }
+
+      appendText(
+        layer,
+        { x: 4.85, y: 0.6 },
+        "x",
+        "ec-axis-label",
+        "end"
+      );
+
+      appendText(
+        layer,
+        { x: 0.08, y: 6.85 },
+        "y",
+        "ec-axis-label"
+      );
+
+      const curves =
+        createSvgElement(
+          "g",
+          {
+            "clip-path":
+              `url(#${clipId})`
+          }
+        );
+
+      curves.appendChild(
+        createSvgElement("path", {
+          d: createCurvePath(1),
+          class: "ec-curve"
+        })
+      );
+
+      curves.appendChild(
+        createSvgElement("path", {
+          d: createCurvePath(-1),
+          class: "ec-curve"
+        })
+      );
+
+      layer.appendChild(
+        curves
+      );
+
+      const pointP =
+        pointOnCurve(pointPX);
+
+      const pointQ =
+        mode === "add"
+          ? pointOnCurve(pointQX)
+          : null;
+
+      const calculation =
+        mode === "double"
+          ? doublePoint(pointP)
+          : addPoints(
+              pointP,
+              pointQ
+            );
+
+      const construction =
+        createSvgElement(
+          "g",
+          {
+            "clip-path":
+              `url(#${clipId})`
+          }
+        );
+
+      const extendedXStart =
+        world.xMin - 1;
+
+      const extendedXEnd =
+        world.xMax + 1;
+
+      construction.appendChild(
+        createSvgElement("line", {
+          x1:
+            toSvgX(
+              extendedXStart
+            ),
+          y1:
+            toSvgY(
+              calculation.slope *
+                (extendedXStart -
+                  pointP.x) +
+                pointP.y
+            ),
+          x2:
+            toSvgX(
+              extendedXEnd
+            ),
+          y2:
+            toSvgY(
+              calculation.slope *
+                (extendedXEnd -
+                  pointP.x) +
+                pointP.y
+            ),
+          class:
+            "ec-construction-line"
+        })
+      );
+
+      if (
+        Number.isFinite(
+          calculation.thirdIntersection.x
+        ) &&
+        Number.isFinite(
+          calculation.thirdIntersection.y
+        ) &&
+        Number.isFinite(
+          calculation.result.x
+        ) &&
+        Number.isFinite(
+          calculation.result.y
+        )
+      ) {
+        construction.appendChild(
+          createSvgElement("line", {
+            x1:
+              toSvgX(
+                calculation
+                  .thirdIntersection
+                  .x
+              ),
+            y1:
+              toSvgY(
+                calculation
+                  .thirdIntersection
+                  .y
+              ),
+            x2:
+              toSvgX(
+                calculation.result.x
+              ),
+            y2:
+              toSvgY(
+                calculation.result.y
+              ),
+            class:
+              "ec-reflection-line"
+          })
+        );
+      }
+
+      layer.appendChild(
+        construction
+      );
+
+      if (
+        showCoordinates &&
+        mode === "add" &&
+        isVisiblePoint(
+          calculation.result
+        ) &&
+        isVisiblePoint(
+          calculation.thirdIntersection
+        )
+      ) {
+        const coordinateGuides =
+          createSvgElement("g");
+
+        coordinateGuides.appendChild(
+          createSvgElement("line", {
+            x1: toSvgX(0),
+            y1:
+              toSvgY(
+                calculation.result.y
+              ),
+            x2:
+              toSvgX(
+                calculation.result.x
+              ),
+            y2:
+              toSvgY(
+                calculation.result.y
+              ),
+            class:
+              "ec-coordinate-guide ec-coordinate-guide-y"
+          })
+        );
+
+        coordinateGuides.appendChild(
+          createSvgElement("line", {
+            x1:
+              toSvgX(
+                calculation.result.x
+              ),
+            y1:
+              toSvgY(
+                calculation.result.y
+              ),
+            x2:
+              toSvgX(
+                calculation.result.x
+              ),
+            y2:
+              toSvgY(0),
+            class:
+              "ec-coordinate-guide ec-coordinate-guide-x"
+          })
+        );
+
+        layer.appendChild(
+          coordinateGuides
+        );
+
+        const xLabelX =
+          toSvgX(
+            calculation.result.x
+          );
+
+        const xLabelY =
+          toSvgY(0);
+
+        const yLabelX =
+          toSvgX(0);
+
+        const yLabelY =
+          toSvgY(
+            calculation.result.y
+          );
+
+        const xLabelGroup =
+          createSvgElement(
+            "g",
+            {
+              class:
+                "ec-coordinate-tag"
+            }
+          );
+
+        const xLabelText =
+          createSvgElement(
+            "text",
+            {
+              x: xLabelX + 10,
+              y: xLabelY - 8,
+              class:
+                "ec-coordinate-tag-text",
+              "text-anchor":
+                "start"
+            }
+          );
+
+        xLabelText.appendChild(
+          createSvgElement(
+            "tspan",
+            {},
+            "x"
+          )
+        );
+
+        xLabelText.appendChild(
+          createSvgElement(
+            "tspan",
+            {
+              class:
+                "ec-coordinate-subscript",
+              "baseline-shift":
+                "sub"
+            },
+            "R"
+          )
+        );
+
+        xLabelGroup.appendChild(
+          xLabelText
+        );
+
+        const yLabelGroup =
+          createSvgElement(
+            "g",
+            {
+              class:
+                "ec-coordinate-tag"
+            }
+          );
+
+        const yLabelText =
+          createSvgElement(
+            "text",
+            {
+              x: yLabelX + 9,
+              y: yLabelY - 7,
+              class:
+                "ec-coordinate-tag-text",
+              "text-anchor":
+                "start"
+            }
+          );
+
+        yLabelText.appendChild(
+          createSvgElement(
+            "tspan",
+            {},
+            "y"
+          )
+        );
+
+        yLabelText.appendChild(
+          createSvgElement(
+            "tspan",
+            {
+              class:
+                "ec-coordinate-subscript",
+              "baseline-shift":
+                "sub"
+            },
+            "R"
+          )
+        );
+
+        yLabelGroup.appendChild(
+          yLabelText
+        );
+
+        layer.appendChild(
+          xLabelGroup
+        );
+
+        layer.appendChild(
+          yLabelGroup
+        );
+      }
+
+      const pointInfos = [
+        {
+          point:
+            calculation.thirdIntersection,
+          label:
+            mode === "double"
+              ? "−2P"
+              : "−R",
+          className:
+            "ec-point-third",
+          handle: ""
+        },
+        {
+          point:
+            calculation.result,
+          label:
+            mode === "double"
+              ? "2P"
+              : "R",
+          className:
+            "ec-point-result",
+          handle: ""
+        },
+        {
+          point: pointP,
+          label: "P",
+          className: "",
+          handle: "P"
+        }
+      ];
+
+      if (pointQ) {
+        pointInfos.push({
+          point: pointQ,
+          label: "Q",
+          className:
+            "ec-point-q",
+          handle: "Q"
+        });
+      }
+
+      const pointElements =
+        new Map();
+
+      pointInfos.forEach(
+        (pointInfo) => {
+          const circle =
+            appendPointCircle(
+              layer,
+              pointInfo.point,
+              pointInfo.className,
+              pointInfo.handle
+            );
+
+          if (
+            circle &&
+            pointInfo.handle
+          ) {
+            pointElements.set(
+              pointInfo.handle,
+              circle
+            );
+          }
+        }
+      );
+
+      const constructionLine = {
+        x1:
+          toSvgX(
+            extendedXStart
+          ),
+        y1:
+          toSvgY(
+            calculation.slope *
+              (extendedXStart -
+                pointP.x) +
+              pointP.y
+          ),
+        x2:
+          toSvgX(
+            extendedXEnd
+          ),
+        y2:
+          toSvgY(
+            calculation.slope *
+              (extendedXEnd -
+                pointP.x) +
+              pointP.y
+          )
+      };
+
+      const placedLabelBoxes = [];
+
+      pointInfos.forEach(
+        (pointInfo) => {
+          appendPointLabel(
+            layer,
+            pointInfo,
+            pointInfos,
+            placedLabelBoxes,
+            constructionLine
+          );
+        }
+      );
+
+      svg.appendChild(
+        layer
+      );
+
+      bindHandle(
+        pointElements.get("P")
+      );
+
+      bindHandle(
+        pointElements.get("Q")
+      );
+
+      if (mode === "double") {
+        readout.innerHTML = `
+          <span><b>P</b> = (${formatNumber(pointP.x)}, ${formatNumber(pointP.y)})</span>
+          <span><b>m</b> = ${formatNumber(calculation.slope)}</span>
+          <span><b>−2P</b> = (${formatNumber(calculation.thirdIntersection.x)}, ${formatNumber(calculation.thirdIntersection.y)})</span>
+          <span><b>2P</b> = (${formatNumber(calculation.result.x)}, ${formatNumber(calculation.result.y)})</span>
+        `;
+      } else if (showCoordinates) {
+        readout.innerHTML = `
+          <span><b>P</b> = (${formatNumber(pointP.x)}, ${formatNumber(pointP.y)})</span>
+          <span><b>Q</b> = (${formatNumber(pointQ.x)}, ${formatNumber(pointQ.y)})</span>
+          <span><b>x<sub>R</sub></b> = ${formatNumber(calculation.result.x)}</span>
+          <span><b>y<sub>R</sub></b> = ${formatNumber(calculation.result.y)}</span>
+          <span><b>R</b> = (${formatNumber(calculation.result.x)}, ${formatNumber(calculation.result.y)})</span>
+        `;
+      } else {
+        readout.innerHTML = `
+          <span><b>P</b> = (${formatNumber(pointP.x)}, ${formatNumber(pointP.y)})</span>
+          <span><b>Q</b> = (${formatNumber(pointQ.x)}, ${formatNumber(pointQ.y)})</span>
+          <span><b>m</b> = ${formatNumber(calculation.slope)}</span>
+          <span><b>R</b> = (${formatNumber(calculation.result.x)}, ${formatNumber(calculation.result.y)})</span>
+        `;
+      }
+    };
+
+    svg.addEventListener(
+      "pointermove",
+      (event) => {
+        if (!activeHandle) {
+          return;
+        }
+
+        const rect =
+          svg.getBoundingClientRect();
+
+        const svgX =
+          ((event.clientX -
+            rect.left) /
+            rect.width) *
+          viewWidth;
+
+        moveHandle(
+          activeHandle,
+          toWorldX(svgX)
+        );
+
+        event.preventDefault();
+      }
+    );
+
+    const stopDragging = (event) => {
+      if (
+        activePointerId !== null &&
+        event?.pointerId !== undefined &&
+        event.pointerId !==
+          activePointerId
+      ) {
+        return;
+      }
+
+      if (
+        activePointerId !== null
+      ) {
+        try {
+          svg.releasePointerCapture(
+            activePointerId
+          );
+        } catch (error) {
+          // Capture už mohl uvolnit prohlížeč.
+        }
+      }
+
+      activeHandle = null;
+      activePointerId = null;
+
+      svg.classList.remove(
+        "is-dragging"
+      );
+    };
+
+    svg.addEventListener(
+      "pointerup",
+      stopDragging
+    );
+
+    svg.addEventListener(
+      "pointercancel",
+      stopDragging
+    );
+
+    render();
+  });
+}
+
+/* --------------------------------------------------------------------------
+   Pojmy v článku — první výskyt v každé H2 sekci
+   Každá .article-text-section představuje jednu sekci začínající <h2>.
+   Stejný data-term se v ní smí zobrazit jako popup pouze jednou.
+   V další sekci se seznam použitých pojmů resetuje.
+   -------------------------------------------------------------------------- */
+
+function normalizeArticleTermOccurrences() {
+  if (!document.body.classList.contains("article-text-page")) {
+    return;
+  }
+
+  document
+    .querySelectorAll(".article-content .article-text-section")
+    .forEach((section) => {
+      const seenTerms = new Set();
+
+      section.querySelectorAll("button.term[data-term]").forEach((termButton) => {
+        const key = termButton.dataset.term?.trim();
+
+        if (!key) {
+          return;
+        }
+
+        if (!seenTerms.has(key)) {
+          seenTerms.add(key);
+          return;
+        }
+
+        termButton.replaceWith(document.createTextNode(termButton.textContent || ""));
+      });
+    });
+}
+
 /* --------------------------------------------------------------------------
    Přímé odkazy na nadpisy článků
    -------------------------------------------------------------------------- */
@@ -1852,15 +4144,166 @@ function initArticleHeadingLinks() {
 }
 
 /* --------------------------------------------------------------------------
-   Inicializace
+   SHA-256 — vizuální transformace text -> hash
    -------------------------------------------------------------------------- */
 
-renderGlobalHeader();
-renderGlobalFooter();
-renderBitcoinNavigation();
-initHomeRotatingTitle();
-initBackToTop();
-initSupportCopy();
-initBitcoinFlowMap();
-initHistoryTimeline();
-initArticleHeadingLinks();
+function initHashExampleMorph() {
+  const example = document.querySelector(".hash-example");
+  if (!example) {
+    return;
+  }
+
+  const reduceMotion = prefersReducedMotion();
+  if (reduceMotion) {
+    return;
+  }
+
+  const HEX = "0123456789abcdef";
+  const HOLD_SOURCE = 1600;
+  const MORPH_TO_HASH = 950;
+  const HOLD_HASH = 2100;
+  const MORPH_TO_SOURCE = 950;
+  const HOLD_BETWEEN = 650;
+
+  const sleep = (milliseconds) =>
+    new Promise((resolve) => window.setTimeout(resolve, milliseconds));
+
+  const randomHex = () => HEX[Math.floor(Math.random() * HEX.length)];
+
+  function morphText(element, from, to, duration) {
+    return new Promise((resolve) => {
+      const startedAt = performance.now();
+      const maxLength = Math.max(from.length, to.length);
+      const settleAt = Array.from(
+        { length: maxLength },
+        () => 0.25 + Math.random() * 0.66
+      );
+
+      function frame(now) {
+        const progress = Math.min((now - startedAt) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const visibleLength = Math.max(
+          1,
+          Math.round(from.length + (to.length - from.length) * eased)
+        );
+
+        let rendered = "";
+
+        for (let index = 0; index < visibleLength; index += 1) {
+          const targetCharacter = to[index] ?? "";
+
+          if (progress >= settleAt[index] && index < to.length) {
+            rendered += targetCharacter;
+          } else if (targetCharacter === " ") {
+            rendered += " ";
+          } else {
+            rendered += randomHex();
+          }
+        }
+
+        element.textContent = rendered;
+
+        if (progress < 1) {
+          window.requestAnimationFrame(frame);
+          return;
+        }
+
+        element.textContent = to;
+        resolve();
+      }
+
+      window.requestAnimationFrame(frame);
+    });
+  }
+
+  const items = [...example.querySelectorAll(".hash-example-item")]
+    .map((item) => {
+      const labels = item.querySelectorAll(".hash-example-label");
+      const input = item.querySelector(".hash-example-input");
+      const process = item.querySelector(".hash-example-process");
+      const output = item.querySelector(".hash-example-output");
+
+      if (!input || !process || !output || labels.length < 2) {
+        return null;
+      }
+
+      labels[0].classList.add("hash-example-source-label");
+      labels[1].classList.add("hash-example-result-label");
+
+      return {
+        item,
+        label: labels[0],
+        input,
+        source: input.textContent.trim(),
+        hash: output.textContent.trim()
+      };
+    })
+    .filter(Boolean);
+
+  if (!items.length) {
+    return;
+  }
+
+  example.classList.add("is-hash-animated");
+
+  async function run(entry, initialDelay) {
+    await sleep(initialDelay);
+
+    while (true) {
+      entry.item.className = "hash-example-item is-source";
+      entry.label.textContent = "TEXTOVÝ VSTUP";
+      entry.input.textContent = entry.source;
+      await sleep(HOLD_SOURCE);
+
+      entry.item.className = "hash-example-item is-hashing";
+      entry.label.textContent = "HASHING...";
+      await morphText(entry.input, entry.source, entry.hash, MORPH_TO_HASH);
+
+      entry.item.className = "hash-example-item is-hash";
+      entry.label.textContent = "HASH";
+      entry.input.textContent = entry.hash;
+      await sleep(HOLD_HASH);
+
+      /* Vizuální návrat používá stejný scramble efekt opačným směrem.
+         Nejde o reverzi SHA-256; je to pouze návrat animace do výchozího stavu. */
+      entry.item.className = "hash-example-item is-returning";
+      entry.label.removeAttribute("aria-hidden");
+      entry.label.textContent = "RESETTING...";
+      await morphText(entry.input, entry.hash, entry.source, MORPH_TO_SOURCE);
+
+      entry.item.className = "hash-example-item is-source";
+      entry.label.textContent = "TEXTOVÝ VSTUP";
+      entry.input.textContent = entry.source;
+      await sleep(HOLD_BETWEEN);
+    }
+  }
+
+  items.forEach((entry, index) => {
+    run(entry, index * 320);
+  });
+}
+
+/* --------------------------------------------------------------------------
+   Inicializace webu
+   Všechny komponenty se spouštějí na jednom místě. Každá inicializační
+   funkce si sama ověří, zda její prvek na aktuální stránce existuje.
+   -------------------------------------------------------------------------- */
+
+function initializeSite() {
+  renderGlobalHeader();
+  renderGlobalFooter();
+  renderBitcoinNavigation();
+  initHomeRotatingTitle();
+  initBackToTop();
+  initSupportCopy();
+  initBitcoinFlowMap();
+  initHistoryTimeline();
+  initEllipticCurveFieldDemo();
+  initPublicKeyDerivationDemo();
+  initEllipticCurveGeometryDemo();
+  normalizeArticleTermOccurrences();
+  initArticleHeadingLinks();
+  initHashExampleMorph();
+}
+
+initializeSite();

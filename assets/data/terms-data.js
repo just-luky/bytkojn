@@ -13,12 +13,12 @@
 window.BYTKOJN_TERMS = {
 
 "bitcoin-symbol": {
-    title: "₿",
-    text: "Znak ₿ se používá jako symbol měnové jednotky bitcoin, podobně jako € pro euro nebo $ pro dolar. V Unicode má označení BITCOIN SIGN a kód U+20BF.",
-    href: ""
+  title: "₿",
+  text: "Znak ₿ se používá jako symbol měnové jednotky bitcoin, podobně jako € pro euro nebo $ pro dolar. V Unicode má označení BITCOIN SIGN a kód U+20BF.",
+  href: ""
 },
 
-  "satoshi-nakamoto": {
+"satoshi-nakamoto": {
   title: "Satoshi Nakamoto",
   text: "Pseudonym osoby nebo skupiny osob, která vytvořila Bitcoin. Skutečná totožnost Satoshiho Nakamota není dodnes známá.",
   href: ""
@@ -92,7 +92,7 @@ window.BYTKOJN_TERMS = {
 
 "kryptografie": {
   title: "Kryptografie",
-  text: "Věda o zabezpečení informací jejich převodem do nečitelné podoby pomocí matematických pravidel.",
+  text: "Obor zabývající se matematickými metodami pro ochranu informací a ověřování jejich vlastností. Zahrnuje mimo jiné šifrování, hashovací funkce a digitální podpisy, které lze využít k zajištění důvěrnosti, integrity a autenticity dat.",
   href: ""
 },
 
@@ -115,6 +115,7 @@ window.BYTKOJN_TERMS = {
 },
 
 "blind-signatures": {
+  title: "Slepé podpisy",
   text: "Kryptografická metoda, která umožňuje podepsat data, aniž by podepisující strana znala jejich obsah. David Chaum tento princip navrhl pro elektronické peníze tak, aby banka mohla potvrdit platnost digitální hotovosti, aniž by mohla jednoduše spojit její vydání s pozdějším použitím.",
   href: ""
 },
@@ -348,14 +349,14 @@ window.BYTKOJN_TERMS = {
 },
 
 "utxo": {
-  title: "UTXO",
-  text: "Neboli unspent transaction output je dosud neutracený výstup bitcoinové transakce, který může být použit jako vstup nové transakce. Každé UTXO má určitou hodnotu a podmínky určující, kdo je oprávněn jej utratit. Při použití se UTXO spotřebuje celé a nová transakce vytvoří nové výstupy.",
+  title: "UTXO (Unspent Transaction Output)",
+  text: "Dosud neutracený výstup bitcoinové transakce, který může být použit jako vstup nové transakce. Každé UTXO má určitou hodnotu a podmínky určující, kdo je oprávněn jej utratit. Při použití se UTXO spotřebuje celé a nová transakce vytvoří nové výstupy.",
   href: ""
 },
 
 "private-key": {
   title: "Soukromý klíč",
-  text: "Tajná číselná hodnota používaná v kryptografii. V Bitcoinu umožňuje vytvářet digitální podpisy potřebné k autorizaci utracení prostředků, aniž by bylo nutné samotný klíč zveřejnit. Musí proto zůstat v tajnosti a být bezpečně chráněn.",
+  text: "Tajná číselná hodnota používaná k vytváření digitálních podpisů. V Bitcoinu se reprezentuje 32 bajty, tedy 256 bity; plný binární zápis proto obsahuje 256 pozic, z nichž každá má hodnotu 0 nebo 1. Pro secp256k1 musí být hodnota nenulová a menší než pevná mez <var>n</var>, tedy <span class=\"term-math-nowrap\"><span class=\"math-inline\">1 ≤ <var>k</var> &lt; <var>n</var></span>.</span>",
   href: ""
 },
 
@@ -403,7 +404,7 @@ window.BYTKOJN_TERMS = {
 
 "hash": {
   title: "Hash",
-  text: "Hash je výsledek hashovací funkce, která z libovolných vstupních dat vytváří hodnotu pevné délky. I malá změna vstupních dat zpravidla vede k výrazně odlišnému výsledku a z hashe není prakticky možné zpětně určit původní data. V Bitcoinu se hashe používají například k identifikaci transakcí a bloků, jejich kryptografickému propojování a při proof-of-work.",
+  text: "Výstup hashovací funkce. Vstupem mohou být libovolná digitální data – například text, soubor nebo data transakce – zatímco výstup má u konkrétní hashovací funkce pevně danou délku. Stejný vstup vždy vytvoří stejný hash a i malá změna vstupních dat zpravidla vede k výrazně odlišnému výsledku.",
   href: ""
 },
 
@@ -455,7 +456,441 @@ window.BYTKOJN_TERMS = {
   href: ""
 },
 
+"entropie": {
+  title: "Entropie",
+  text: "Míra neurčitosti nebo nepředvídatelnosti. Při vytváření kryptografických klíčů je důležité, aby zdroj náhodnosti poskytoval dostatek entropie; předvídatelný nebo slabý zdroj náhodnosti může vést k odhalení soukromého klíče.",
+  href: ""
+},
+
+"secp256k1": {
+  title: "secp256k1",
+  text: "Standardizovaný soubor matematických parametrů pro kryptografii nad eliptickou křivkou používaný Bitcoinem. Určuje mimo jiné samotnou eliptickou křivku, číselné pole, ve kterém se s jejími body počítá, generátorový bod <var>G</var> a parametr <var>n</var>. Parametr <var>n</var> vymezuje platný rozsah soukromých klíčů <span class=\"term-math-nowrap\"><span class=\"math-inline\">1 ≤ <var>k</var> &lt; <var>n</var></span>,</span> zatímco křivka a bod <var>G</var> se používají při odvozování veřejného klíče.",
+  href: ""
+},
+
+"scalar-multiplication": {
+  title: "Skalární násobení",
+  text: "Operace, při které se matematický objekt kombinuje s číselnou hodnotou označovanou jako skalár. Přesný význam závisí na dané matematické struktuře. U bodů eliptické křivky zápis <span class=\"term-math-nowrap\"><span class=\"math-inline\"><var>k</var><var>P</var></span></span> znamená opakované sčítání bodu <var>P</var> se sebou samým podle pravidel dané křivky; nejde o běžné násobení jeho souřadnic.",
+  href: ""
+},
+
+"ecdsa": {
+  title: "ECDSA (Elliptic Curve Digital Signature Algorithm)",
+  text: "Algoritmus digitálního podpisu založený na kryptografii eliptických křivek. Bitcoin jej používá pro podpisy u tradičních a SegWit v0 typů výstupů.",
+  href: ""
+},
+
+"schnorr-signatures": {
+  title: "Schnorr podpisy",
+  text: "Digitální podpisy založené na Schnorrově podpisovém schématu. Bitcoin je používá v rámci Taprootu podle BIP340; oproti ECDSA mají jednodušší algebraickou strukturu a umožňují některé efektivnější konstrukce.",
+  href: ""
+},
+
+"taproot": {
+  title: "Taproot",
+  text: "Aktualizace bitcoinového protokolu aktivovaná v roce 2021. Zavádí mimo jiné výstupy P2TR a Schnorrovy podpisy a umožňuje pružněji kombinovat utracení pomocí veřejného klíče a skriptových podmínek.",
+  href: ""
+},
+
+"bitcoin-script": {
+  title: "Bitcoin Script",
+  text: "Jednoduchý zásobníkový skriptovací jazyk používaný Bitcoinem k vyjádření podmínek, které musí být splněny pro utracení transakčního výstupu.",
+  href: ""
+},
+
+"bech32": {
+  title: "Bech32",
+  text: "Formát textového kódování bitcoinových adres definovaný v BIP173 pro SegWit verze 0. Na hlavní síti tyto adresy začínají prefixem bc1q.",
+  href: ""
+},
+
+"bech32m": {
+  title: "Bech32m",
+  text: "Upravená varianta formátu Bech32 definovaná v BIP350 pro SegWit verze 1 až 16. Taprootové P2TR adresy používají Bech32m a na hlavní síti typicky začínají bc1p.",
+  href: ""
+},
+
+"discrete-logarithm": {
+  title: "Diskrétní logaritmus",
+  text: "Obtížný matematický problém, na kterém stojí bezpečnost řady systémů s veřejným klíčem. U eliptických křivek jde zjednodušeně o úlohu zjistit tajné číslo <var>k</var> ze známých bodů <var>G</var> a <var>K</var>, když platí <span class=\"term-math-nowrap\"><span class=\"math-inline\"><var>K</var> = <var>k</var> × <var>G</var></span>.</span> Směr <span class=\"math-inline\"><var>k</var> → <var>K</var></span> je efektivní, opačný směr je pro vhodné parametry prakticky neproveditelný klasickými metodami.",
+  href: ""
+},
+
+"sighash": {
+  title: "SIGHASH",
+  text: "Pravidla určující, ke kterým částem bitcoinové transakce se digitální podpis zavazuje. Běžný režim SIGHASH_ALL váže podpis na všechny výstupy transakce; další režimy umožňují odlišný rozsah závazku.",
+  href: ""
+},
+
+"signature-nonce": {
+  title: "Podpisová nonce",
+  text: "Jednorázová tajná hodnota používaná při vytvoření konkrétního digitálního podpisu. U ECDSA i Schnorrova schématu musí být odvozena bezpečným způsobem; její prozrazení nebo chybné opakované použití může ohrozit soukromý klíč.",
+  href: ""
+},
+
+"scriptpubkey": {
+  title: "scriptPubKey",
+  text: "Podmínka uložená v bitcoinovém transakčním výstupu, která určuje, co musí budoucí vstup splnit, aby mohl výstup utratit. U tradičních výstupů jde o Bitcoin Script; u SegWitu může obsahovat witness program.",
+  href: ""
+},
+
+"p2pkh": {
+  title: "P2PKH (Pay-to-Public-Key-Hash)",
+  text: "Tradiční typ bitcoinového výstupu. Budoucí utracení musí předložit veřejný klíč odpovídající uloženému hashi a platný digitální podpis vytvořený odpovídajícím soukromým klíčem.",
+  href: ""
+},
+
+"witness": {
+  title: "Witness",
+  text: "Samostatná část SegWit transakčního vstupu, která nese data potřebná k ověření podmínky utracení, například digitální podpis a veřejný klíč. SegWit tím oddělil tato validační data od původní struktury transakčního vstupu.",
+  href: ""
+},
+
+"sha256": {
+  title: "SHA-256",
+  text: "Kryptografická hashovací funkce, která z libovolně dlouhých vstupních dat vytváří 256bitový hash. Stejný vstup vždy vytvoří stejný výsledek, zatímco i malá změna vstupu zpravidla vede k výrazně odlišnému hashi. Bitcoin SHA-256 používá na více místech svého protokolu.",
+  href: ""
+},
+
+"ripemd160": {
+  title: "RIPEMD-160",
+  text: "Kryptografická hashovací funkce vytvářející 160bitový výstup. V Bitcoinu se používá zejména v kombinaci se SHA-256 při vytváření některých starších konstrukcí založených na hashi veřejného klíče.",
+  href: ""
+},
+
+"hash160": {
+  title: "HASH160",
+  text: "Kryptografická konstrukce používaná v Bitcoinu, při které se nejprve vypočítá SHA-256 hash vstupních dat a jeho výsledek se následně zpracuje funkcí RIPEMD-160. Lze ji zapsat jako <span class=\"term-math-nowrap\"><span class=\"math-inline\">HASH160(<var>x</var>) = RIPEMD-160(SHA-256(<var>x</var>))</span>.</span> Výsledkem je 160bitová, tedy 20bajtová hodnota.",
+  href: ""
+},
+
+"hash-collision": {
+  title: "Kolize",
+  text: "Situace, kdy dvě různá vstupní data vytvoří stejný hashový výstup. Vstupní data mohou mít libovolnou délku, ale počet možných výstupů je u konkrétní hashovací funkce omezený.",
+  href: ""
+},
+
+"hash-function": {
+  title: "Hashovací funkce",
+  text: "Kryptografická funkce, která přijímá vstupní data libovolné délky a vytváří z nich hash jako výstup pevné délky. Stejný vstup vždy vytvoří stejný výsledek, zatímco i malá změna vstupních dat zpravidla vede k výrazně odlišnému výstupu. U kryptografických hashovacích funkcí má být zároveň prakticky nemožné z výsledku zpětně určit původní vstup nebo snadno nalézt různé vstupy se stejným výsledkem.",
+  href: ""
+},
+
+"bit": {
+  title: "Bit",
+  text: "Nejmenší jednotka digitální informace, která může mít hodnotu 0 nebo 1. Řekneme-li, že hodnota má 256 bitů, její plný binární zápis má 256 pozic tvořených nulami a jedničkami. Osm bitů tvoří jeden bajt a pomocí 256 bitů lze vytvořit <span class=\"math-inline\">2<sup>256</sup></span> různých kombinací.",
+  href: ""
+},
+
+"decimal-system": {
+  title: "Desetinná soustava",
+  text: "Číselná soustava se základem 10 používající číslice 0 až 9. Stejnou číselnou hodnotu lze zapsat také binárně nebo hexadecimálně. U platného soukromého klíče secp256k1 může desetinný zápis dosahovat až 78 číslic; v praxi se používá hlavně při matematickém vysvětlování hodnot a jejich rozsahu.",
+  href: ""
+},
+"binary-system": {
+  title: "Binární soustava",
+  text: "Číselná soustava se základem 2 používající pouze znaky 0 a 1. Každá pozice představuje jeden bit, takže plná 256bitová reprezentace obsahuje přesně 256 takových pozic. Při pevné délce mohou být zleva doplněny nuly; ty nemění samotnou číselnou hodnotu.",
+  href: ""
+},
+
+"hexadecimal-system": {
+  title: "Hexadecimální soustava",
+  text: "Číselná soustava se základem 16 používající číslice 0–9 a znaky A–F. Jeden hexadecimální znak odpovídá čtyřem bitům, takže 256 bitů lze zapsat pomocí 64 hexadecimálních znaků. Jde o běžný technický způsob zobrazení 32 bajtů binárních dat.",
+  href: ""
+},
+
+"scalar": {
+  title: "Skalár",
+  text: "Číselná hodnota používaná v kryptografii eliptických křivek. Soukromý klíč v secp256k1 je skalár <var>k</var>. Platný rozsah je <span class=\"term-math-nowrap\"><span class=\"math-inline\">1 ≤ <var>k</var> &lt; <var>n</var></span>,</span> takže nejvyšší platná hodnota je <span class=\"math-inline\"><var>n</var> − 1</span> a hodnota <var>n</var> už do platného rozsahu nepatří.",
+  href: ""
+},
+
+"elliptic-curve": {
+  title: "Eliptická křivka",
+  text: "Matematická množina bodů definovaná rovnicí určitého tvaru. V kryptografii se nad těmito body definují operace, které umožňují efektivně vypočítat veřejný klíč ze soukromého klíče, zatímco opačný výpočet je při vhodných parametrech prakticky neproveditelný.",
+  href: ""
+},
+
+"group-order": {
+  title: "Řád generátorového bodu",
+  text: "Nejmenší kladné celé číslo <var>n</var>, pro které platí <span class=\"term-math-nowrap\"><span class=\"math-inline\"><var>n</var><var>G</var> = <var>O</var></span>,</span> kde <var>G</var> je generátorový bod a <var>O</var> bod v nekonečnu. U secp256k1 má <var>G</var> řád <var>n</var>; proto se skalární hodnoty soukromých klíčů používají v rozsahu <span class=\"term-math-nowrap\"><span class=\"math-inline\">1 ≤ <var>k</var> &lt; <var>n</var></span>.</span>",
+  href: ""
+},
+
+"byte": {
+  title: "Bajt",
+  text: "Jednotka digitální informace tvořená osmi bity. Soukromý klíč reprezentovaný 32 bajty má celkem 256 bitů, protože <span class=\"term-math-nowrap\"><span class=\"math-inline\">32 × 8 = 256</span>.</span>",
+  href: ""
+},
+
+"prefix": {
+  title: "Prefix",
+  text: "Předpona tvořená znakem nebo skupinou znaků na začátku zápisu, která upřesňuje jeho význam nebo formát.",
+  href: ""
+},
+
+"wif": {
+  title: "WIF (Wallet Import Format)",
+  text: "Bitcoinový textový formát pro reprezentaci jednoho soukromého klíče, používaný zejména při importu a exportu. WIF není číselná soustava ani nový soukromý klíč; zakóduje jeho hodnotu spolu s údaji potřebnými pro tento formát a kontrolním součtem.",
+  href: ""
+},
+
+"deterministic-algorithm": {
+  title: "Deterministický algoritmus",
+  text: "Algoritmus, který při stejném vstupu a stejném počátečním stavu vždy vytvoří stejný výsledek. Sám o sobě proto nevytváří skutečnou nepředvídatelnost; tu musí získat z externího zdroje entropie nebo z tajného počátečního stavu.",
+  href: ""
+},
+
+"finite-field": {
+  title: "Konečné pole",
+  text: "Číselná množina s konečným počtem prvků, ve které jsou definovány základní aritmetické operace. Secp256k1 používá prvočíselné konečné pole modulo <var>p</var>; souřadnice bodů lze reprezentovat hodnotami od 0 do <span class=\"term-math-nowrap\"><span class=\"math-inline\"><var>p</var> − 1</span>.</span>",
+  href: ""
+},
+
+"generator-point": {
+  title: "Generátorový bod",
+  text: "Pevně stanovený bod <var>G</var> eliptické křivky secp256k1, který slouží jako výchozí bod pro odvození veřejných klíčů. Ze soukromého klíče <var>k</var> a bodu <var>G</var> se pomocí skalárního násobení vypočítá veřejný klíč <span class=\"term-math-nowrap\"><span class=\"math-inline\"><var>K</var> = <var>k</var><var>G</var></span>.</span>",
+  href: ""
+},
+
+"point-addition": {
+  title: "Sčítání bodů",
+  text: "Základní operace nad body eliptické křivky. Ze dvou bodů <var>P</var> a <var>Q</var> vytvoří podle pravidel křivky výsledný bod <span class=\"term-math-nowrap\"><span class=\"math-inline\"><var>R</var> = <var>P</var> + <var>Q</var></span>.</span> Skalární násobení bodu je založeno na opakovaném použití této operace.",
+  href: ""
+},
+
+"point-doubling": {
+  title: "Zdvojení bodu",
+  text: "Zvláštní případ sčítání bodů, při kterém se bod sčítá sám se sebou: <span class=\"term-math-nowrap\"><span class=\"math-inline\"><var>P</var> + <var>P</var> = 2<var>P</var></span>.</span> Nad reálnými čísly lze pravidlo geometricky znázornit pomocí tečny v daném bodě.",
+  href: ""
+},
+
+"slope": {
+  title: "Směrnice",
+  text: "Číslo popisující směr přímky. V geometrickém výkladu sčítání bodů eliptické křivky se značí <var>m</var> a určuje tečnu při zdvojení bodu nebo spojnici dvou různých bodů.",
+  href: ""
+},
+
+"derivative": {
+  title: "Derivace",
+  text: "Matematická operace popisující okamžitou změnu funkce. Geometricky její hodnota v bodě odpovídá směrnici tečny, což se používá při odvození vzorce pro zdvojení bodu eliptické křivky.",
+  href: ""
+},
 
 
+"modular-inverse": {
+  title: "Modulární inverze",
+  text: "Hodnota <span class=\"term-math-nowrap\"><span class=\"math-inline\"><var>b</var><sup>−1</sup></span>,</span> pro kterou platí <span class=\"term-math-nowrap\"><span class=\"math-inline\"><var>b</var> · <var>b</var><sup>−1</sup> ≡ 1 (mod <var>p</var> nebo mod <var>n</var>)</span>.</span> V konečném poli nahrazuje běžné dělení: dělení číslem <var>b</var> se provede násobením jeho modulární inverzí.",
+  href: ""
+},
+
+"point-at-infinity": {
+  title: "Bod v nekonečnu",
+  text: "Neutrální prvek skupiny bodů eliptické křivky, obvykle značený <var>O</var>. Platí <span class=\"term-math-nowrap\"><span class=\"math-inline\"><var>P</var> + <var>O</var> = <var>P</var></span>.</span> Není to běžný bod se souřadnicemi <span class=\"term-math-nowrap\"><span class=\"math-inline\">(0, 0)</span>.</span>",
+  href: ""
+},
+
+"uncompressed-public-key": {
+  title: "Nekomprimovaná reprezentace veřejného klíče",
+  text: "Zápis veřejného klíče secp256k1 obsahující prefix 04 a obě 32bajtové souřadnice x a y. Celková délka je 65 bajtů.",
+  href: ""
+},
+
+"compressed-public-key": {
+  title: "Komprimovaná reprezentace veřejného klíče",
+  text: "Zápis veřejného klíče secp256k1 obsahující 32bajtovou x-ovou souřadnici a prefix 02 nebo 03, který určuje, která z dvojice možných y-ových souřadnic k bodu patří. Celková délka je 33 bajtů.",
+  href: ""
+},
+
+"x-only-public-key": {
+  title: "x-only veřejný klíč",
+  text: "32bajtová reprezentace bodu secp256k1 obsahující pouze x-ovou souřadnici. BIP340 používá jednoznačné pravidlo se sudou y-ovou souřadnicí, takže není potřeba ukládat další bajt určující jednu ze dvou možných y-ových souřadnic.",
+  href: ""
+},
+
+"signature-hash": {
+  title: "Signature hash (digest)",
+  text: "Kryptografický otisk přesně definovaných dat určených k podpisu. Bitcoin nejprve sestaví data podle pravidel daného typu výstupu a režimu SIGHASH a jejich hash potom vstupuje do podpisového schématu.",
+  href: ""
+},
+
+"signature-scheme": {
+  title: "Podpisové schéma",
+  text: "Soubor matematických pravidel určujících, jak se digitální podpis vytváří a jak se ověřuje. Bitcoin používá nad secp256k1 zejména ECDSA a Schnorrovy podpisy podle BIP340.",
+  href: ""
+},
+
+"bip": {
+  title: "BIP (Bitcoin Improvement Proposal)",
+  text: "Číslovaný návrhový a specifikační dokument používaný při vývoji Bitcoinu. Jednotlivé BIPy popisují nové funkce, formáty nebo pravidla; například BIP340 definuje Schnorrovy podpisy používané v Taprootu.",
+  href: ""
+},
+
+"challenge": {
+  title: "Výzva",
+  text: "Číselná hodnota používaná v kryptografickém protokolu k navázání dalšího výpočtu na konkrétní data. U Schnorrova podpisu BIP340 se výzva odvozuje hashováním z první části podpisu, veřejného klíče a podepisovaných dat a vstupuje do výpočtu i ověření podpisu.",
+  href: ""
+},
+
+"tagged-hash": {
+  title: "Označené hashování (tagged hash)",
+  text: "Způsob hashování, při kterém je výpočet oddělen pro konkrétní účel pomocí předem daného označení neboli tagu. BIP340 používá tagged hash například při výpočtu podpisové výzvy.",
+  href: ""
+},
+
+"base58check": {
+  title: "Base58Check",
+  text: "Textový kódovací formát používaný u starších bitcoinových adres. Využívá abecedu Base58 bez snadno zaměnitelných znaků a přidává kontrolní součet pro odhalení některých chyb při opisování.",
+  href: ""
+},
+
+"script": {
+  title: "Skript",
+  text: "Posloupnost instrukcí určujících podmínku, která má být vyhodnocena. V Bitcoinu se skripty používají k určení pravidel budoucího utracení transakčního výstupu; konkrétní instrukce vyhodnocuje Bitcoin Script.",
+  href: ""
+},
+
+"redeem-script": {
+  title: "redeemScript",
+  text: "Skript používaný u výstupů P2SH, který určuje podmínku jejich utracení. Výstup neobsahuje samotný redeemScript, ale jeho hash. Při utracení se odpovídající redeemScript předloží, ověří se jeho vazba na hash uložený ve výstupu a následně musí být splněny podmínky definované tímto skriptem.",
+  href: ""
+},
+
+"witness-script": {
+  title: "witnessScript",
+  text: "Skript používaný u výstupů P2WSH, který určuje podmínku jejich utracení. Výstup obsahuje SHA-256 hash witnessScriptu. Při utracení se samotný witnessScript spolu s potřebnými daty předloží ve witness a jeho SHA-256 hash musí odpovídat hodnotě uložené ve výstupu.",
+  href: ""
+},
+
+"p2sh": {
+  title: "P2SH (Pay to Script Hash)",
+  text: "Typ bitcoinového výstupu, který se zavazuje k hashi redeemScriptu. Při utracení se předloží odpovídající redeemScript a data potřebná ke splnění podmínek, které tento skript určuje.",
+  href: ""
+},
+
+"p2wpkh": {
+  title: "P2WPKH (Pay to Witness Public Key Hash)",
+  text: "Nativní SegWit v0 výstup založený na 20bajtovém hashi veřejného klíče. Při utracení se podpis a veřejný klíč předkládají ve witness části vstupu.",
+  href: ""
+},
+
+"p2wsh": {
+  title: "P2WSH (Pay to Witness Script Hash)",
+  text: "Nativní SegWit v0 výstup založený na 32bajtovém SHA-256 hashi witnessScriptu. Při utracení se odpovídající witnessScript a potřebná data předkládají ve witness části vstupu.",
+  href: ""
+},
+
+"p2tr": {
+  title: "P2TR (Pay to Taproot)",
+  text: "Typ výstupu zavedený Taprootem. Jeho witness program verze 1 obsahuje 32bajtový x-only výstupní veřejný klíč; utracení může proběhnout pomocí Schnorrova podpisu nebo skriptové cesty.",
+  href: ""
+},
+
+
+"transaction-output": {
+  title: "Transakční výstup",
+  text: "Část bitcoinové transakce, která přiřazuje určitou bitcoinovou hodnotu konkrétní podmínce budoucího utracení. Dokud nebyl výstup utracen, tvoří UTXO; při utracení na něj odkazuje vstup nové transakce.",
+  href: ""
+},
+
+"authorization": {
+  title: "Autorizace",
+  text: "Prokázání oprávnění provést určitou operaci. V Bitcoinu nejde o ověření občanské identity; při utrácení výstupu se ověřuje splnění jeho kryptografické podmínky, typicky pomocí platného digitálního podpisu.",
+  href: ""
+},
+
+"data-integrity": {
+  title: "Integrita dat",
+  text: "Vlastnost znamenající, že data nebyla oproti původní podobě změněna. U digitálního podpisu změna podepsaných dat změní jejich kryptografický otisk a původní podpis už při ověření neodpovídá.",
+  href: ""
+},
+
+"prime-number": {
+  title: "Prvočíslo",
+  text: "Kladné celé číslo větší než 1, které je beze zbytku dělitelné pouze číslem 1 a samo sebou. Secp256k1 používá velké prvočíslo <var>p</var> jako modul konečného pole pro souřadnice bodů křivky.",
+  href: ""
+},
+
+"coefficient": {
+  title: "Koeficient",
+  text: "Pevná číselná hodnota stojící u proměnné nebo členu rovnice. V obecném tvaru eliptické křivky <span class=\"term-math-nowrap\"><span class=\"math-inline\"><var>y</var><sup>2</sup> = <var>x</var><sup>3</sup> + <var>a</var><var>x</var> + <var>b</var></span> jsou <var>a</var> a <var>b</var> koeficienty; u secp256k1 mají hodnoty <span class=\"math-inline\"><var>a</var> = 0</span> a <span class=\"math-inline\"><var>b</var> = 7</span>.</span>",
+  href: ""
+},
+
+"chain-rule": {
+  title: "Řetězové pravidlo",
+  text: "Pravidlo derivování složených funkcí. Při implicitním derivování rovnice eliptické křivky se použije na člen <span class=\"term-math-nowrap\"><span class=\"math-inline\"><var>y</var><sup>2</sup></span>,</span> protože <span class=\"term-math-nowrap\"><span class=\"math-inline\"><var>y</var></span> je samo funkcí <span class=\"math-inline\"><var>x</var></span>.</span>",
+  href: ""
+},
+
+"cubic-equation": {
+  title: "Kubická rovnice",
+  text: "Rovnice, jejíž nejvyšší mocnina neznámé je třetí. Při hledání průsečíků přímky s eliptickou křivkou vznikne kubická rovnice pro <var>x</var>-ové souřadnice tří průsečíků.",
+  href: ""
+},
+
+"witness-program": {
+  title: "Witness program",
+  text: "Krátká datová struktura v scriptPubKey SegWit výstupu tvořená verzí witness programu a samotnými daty programu. Její význam závisí na verzi a typu výstupu, například P2WPKH, P2WSH nebo P2TR.",
+  href: ""
+},
+
+
+
+"encryption": {
+  title: "Šifrování",
+  text: "Kryptografický postup, který převádí čitelná data do podoby, které bez odpovídajícího klíče nelze běžně porozumět. Šifrování slouží především k utajení obsahu; není totéž co hashování ani digitální podpis.",
+  href: ""
+},
+
+"integer": {
+  title: "Celé číslo",
+  text: "Číslo bez desetinné nebo zlomkové části. Patří sem záporná celá čísla, nula i kladná celá čísla. Soukromý klíč v Bitcoinu je kladné celé číslo z přesně vymezeného rozsahu.",
+  href: ""
+},
+
+"transaction-input": {
+  title: "Transakční vstup",
+  text: "Část bitcoinové transakce, která odkazuje na dřívější neutracený transakční výstup a předkládá údaje potřebné k jeho utracení. Běžná transakce tak spotřebovává předchozí výstupy jako své vstupy.",
+  href: ""
+},
+
+
+
+"randomness-source": {
+  title: "Zdroj náhodnosti",
+  text: "Zdroj nepředvídatelných dat používaných při vytváření tajných hodnot. V kryptografii může čerpat například z událostí zachycených operačním systémem nebo hardwarem a poskytovat entropii pro bezpečné generování klíčů.",
+  href: ""
+},
+
+"modular-arithmetic": {
+  title: "Modulární aritmetika",
+  text: "Aritmetika, ve které se s hodnotami pracuje podle jejich zbytků po dělení pevným číslem označovaným jako modul. Zápis <span class=\"math-inline\">modulo <var>p</var></span> znamená, že se při výpočtech používá modul <var>p</var>. Hodnoty, které dávají při dělení modulem stejný zbytek, jsou v tomto systému považovány za ekvivalentní.",
+  href: ""
+},
+
+"real-numbers": {
+  title: "Reálná čísla",
+  text: "Čísla, která lze zobrazit na spojité číselné ose; zahrnují například celá, racionální i iracionální čísla. Eliptickou křivku lze nad reálnými čísly zobrazit jako spojitou křivku.",
+  href: ""
+},
+
+"tangent-line": {
+  title: "Tečna",
+  text: "Přímka, která v daném bodě vystihuje okamžitý směr křivky. Její směrnice odpovídá derivaci funkce v tomto bodě a při geometrickém vysvětlení eliptických křivek se používá při zdvojení bodu.",
+  href: ""
+},
+
+"cryptographic-message": {
+  title: "Zpráva v kryptografii",
+  text: "Data, ke kterým se vztahuje kryptografická operace, například digitální podpis. Zprávou nemusí být text určený člověku; může jí být libovolná přesně definovaná posloupnost dat.",
+  href: ""
+},
+
+"mainnet": {
+  title: "Hlavní síť (mainnet)",
+  text: "Produkční bitcoinová síť, ve které se používají skutečné bitcoiny a platí hlavní konsenzuální pravidla Bitcoinu. Od testovacích sítí se liší mimo jiné adresními formáty a účelem použití.",
+  href: ""
+},
 
 };
